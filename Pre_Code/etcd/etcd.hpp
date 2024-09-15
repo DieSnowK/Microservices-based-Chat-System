@@ -5,7 +5,7 @@
 #include <etcd/Response.hpp>
 #include <etcd/Watcher.hpp>
 #include <etcd/Value.hpp>
-#include "logger.hpp"
+#include "../spdlog/logger.hpp"
 
 namespace SnowK
 {
