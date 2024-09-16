@@ -10,12 +10,12 @@ DEFINE_string(base_service, "/service", "The root directory of service monitorin
 
 void Online(const std::string &service_name, const std::string &service_host)
 {
-    LOG_DEBUG("On-line service: {}-{}", service_name, service_host);
+    LOG_DEBUG("Online Service: {}-{}", service_name, service_host);
 }
 
 void Offline(const std::string &service_name, const std::string &service_host)
 {
-    LOG_DEBUG("Off-line service: {}-{}", service_name, service_host);
+    LOG_DEBUG("Offline Service: {}-{}", service_name, service_host);
 }
 
 int main(int argc, char *argv[])
