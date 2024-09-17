@@ -1,4 +1,11 @@
-all: main
+all:discovery registry
 
-main: main.cc
-	g++ -o $@ $^ -std=c++17 -lbrpc -lgflags -lssl -lcrypto -lprotobuf -lleveldb -lspdlog -lfmt
+discovery : discovery.cc main.pb.cc
+	g++ -g -std=c++17 $^ -o $@ -lspdlog -lfmt -lgflags -letcd-cpp-api -lcpprest -lbrpc -lssl -lcrypto -lprotobuf -lleveldb
+
+registry : registry.cc main.pb.cc
+	g++ -g -std=c++17 $^ -o $@ -lspdlog -lfmt -lgflags -letcd-cpp-api -lcpprest -lbrpc -lssl -lcrypto -lprotobuf -lleveldb
+
+.PHONY:clean
+clean:
+	rm discovery registry

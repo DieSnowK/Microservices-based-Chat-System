@@ -74,6 +74,9 @@
         "typeindex": "cpp",
         "*.inc": "cpp",
         "hash_map": "cpp",
-        "hash_set": "cpp"
+        "hash_set": "cpp",
+        "csignal": "cpp",
+        "strstream": "cpp",
+        "shared_mutex": "cpp"
     }
 }
