@@ -80,6 +80,7 @@
         "shared_mutex": "cpp",
         "fstream": "cpp",
         "future": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "regex": "cpp"
     }
 }
