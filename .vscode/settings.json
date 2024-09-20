@@ -81,6 +81,7 @@
         "fstream": "cpp",
         "future": "cpp",
         "*.ipp": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "cassert": "cpp"
     }
 }
