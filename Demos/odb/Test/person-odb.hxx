@@ -7,6 +7,17 @@
 #ifndef PERSON_ODB_HXX
 #define PERSON_ODB_HXX
 
+// Begin prologue.
+//
+#include <odb/boost/version.hxx>
+#if ODB_BOOST_VERSION != 2047700 // 2.5.0-b.27
+#  error ODB and C++ compilers see different libodb-boost interface versions
+#endif
+#include <odb/boost/date-time/mysql/gregorian-traits.hxx>
+#include <odb/boost/date-time/mysql/posix-time-traits.hxx>
+//
+// End prologue.
+
 #include <odb/version.hxx>
 
 #if ODB_VERSION != 20477UL
@@ -111,8 +122,8 @@ namespace odb
     mysql::query_column<
       mysql::value_traits<
         short unsigned int,
-        mysql::id_decimal >::query_type,
-      mysql::id_decimal >
+        mysql::id_ushort >::query_type,
+      mysql::id_ushort >
     age_type_;
 
     static const age_type_ age;
@@ -150,7 +161,7 @@ namespace odb
   template <typename A>
   const typename query_columns< ::Person, id_mysql, A >::age_type_
   query_columns< ::Person, id_mysql, A >::
-  age (A::table_name, "`user_age`", 0);
+  age (A::table_name, "`age`", 0);
 
   template <typename A>
   const typename query_columns< ::Person, id_mysql, A >::name_type_
@@ -190,8 +201,7 @@ namespace odb
 
       // _age
       //
-      details::buffer _age_value;
-      unsigned long _age_size;
+      unsigned short _age_value;
       my_bool _age_null;
 
       // _name

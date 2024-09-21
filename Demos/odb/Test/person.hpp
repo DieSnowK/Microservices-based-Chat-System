@@ -2,22 +2,21 @@
 #include <string>
 #include <cstddef>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <odb/nullable.hxx>
 
-// åœ¨C++ä¸­ï¼Œè¦ä½¿ç”¨ODBå°†ç±»å£°æ˜ä¸ºæŒä¹…åŒ–ç±»ï¼Œéœ€è¦åŒ…å«ODBçš„æ ¸å¿ƒå¤´æ–‡ä»¶ï¼Œå¹¶ä½¿ç”¨#pragma db objectæŒ‡ä»¤
-// #pragma db object æŒ‡ç¤º ODB ç¼–è¯‘å™¨å°† person ç±»è§†ä¸ºä¸€ä¸ªæŒä¹…åŒ–ç±»
-
+// ÔÚC++ÖĞ£¬ÒªÊ¹ÓÃODB½«ÀàÉùÃ÷Îª³Ö¾Ã»¯Àà£¬ĞèÒª°üº¬ODBµÄºËĞÄÍ·ÎÄ¼ş£¬²¢Ê¹ÓÃ#pragma db objectÖ¸Áî
+// #pragma db object Ö¸Ê¾ ODB ±àÒëÆ÷½« person ÀàÊÓÎªÒ»¸ö³Ö¾Ã»¯Àà
 #include <odb/core.hxx>
+
 typedef boost::posix_time::ptime ptime;
 
-#pragma db object table("person")
+#pragma db object
 class Person
 {
 public:
-    Person(const std::string &name, int age, const ptime &update) 
-        : _name(name), _age(age), _update(update) 
+    Person(const std::string &name, int age, const ptime &update)
+        : _name(name), _age(age), _update(update)
     {}
-    
+
     void age(int val) { _age = val; }
     int age() { return _age; }
 
@@ -25,33 +24,28 @@ public:
     std::string name() { return _name; }
 
     void update(const ptime &update) { _update = update; }
-    std::string update() { return boost::posix_time::to_simple_string(*_update); }
+    std::string update() { return boost::posix_time::to_simple_string(_update); }
 
 private:
-    // å°† odb::access ç±»ä½œä¸º person ç±»çš„å‹å…ƒ
-    // è¿™æ˜¯ä½¿æ•°æ®åº“æ”¯æŒä»£ç å¯è®¿é—®é»˜è®¤æ„é€ å‡½æ•°å’Œæ•°æ®æˆå‘˜æ‰€å¿…éœ€çš„
-    // å¦‚æœç±»å…·æœ‰å…¬å…±é»˜è®¤æ„é€ å‡½æ•°å’Œå…¬å…±æ•°æ®æˆå‘˜æˆ–æ•°æ®æˆå‘˜çš„å…¬å…±è®¿é—®å™¨å’Œä¿®é¥°ç¬¦ï¼Œåˆ™ä¸éœ€è¦å‹å…ƒå£°æ˜
+    // ½« odb£º£ºaccess Àà×÷Îª person ÀàµÄÅóÓÑ¡£
+    // ÕâÊÇÊ¹Êı¾İ¿âÖ§³Ö´úÂë¿É·ÃÎÊÄ¬ÈÏ¹¹Ôìº¯ÊıºÍÊı¾İ³ÉÔ±Ëù±ØĞèµÄ¡£
+    // Èç¹ûÀà¾ßÓĞ¹«¹²Ä¬ÈÏ¹¹Ôìº¯ÊıºÍ¹«¹²Êı¾İ³ÉÔ±»òÊı¾İ³ÉÔ±µÄ¹«¹²·ÃÎÊÆ÷ºÍĞŞÊÎ·û£¬Ôò²»ĞèÒªÓÑÔªÉùÃ÷
     friend class odb::access;
     Person() {}
 
-// _id æˆå‘˜å‰é¢çš„ pragma å‘Šè¯‰ ODB ç¼–è¯‘å™¨ï¼Œä»¥ä¸‹æˆå‘˜æ˜¯å¯¹è±¡çš„æ ‡è¯†ç¬¦
-// auto è¯´æ˜ç¬¦æŒ‡ç¤ºå®ƒæ˜¯æ•°æ®åº“åˆ†é…çš„ID
-#pragma db id auto     // è¡¨ç¤º ID å­—æ®µå°†è‡ªåŠ¨ç”Ÿæˆ(é€šå¸¸æ˜¯æ•°æ®åº“ä¸­çš„ä¸»é”®)
+// _id ³ÉÔ±Ç°ÃæµÄ pragma ¸æËß ODB ±àÒëÆ÷£¬ÒÔÏÂ³ÉÔ±ÊÇ¶ÔÏóµÄ±êÊ¶·û
+// autoËµÃ÷·ûÖ¸Ê¾ËüÊÇÊı¾İ¿â·ÖÅäµÄ ID
+#pragma db id auto      // ±íÊ¾ ID ×Ö¶Î½«×Ô¶¯Éú³É£¨Í¨³£ÊÇÊı¾İ¿âÖĞµÄÖ÷¼ü£©¡£ 
     unsigned long _id;
-
-#pragma db column("user_age") type("decimal") default(20)
     unsigned short _age;
-
-#pragma db unique
     std::string _name;
-
-#pragma db type("TIMESTAMP") index
-    odb::nullable<boost::posix_time::ptime> _update;
+#pragma db type("TIMESTAMP") not_null
+    boost::posix_time::ptime _update;
 };
-// å°† ODB ç¼–è¯‘æŒ‡ç¤ºç»„åˆåœ¨ä¸€èµ·ï¼Œå¹¶æ”¾åœ¨ç±»å®šä¹‰ä¹‹åã€‚å®ƒä»¬ä¹Ÿå¯ä»¥ç§»åŠ¨åˆ°ä¸€ä¸ªå•ç‹¬çš„æ ‡å¤´ä¸­ï¼Œä½¿åŸå§‹ç±»å®Œå…¨ä¿æŒä¸å˜
-//  #pragma db object(person)
-//  #pragma db member(person::_name) id
-// å®Œæˆåï¼Œéœ€è¦ä½¿ç”¨ odb ç¼–è¯‘å™¨å°†å½“å‰æ‰€å†™çš„ä»£ç ç”Ÿæˆæ•°æ®åº“æ”¯æŒä»£ç 
+// ½« ODB ±àÒëÖ¸Ê¾×éºÏÔÚÒ»Æğ£¬²¢·ÅÔÚÀà¶¨ÒåÖ®ºó¡£ËüÃÇÒ²¿ÉÒÔÒÆ¶¯µ½Ò»¸öµ¥¶ÀµÄ±êÍ·ÖĞ£¬Ê¹Ô­Ê¼ÀàÍêÈ«±£³Ö²»±ä
+// #pragma db object(person)
+// #pragma db member(person::_name) id
+// Íê³Éºó£¬ĞèÒªÊ¹ÓÃ odb ±àÒëÆ÷½«µ±Ç°ËùĞ´µÄ´úÂëÉú³ÉÊı¾İ¿âÖ§³Ö´úÂë
 // odb -d mysql --generate-query --generate-schema person.hxx
-// å¦‚æœç”¨åˆ°äº† boost åº“ä¸­çš„æ¥å£ï¼Œåˆ™éœ€è¦ä½¿ç”¨é€‰é¡¹ : --profile boost/datetime
+// Èç¹ûÓÃµ½ÁË boost ¿âÖĞµÄ½Ó¿Ú£¬ÔòĞèÒªÊ¹ÓÃÑ¡Ïî : --profile boost/datetime
 // odb -d mysql --generate-query --generate-schema --profile boost/date-time person.hxx

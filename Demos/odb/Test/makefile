@@ -1,2 +1,6 @@
 main : main.cc person-odb.cxx
-	g++ -o $@ $^ -lodb-mysql -lodb -lodb-boost
+	c++ -o $@ $^ -lodb-mysql -lodb -lodb-boost
+
+.PHONY:clean
+clean:
+	rm main

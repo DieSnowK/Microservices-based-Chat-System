@@ -2,18 +2,15 @@
  * compiler for C++.
  */
 
-DROP TABLE IF EXISTS `person`;
+DROP DATABASE IF EXISTS `TestDB`;
+CREATE DATABASE `TestDB`;
+USE `TestDB`;
 
-CREATE TABLE `person` (
+DROP TABLE IF EXISTS `Person`;
+
+CREATE TABLE `Person` (
   `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `user_age` decimal NOT NULL DEFAULT 20,
+  `age` SMALLINT UNSIGNED NOT NULL,
   `name` TEXT NOT NULL,
-  `update` TIMESTAMP NULL)
+  `update` TIMESTAMP NOT NULL)
  ENGINE=InnoDB;
-
-CREATE UNIQUE INDEX `name_i`
-  ON `person` (`name`);
-
-CREATE INDEX `update_i`
-  ON `person` (`update`);
-

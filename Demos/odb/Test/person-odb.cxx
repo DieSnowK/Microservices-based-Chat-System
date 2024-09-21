@@ -96,11 +96,7 @@ namespace odb
 
     // _age
     //
-    if (t[1UL])
-    {
-      i._age_value.capacity (i._age_size);
-      grew = true;
-    }
+    t[1UL] = 0;
 
     // _name
     //
@@ -141,11 +137,9 @@ namespace odb
 
     // _age
     //
-    b[n].buffer_type = MYSQL_TYPE_NEWDECIMAL;
-    b[n].buffer = i._age_value.data ();
-    b[n].buffer_length = static_cast<unsigned long> (
-      i._age_value.capacity ());
-    b[n].length = &i._age_size;
+    b[n].buffer_type = MYSQL_TYPE_SHORT;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i._age_value;
     b[n].is_null = &i._age_null;
     n++;
 
@@ -212,18 +206,11 @@ namespace odb
         o._age;
 
       bool is_null (false);
-      std::size_t size (0);
-      std::size_t cap (i._age_value.capacity ());
       mysql::value_traits<
           short unsigned int,
-          mysql::id_decimal >::set_image (
-        i._age_value,
-        size,
-        is_null,
-        v);
+          mysql::id_ushort >::set_image (
+        i._age_value, is_null, v);
       i._age_null = is_null;
-      i._age_size = static_cast<unsigned long> (size);
-      grew = grew || (cap != i._age_value.capacity ());
     }
 
     // _name
@@ -250,12 +237,12 @@ namespace odb
     // _update
     //
     {
-      ::odb::nullable< ::boost::posix_time::ptime > const& v =
+      ::boost::posix_time::ptime const& v =
         o._update;
 
-      bool is_null (true);
+      bool is_null (false);
       mysql::value_traits<
-          ::odb::nullable< ::boost::posix_time::ptime >,
+          ::boost::posix_time::ptime,
           mysql::id_timestamp >::set_image (
         i._update_value, is_null, v);
       i._update_null = is_null;
@@ -295,10 +282,9 @@ namespace odb
 
       mysql::value_traits<
           short unsigned int,
-          mysql::id_decimal >::set_value (
+          mysql::id_ushort >::set_value (
         v,
         i._age_value,
-        i._age_size,
         i._age_null);
     }
 
@@ -320,11 +306,11 @@ namespace odb
     // _update
     //
     {
-      ::odb::nullable< ::boost::posix_time::ptime >& v =
+      ::boost::posix_time::ptime& v =
         o._update;
 
       mysql::value_traits<
-          ::odb::nullable< ::boost::posix_time::ptime >,
+          ::boost::posix_time::ptime,
           mysql::id_timestamp >::set_value (
         v,
         i._update_value,
@@ -346,9 +332,9 @@ namespace odb
   }
 
   const char access::object_traits_impl< ::Person, id_mysql >::persist_statement[] =
-  "INSERT INTO `person` "
+  "INSERT INTO `Person` "
   "(`id`, "
-  "`user_age`, "
+  "`age`, "
   "`name`, "
   "`update`) "
   "VALUES "
@@ -356,38 +342,38 @@ namespace odb
 
   const char access::object_traits_impl< ::Person, id_mysql >::find_statement[] =
   "SELECT "
-  "`person`.`id`, "
-  "`person`.`user_age`, "
-  "`person`.`name`, "
-  "`person`.`update` "
-  "FROM `person` "
-  "WHERE `person`.`id`=?";
+  "`Person`.`id`, "
+  "`Person`.`age`, "
+  "`Person`.`name`, "
+  "`Person`.`update` "
+  "FROM `Person` "
+  "WHERE `Person`.`id`=?";
 
   const char access::object_traits_impl< ::Person, id_mysql >::update_statement[] =
-  "UPDATE `person` "
+  "UPDATE `Person` "
   "SET "
-  "`user_age`=?, "
+  "`age`=?, "
   "`name`=?, "
   "`update`=? "
   "WHERE `id`=?";
 
   const char access::object_traits_impl< ::Person, id_mysql >::erase_statement[] =
-  "DELETE FROM `person` "
+  "DELETE FROM `Person` "
   "WHERE `id`=?";
 
   const char access::object_traits_impl< ::Person, id_mysql >::query_statement[] =
   "SELECT "
-  "`person`.`id`, "
-  "`person`.`user_age`, "
-  "`person`.`name`, "
-  "`person`.`update` "
-  "FROM `person`";
+  "`Person`.`id`, "
+  "`Person`.`age`, "
+  "`Person`.`name`, "
+  "`Person`.`update` "
+  "FROM `Person`";
 
   const char access::object_traits_impl< ::Person, id_mysql >::erase_query_statement[] =
-  "DELETE FROM `person`";
+  "DELETE FROM `Person`";
 
   const char access::object_traits_impl< ::Person, id_mysql >::table_name[] =
-  "`person`";
+  "`Person`";
 
   void access::object_traits_impl< ::Person, id_mysql >::
   persist (database& db, object_type& obj)
