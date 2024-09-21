@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-// ��C++�У�Ҫʹ��ODB��������Ϊ�־û��࣬��Ҫ����ODB�ĺ���ͷ�ļ�����ʹ��#pragma db objectָ��
-// #pragma db object ָʾ ODB �������� person ����Ϊһ���־û���
+// 在C++中，要使用ODB将类声明为持久化类，需要包含ODB的核心头文件，并使用#pragma db object指令
+// #pragma db object 指示 ODB 编译器将 person 类视为一个持久化类
 #include <odb/core.hxx>
 
 typedef boost::posix_time::ptime ptime;
@@ -27,25 +27,25 @@ public:
     std::string update() { return boost::posix_time::to_simple_string(_update); }
 
 private:
-    // �� odb����access ����Ϊ person ������ѡ�
-    // ����ʹ���ݿ�֧�ִ���ɷ���Ĭ�Ϲ��캯�������ݳ�Ա������ġ�
-    // �������й���Ĭ�Ϲ��캯���͹������ݳ�Ա�����ݳ�Ա�Ĺ��������������η�������Ҫ��Ԫ����
+    // 将odb::access类作为Person类的友元
+    // 这是使数据库支持代码可访问默认构造函数和数据成员所必需的
+    // 如果类具有公共默认构造函数和公共数据成员或数据成员的公共访问器和修饰符，则不需要友元声明
     friend class odb::access;
     Person() {}
 
-// _id ��Աǰ��� pragma ���� ODB �����������³�Ա�Ƕ���ı�ʶ��
-// auto˵����ָʾ�������ݿ����� ID
-#pragma db id auto      // ��ʾ ID �ֶν��Զ����ɣ�ͨ�������ݿ��е��������� 
+// _id 成员前面的 pragma 告诉 ODB 编译器，以下成员是对象的标识符
+// auto说明符指示它是数据库分配的 ID
+#pragma db id auto      // 表示 ID 字段将自动生成（通常是数据库中的主键）。 
     unsigned long _id;
     unsigned short _age;
     std::string _name;
 #pragma db type("TIMESTAMP") not_null
     boost::posix_time::ptime _update;
 };
-// �� ODB ����ָʾ�����һ�𣬲������ඨ��֮������Ҳ�����ƶ���һ�������ı�ͷ�У�ʹԭʼ����ȫ���ֲ���
+// 将 ODB 编译指示组合在一起，并放在类定义之后。它们也可以移动到一个单独的标头中，使原始类完全保持不变
 // #pragma db object(person)
 // #pragma db member(person::_name) id
-// ��ɺ���Ҫʹ�� odb ����������ǰ��д�Ĵ����������ݿ�֧�ִ���
+// 完成后，需要使用 odb 编译器将当前所写的代码生成数据库支持代码
 // odb -d mysql --generate-query --generate-schema person.hxx
-// ����õ��� boost ���еĽӿڣ�����Ҫʹ��ѡ�� : --profile boost/datetime
+// 如果用到了 boost 库中的接口，则需要使用选项 : --profile boost/datetime
 // odb -d mysql --generate-query --generate-schema --profile boost/date-time person.hxx

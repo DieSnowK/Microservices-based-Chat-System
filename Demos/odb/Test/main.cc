@@ -23,7 +23,7 @@ int main()
     typedef odb::query<Person> query;
     typedef odb::result<Person> result;
 
-    // ĞÂÔöÊı¾İ
+    // æ–°å¢æ•°æ®
     {
         odb::core::transaction t(db->begin());
         size_t zid = db->persist(Die);
@@ -31,7 +31,7 @@ int main()
         t.commit();
     }
 
-    // ²éÑ¯Êı¾İ
+    // æŸ¥è¯¢æ•°æ®
     {
         odb::core::transaction t (db->begin()); 
         result r (db->query<Person>()); 
@@ -46,5 +46,5 @@ int main()
     return 0;
 }
 
-// Èç¹ûÓÃµ½ÁËboost¿âÖĞµÄ½Ó¿Ú£¬ĞèÒªÁ´½Ó¿â£º -lodb-boost
+// å¦‚æœç”¨åˆ°äº†booståº“ä¸­çš„æ¥å£ï¼Œéœ€è¦é“¾æ¥åº“ï¼š -lodb-boost
 // c++ -o mysql_test mysql_test.cpp person-odb.cxx -lodb-mysqllodb - lodb - boost
