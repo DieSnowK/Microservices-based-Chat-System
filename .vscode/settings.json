@@ -82,6 +82,8 @@
         "future": "cpp",
         "*.ipp": "cpp",
         "regex": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "coroutine": "cpp",
+        "*.txx": "cpp"
     }
 }

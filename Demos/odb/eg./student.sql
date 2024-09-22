@@ -2,6 +2,8 @@
  * compiler for C++.
  */
 
+USE `TestDB`
+
 DROP TABLE IF EXISTS `Classes`;
 
 DROP TABLE IF EXISTS `Student`;
