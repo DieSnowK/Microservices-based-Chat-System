@@ -89,7 +89,7 @@ struct Classes_Student
 };
 
 // 只查询学生姓名, (?): 外部调用时传入的过滤条件
-#pragma db view query("select name from Student + (?)")
+#pragma db view query("select name from Student" + (?))
 struct All_Name
 {
     std::string name;

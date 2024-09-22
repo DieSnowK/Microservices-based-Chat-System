@@ -1788,9 +1788,15 @@ namespace odb
   query_statement (const query_base_type& q)
   {
     query_base_type r (
-      "select name from Student + (" +
-      (q.empty () ? query_base_type::true_expr : q) +
-      ")");
+      "select name from Student");
+
+    if (!q.empty ())
+    {
+      r += " ";
+      r += q.clause_prefix ();
+      r += q;
+    }
+
     return r;
   }
 

@@ -63,7 +63,7 @@ void Insert_Student(odb::mysql::database &db)
     }
 }
 
-// TODO
+// 先查询，再修改
 void Update_Student(odb::mysql::database &db, Student &stu)
 {
     try
@@ -110,6 +110,79 @@ Student Select_Student(odb::mysql::database &db)
     return ret;
 }
 
+void Remove_Student(odb::mysql::database &db)
+{
+    try
+    {
+        // 3.获取事务对象, 开启事务
+        odb::transaction trans(db.begin());
+
+        // 查询和删除操作合并
+        db.erase_query<Student>(odb::query<Student>::name == "李四");
+
+        // 5. 提交事务
+        trans.commit();
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "更新学生数据出错: " << e.what() << std::endl;
+    }
+}
+
+void Classes_Student(odb::mysql::database &db)
+{
+    try
+    {
+        // 3.获取事务对象, 开启事务
+        odb::transaction trans(db.begin());
+
+        typedef odb::query<struct Classes_Student> query;
+        typedef odb::result<struct Classes_Student> result;
+        
+        result r(db.query<struct Classes_Student>(query::classes::id == 1));
+        for (auto it = r.begin(); it != r.end(); ++it)
+        {
+            std::cout << it->id << std::endl;
+            std::cout << it->sn << std::endl;
+            std::cout << it->name << std::endl;
+            std::cout << *it->age << std::endl; // nullable类型类似智能指针, 需要解引用
+            std::cout << it->classes_name << std::endl;
+        }
+
+        // 5. 提交事务
+        trans.commit();
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "更新学生数据出错: " << e.what() << std::endl;
+    }
+}
+
+void All_Student(odb::mysql::database &db)
+{
+    try
+    {
+        // 3.获取事务对象, 开启事务
+        odb::transaction trans(db.begin());
+
+        typedef odb::query<Student> query;
+        typedef odb::result<All_Name> result;
+
+        result r(db.query<All_Name>(query::id == 1));
+        for (auto it = r.begin(); it != r.end(); ++it)
+        {
+            std::cout << it->name << std::endl;
+        }
+
+        // 5. 提交事务
+        trans.commit();
+    }
+    catch (const std::exception &e)
+    {
+        std::cout << "查询所有学生姓名数据出错: " << e.what() << std::endl;
+    }
+}
+
 int main(int argc, char *argv[])
 {
     google::ParseCommandLineFlags(&argc, &argv, true);
@@ -124,7 +197,14 @@ int main(int argc, char *argv[])
     // 4.数据操作
     // Insert_Classes(db);
     // Insert_Student(db);
-
+    // {
+    //     Student stu = Select_Student(db);
+    //     stu.age(22);
+    //     Update_Student(db, stu);
+    // }
+    // Remove_Student(db);
+    // Classes_Student(db);
+    All_Student(db);
 
     return 0;
 }
