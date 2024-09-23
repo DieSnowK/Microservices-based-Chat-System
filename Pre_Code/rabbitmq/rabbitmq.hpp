@@ -28,7 +28,7 @@ namespace SnowK
 
         ~MQClient()
         {
-            ev_async_init(&_async_watcher, watcher_callback);
+            ev_async_init(&_async_watcher, Watcher_Callback);
             ev_async_start(_loop, &_async_watcher);
             ev_async_send(_loop, &_async_watcher);
             _loop_thread.join();
@@ -73,7 +73,7 @@ namespace SnowK
                 });
         }
 
-        bool publish(const std::string &exchange,
+        bool Publish(const std::string &exchange,
                      const std::string &msg,
                      const std::string &routing_key = "routing_key")
         {
@@ -87,7 +87,7 @@ namespace SnowK
             return true;
         }
 
-        void consume(const std::string &queue, const MessageCallback &cb)
+        void Consume(const std::string &queue, const MessageCallback &cb)
         {
             LOG_INFO("Start subscribing to {} queue messages", queue);
 
@@ -108,7 +108,7 @@ namespace SnowK
 
     private:
         // static is for the C interface
-        static void watcher_callback(struct ev_loop *loop, ev_async *watcher, int32_t revents)
+        static void Watcher_Callback(struct ev_loop *loop, ev_async *watcher, int32_t revents)
         {
             ev_break(loop, EVBREAK_ALL);
         }
