@@ -11,13 +11,12 @@ using namespace AlibabaCloud;
 int main(int argc, char **argv)
 {
     AlibabaCloud::InitializeSdk();
-    AlibabaCloud::ClientConfiguration configuration("cn-chengdu");
+    AlibabaCloud::ClientConfiguration configuration("cn-hangzhou");
     // specify timeout when create client.
     configuration.setConnectTimeout(1500);
     configuration.setReadTimeout(4000);
-    std::string access_key_id = "";
-    std::string access_key_secret = "";
-    AlibabaCloud::Credentials credential(access_key_id, access_key_secret);
+    // Please ensure that the environment variables ALIBABA_CLOUD_ACCESS_KEY_ID and ALIBABA_CLOUD_ACCESS_KEY_SECRET are set.
+    AlibabaCloud::Credentials credential(getenv("ALIBABA_CLOUD_ACCESS_KEY_ID"), getenv("ALIBABA_CLOUD_ACCESS_KEY_SECRET"));
     /* use STS Token
     credential.setSessionToken( getenv("ALIBABA_CLOUD_SECURITY_TOKEN") );
     */
@@ -27,9 +26,9 @@ int main(int argc, char **argv)
     request.setDomain("dysmsapi.aliyuncs.com");
     request.setVersion("2017-05-25");
     request.setQueryParameter("Action", "SendSms");
-    request.setQueryParameter("SignName", "");
-    request.setQueryParameter("TemplateCode", "SMS_465324787");
-    request.setQueryParameter("PhoneNumbers", "");
+    request.setQueryParameter("SignName", "SnowK6");
+    request.setQueryParameter("TemplateCode", "SMS_474020138");
+    request.setQueryParameter("PhoneNumbers", "18351958129");
     request.setQueryParameter("TemplateParam", "{\"code\":\"1234\"}");
 
     auto response = client.commonResponse(request);
