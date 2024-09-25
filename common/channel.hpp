@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <brpc/channel.h>
-#include "../spdlog/logger.hpp"
+#include "logger.hpp"
 
 namespace SnowK
 {

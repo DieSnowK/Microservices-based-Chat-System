@@ -4,7 +4,7 @@
 #include <elasticlient/client.h>
 #include <cpr/cpr.h>
 #include <json/json.h>
-#include "../spdlog/logger.hpp"
+#include "logger.hpp"
 
 namespace SnowK
 {

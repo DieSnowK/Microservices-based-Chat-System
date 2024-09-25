@@ -1,12 +1,13 @@
 #pragma once
 #include "aip-cpp-sdk/speech.h"
-#include "../spdlog/logger.hpp"
+#include "logger.hpp"
 
 namespace SnowK
 {
     class ASRClient
     {
     public:
+        using ptr = std::shared_ptr<ASRClient>;
         ASRClient(const std::string &app_id, const std::string &api_key, const std::string &secret_key)
             : _client(app_id, api_key, secret_key)
         {}

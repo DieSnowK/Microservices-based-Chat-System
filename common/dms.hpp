@@ -6,7 +6,7 @@
 #include <alibabacloud/core/CommonRequest.h>
 #include <alibabacloud/core/CommonClient.h>
 #include <alibabacloud/core/CommonResponse.h>
-#include "../spdlog/logger.hpp"
+#include "logger.hpp"
 
 namespace SnowK
 {

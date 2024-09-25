@@ -5,7 +5,7 @@
 #include <etcd/Response.hpp>
 #include <etcd/Watcher.hpp>
 #include <etcd/Value.hpp>
-#include "../spdlog/logger.hpp"
+#include "logger.hpp"
 
 namespace SnowK
 {
@@ -25,7 +25,7 @@ namespace SnowK
             _keep_alive->Cancel();
         }
 
-        bool Registry_Service(const std::string &key, std::string &val)
+        bool Registry_Service(const std::string &key, const std::string &val)
         {
             auto resp = _client->put(key, val, _lease_id).get();
             if (resp.is_ok() == false)

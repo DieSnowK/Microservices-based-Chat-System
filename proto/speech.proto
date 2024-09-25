@@ -1,7 +1,7 @@
 /* 
     语音识别服务器的子服务注册信息： /service/speech/instance_id 
         服务名称：/service/speech 
-        实例ID: instance_id     每个能够提供用户操作服务的子服务器唯一ID 
+        实例ID: instance_id  每个能够提供用户操作服务的子服务器唯一ID 
     当服务发现的时候，通过 /service/speech 进行服务发现，就可以发现所有的能够提供用户操作的实例信息了 
 */ 
 

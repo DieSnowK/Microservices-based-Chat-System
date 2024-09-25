@@ -47,19 +47,33 @@ namespace aip {
         }
     }
     
-    inline std::string to_upper(std::string src)
+    // inline std::string to_upper(std::string src)
+    // {
+    //     std::transform(src.begin(), src.end(), src.begin(), toupper);
+    //     return src;
+    // }
+    
+    
+    // inline std::string to_lower(std::string src)
+    // {
+    //     std::transform(src.begin(), src.end(), src.begin(), tolower);
+    //     return src;
+    // }
+
+    std::string to_upper(std::string src)
     {
-        std::transform(src.begin(), src.end(), src.begin(), toupper);
+        std::transform(src.begin(), src.end(), src.begin(), [](unsigned char c)
+                       { return std::toupper(c); });
         return src;
     }
-    
-    
-    inline std::string to_lower(std::string src)
+
+    std::string to_lower(std::string src)
     {
-        std::transform(src.begin(), src.end(), src.begin(), tolower);
+        std::transform(src.begin(), src.end(), src.begin(), [](unsigned char c)
+                       { return std::tolower(c); });
         return src;
     }
-    
+
     inline std::string to_hex(unsigned char c, bool lower = false)
     {
         const std::string hex = "0123456789ABCDEF";
