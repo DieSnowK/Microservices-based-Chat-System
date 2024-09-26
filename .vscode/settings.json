@@ -84,6 +84,8 @@
         "regex": "cpp",
         "cassert": "cpp",
         "coroutine": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "cfenv": "cpp",
+        "stdfloat": "cpp"
     }
 }

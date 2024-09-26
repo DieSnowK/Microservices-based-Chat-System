@@ -44,7 +44,7 @@ TEST(PUT_TEST, SINGLE_FILE)
     LOG_DEBUG("File ID: {}", rsp->file_info().file_id());
 }
 
-TEST(get_test, single_file)
+TEST(GET_TEST, SINGLE_FILE)
 {
     SnowK::FileService_Stub stub(channel.get());
     SnowK::GetSingleFileReq req;
@@ -65,7 +65,7 @@ TEST(get_test, single_file)
 
 std::vector<std::string> multi_file_id;
 
-TEST(put_test, multi_file)
+TEST(PUT_TEST, MULTI_FILES)
 {
     std::string body1;
     ASSERT_TRUE(SnowK::ReadFile("./base.pb.h", body1));
@@ -100,7 +100,7 @@ TEST(put_test, multi_file)
     }
 }
 
-TEST(get_test, multi_file)
+TEST(GET_TEST, MULTI_FILES)
 {
     SnowK::FileService_Stub stub(channel.get());
     SnowK::GetMultiFileReq req;
@@ -117,7 +117,7 @@ TEST(get_test, multi_file)
 
     ASSERT_TRUE(rsp->file_data().find(multi_file_id[0]) != rsp->file_data().end());
     ASSERT_TRUE(rsp->file_data().find(multi_file_id[1]) != rsp->file_data().end());
-    
+
     auto map = rsp->file_data();
     auto file_data1 = map[multi_file_id[0]];
     SnowK::WriteFile("base_download_file1", file_data1.file_content());
