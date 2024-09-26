@@ -17,9 +17,9 @@
 #include "base.pb.h"
 #include "file.pb.h"
 
-namespace bite_im
+namespace SnowK
 {
-    class UserServiceImpl : public bite_im::UserService
+    class UserServiceImpl : public SnowK::UserService
     {
     public:
         UserServiceImpl(const DMSClient::ptr &dms_client,
@@ -41,17 +41,19 @@ namespace bite_im
         }
         ~UserServiceImpl() {}
 
-        bool nickname_check(const std::string &nickname)
+        bool Nickname_Check(const std::string &nickname)
         {
             return nickname.size() < 22;
         }
-        bool password_check(const std::string &password)
+
+        bool Password_Check(const std::string &password)
         {
             if (password.size() < 6 || password.size() > 15)
             {
                 LOG_ERROR("密码长度不合法：{}-{}", password, password.size());
                 return false;
             }
+
             for (int i = 0; i < password.size(); i++)
             {
                 if (!((password[i] > 'a' && password[i] < 'z') ||
@@ -63,11 +65,13 @@ namespace bite_im
                     return false;
                 }
             }
+
             return true;
         }
+
         virtual void UserRegister(::google::protobuf::RpcController *controller,
-                                  const ::bite_im::UserRegisterReq *request,
-                                  ::bite_im::UserRegisterRsp *response,
+                                  const ::SnowK::UserRegisterReq *request,
+                                  ::SnowK::UserRegisterRsp *response,
                                   ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户注册请求！");
@@ -85,21 +89,21 @@ namespace bite_im
             std::string nickname = request->nickname();
             std::string password = request->password();
             // 2. 检查昵称是否合法（只能包含字母，数字，连字符-，下划线_，长度限制 3~15 之间）
-            bool ret = nickname_check(nickname);
+            bool ret = Nickname_Check(nickname);
             if (ret == false)
             {
                 LOG_ERROR("{} - 用户名长度不合法！", request->request_id());
                 return err_response(request->request_id(), "用户名长度不合法！");
             }
             // 3. 检查密码是否合法（只能包含字母，数字，长度限制 6~15 之间）
-            ret = password_check(password);
+            ret = Password_Check(password);
             if (ret == false)
             {
                 LOG_ERROR("{} - 密码格式不合法！", request->request_id());
                 return err_response(request->request_id(), "密码格式不合法！");
             }
             // 4. 根据昵称在数据库进行判断是否昵称已存在
-            auto user = _mysql_user->select_by_nickname(nickname);
+            auto user = _mysql_user->Select_By_Nickname(nickname);
             if (user)
             {
                 LOG_ERROR("{} - 用户名被占用- {}！", request->request_id(), nickname);
@@ -108,14 +112,14 @@ namespace bite_im
             // 5. 向数据库新增数据
             std::string uid = uuid();
             user = std::make_shared<User>(uid, nickname, password);
-            ret = _mysql_user->insert(user);
+            ret = _mysql_user->Insert(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - Mysql数据库新增数据失败！", request->request_id());
                 return err_response(request->request_id(), "Mysql数据库新增数据失败!");
             }
             // 6. 向 ES 服务器中新增用户信息
-            ret = _es_user->appendData(uid, "", nickname, "", "");
+            ret = _es_user->AppendData(uid, "", nickname, "", "");
             if (ret == false)
             {
                 LOG_ERROR("{} - ES搜索引擎新增数据失败！", request->request_id());
@@ -125,9 +129,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void UserLogin(::google::protobuf::RpcController *controller,
-                               const ::bite_im::UserLoginReq *request,
-                               ::bite_im::UserLoginRsp *response,
+                               const ::SnowK::UserLoginReq *request,
+                               ::SnowK::UserLoginRsp *response,
                                ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户登录请求！");
@@ -144,7 +149,7 @@ namespace bite_im
             std::string nickname = request->nickname();
             std::string password = request->password();
             // 2. 通过昵称获取用户信息，进行密码是否一致的判断
-            auto user = _mysql_user->select_by_nickname(nickname);
+            auto user = _mysql_user->Select_By_Nickname(nickname);
             if (!user || password != user->password())
             {
                 LOG_ERROR("{} - 用户名或密码错误 - {}-{}！", request->request_id(), nickname, password);
@@ -158,7 +163,7 @@ namespace bite_im
                 return err_response(request->request_id(), "用户已在其他地方登录!");
             }
             // 4. 构造会话 ID，生成会话键值对，向 redis 中添加会话信息以及登录标记信息
-            std::string ssid = uuid();
+            std::string ssid = UUID();
             _redis_session->append(ssid, user->user_id());
             // 5. 添加用户登录信息
             _redis_status->append(user->user_id());
@@ -167,7 +172,8 @@ namespace bite_im
             response->set_login_session_id(ssid);
             response->set_success(true);
         }
-        bool phone_check(const std::string &phone)
+
+        bool Phone_Check(const std::string &phone)
         {
             if (phone.size() != 11)
                 return false;
@@ -182,9 +188,10 @@ namespace bite_im
             }
             return true;
         }
+
         virtual void GetPhoneVerifyCode(::google::protobuf::RpcController *controller,
-                                        const ::bite_im::PhoneVerifyCodeReq *request,
-                                        ::bite_im::PhoneVerifyCodeRsp *response,
+                                        const ::SnowK::PhoneVerifyCodeReq *request,
+                                        ::SnowK::PhoneVerifyCodeRsp *response,
                                         ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到短信验证码获取请求！");
@@ -224,9 +231,10 @@ namespace bite_im
             response->set_verify_code_id(code_id);
             LOG_DEBUG("获取短信验证码处理完成！");
         }
+
         virtual void PhoneRegister(::google::protobuf::RpcController *controller,
-                                   const ::bite_im::PhoneRegisterReq *request,
-                                   ::bite_im::PhoneRegisterRsp *response,
+                                   const ::SnowK::PhoneRegisterReq *request,
+                                   ::SnowK::PhoneRegisterRsp *response,
                                    ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到手机号注册请求！");
@@ -239,12 +247,13 @@ namespace bite_im
                 response->set_errmsg(errmsg);
                 return;
             };
+
             // 1. 从请求中取出手机号码和验证码,验证码ID
             std::string phone = request->phone_number();
             std::string code_id = request->verify_code_id();
             std::string code = request->verify_code();
             // 2. 检查注册手机号码是否合法
-            bool ret = phone_check(phone);
+            bool ret = Phone_Check(phone);
             if (ret == false)
             {
                 LOG_ERROR("{} - 手机号码格式错误 - {}！", request->request_id(), phone);
@@ -258,23 +267,23 @@ namespace bite_im
                 return err_response(request->request_id(), "验证码错误!");
             }
             // 4. 通过数据库查询判断手机号是否已经注册过
-            auto user = _mysql_user->select_by_phone(phone);
+            auto user = _mysql_user->Select_By_Phone(phone);
             if (user)
             {
                 LOG_ERROR("{} - 该手机号已注册过用户 - {}！", request->request_id(), phone);
                 return err_response(request->request_id(), "该手机号已注册过用户!");
             }
             // 5. 向数据库新增用户信息
-            std::string uid = uuid();
+            std::string uid = UUID();
             user = std::make_shared<User>(uid, phone);
-            ret = _mysql_user->insert(user);
+            ret = _mysql_user->Insert(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - 向数据库添加用户信息失败 - {}！", request->request_id(), phone);
                 return err_response(request->request_id(), "向数据库添加用户信息失败!");
             }
             // 6. 向 ES 服务器中新增用户信息
-            ret = _es_user->appendData(uid, phone, uid, "", "");
+            ret = _es_user->AppendData(uid, phone, uid, "", "");
             if (ret == false)
             {
                 LOG_ERROR("{} - ES搜索引擎新增数据失败！", request->request_id());
@@ -284,9 +293,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void PhoneLogin(::google::protobuf::RpcController *controller,
-                                const ::bite_im::PhoneLoginReq *request,
-                                ::bite_im::PhoneLoginRsp *response,
+                                const ::SnowK::PhoneLoginReq *request,
+                                ::SnowK::PhoneLoginRsp *response,
                                 ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到手机号登录请求！");
@@ -304,14 +314,14 @@ namespace bite_im
             std::string code_id = request->verify_code_id();
             std::string code = request->verify_code();
             // 2. 检查注册手机号码是否合法
-            bool ret = phone_check(phone);
+            bool ret = Phone_Check(phone);
             if (ret == false)
             {
                 LOG_ERROR("{} - 手机号码格式错误 - {}！", request->request_id(), phone);
                 return err_response(request->request_id(), "手机号码格式错误!");
             }
             // 3. 根据手机号从数据数据进行用户信息查询，判断用用户是否存在
-            auto user = _mysql_user->select_by_phone(phone);
+            auto user = _mysql_user->Select_By_Phone(phone);
             if (!user)
             {
                 LOG_ERROR("{} - 该手机号未注册用户 - {}！", request->request_id(), phone);
@@ -324,7 +334,7 @@ namespace bite_im
                 LOG_ERROR("{} - 验证码错误 - {}-{}！", request->request_id(), code_id, code);
                 return err_response(request->request_id(), "验证码错误!");
             }
-            _redis_codes->remove(code_id);
+            _redis_codes->Remove(code_id);
             // 5. 根据 redis 中的登录标记信息是否存在判断用户是否已经登录。
             ret = _redis_status->exists(user->user_id());
             if (ret == true)
@@ -333,7 +343,7 @@ namespace bite_im
                 return err_response(request->request_id(), "用户已在其他地方登录!");
             }
             // 4. 构造会话 ID，生成会话键值对，向 redis 中添加会话信息以及登录标记信息
-            std::string ssid = uuid();
+            std::string ssid = UUID();
             _redis_session->append(ssid, user->user_id());
             // 5. 添加用户登录信息
             _redis_status->append(user->user_id());
@@ -342,10 +352,11 @@ namespace bite_im
             response->set_login_session_id(ssid);
             response->set_success(true);
         }
+
         // 从这一步开始，用户登录之后才会进行的操作
         virtual void GetUserInfo(::google::protobuf::RpcController *controller,
-                                 const ::bite_im::GetUserInfoReq *request,
-                                 ::bite_im::GetUserInfoRsp *response,
+                                 const ::SnowK::GetUserInfoReq *request,
+                                 ::SnowK::GetUserInfoRsp *response,
                                  ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到获取单个用户信息请求！");
@@ -361,7 +372,7 @@ namespace bite_im
             // 1. 从请求中取出用户 ID
             std::string uid = request->user_id();
             // 2. 通过用户 ID，从数据库中查询用户信息
-            auto user = _mysql_user->select_by_id(uid);
+            auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
                 LOG_ERROR("{} - 未找到用户信息 - {}！", request->request_id(), uid);
@@ -377,7 +388,7 @@ namespace bite_im
             if (!user->avatar_id().empty())
             {
                 // 从信道管理对象中，获取到连接了文件管理子服务的channel
-                auto channel = _mm_channels->choose(_file_service_name);
+                auto channel = _mm_channels->Choose(_file_service_name);
                 if (!channel)
                 {
                     LOG_ERROR("{} - 未找到文件管理子服务节点 - {} - {}！",
@@ -385,9 +396,9 @@ namespace bite_im
                     return err_response(request->request_id(), "未找到文件管理子服务节点!");
                 }
                 // 进行文件子服务的rpc请求，进行头像文件下载
-                bite_im::FileService_Stub stub(channel.get());
-                bite_im::GetSingleFileReq req;
-                bite_im::GetSingleFileRsp rsp;
+                SnowK::FileService_Stub stub(channel.get());
+                SnowK::GetSingleFileReq req;
+                SnowK::GetSingleFileRsp rsp;
                 req.set_request_id(request->request_id());
                 req.set_file_id(user->avatar_id());
                 brpc::Controller cntl;
@@ -403,9 +414,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void GetMultiUserInfo(::google::protobuf::RpcController *controller,
-                                      const ::bite_im::GetMultiUserInfoReq *request,
-                                      ::bite_im::GetMultiUserInfoRsp *response,
+                                      const ::SnowK::GetMultiUserInfoReq *request,
+                                      ::SnowK::GetMultiUserInfoRsp *response,
                                       ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到批量用户信息获取请求！");
@@ -426,7 +438,7 @@ namespace bite_im
                 uid_lists.push_back(request->users_id(i));
             }
             // 3. 从数据库进行批量用户信息查询
-            auto users = _mysql_user->select_multi_users(uid_lists);
+            auto users = _mysql_user->Select_Multi_Users(uid_lists);
             if (users.size() != request->users_id_size())
             {
                 LOG_ERROR("{} - 从数据库查找的用户信息数量不一致 {}-{}！",
@@ -434,15 +446,15 @@ namespace bite_im
                 return err_response(request->request_id(), "从数据库查找的用户信息数量不一致!");
             }
             // 4. 批量从文件管理子服务进行文件下载
-            auto channel = _mm_channels->choose(_file_service_name);
+            auto channel = _mm_channels->Choose(_file_service_name);
             if (!channel)
             {
                 LOG_ERROR("{} - 未找到文件管理子服务节点 - {}！", request->request_id(), _file_service_name);
                 return err_response(request->request_id(), "未找到文件管理子服务节点!");
             }
-            bite_im::FileService_Stub stub(channel.get());
-            bite_im::GetMultiFileReq req;
-            bite_im::GetMultiFileRsp rsp;
+            SnowK::FileService_Stub stub(channel.get());
+            SnowK::GetMultiFileReq req;
+            SnowK::GetMultiFileRsp rsp;
             req.set_request_id(request->request_id());
             for (auto &user : users)
             {
@@ -474,9 +486,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void SetUserAvatar(::google::protobuf::RpcController *controller,
-                                   const ::bite_im::SetUserAvatarReq *request,
-                                   ::bite_im::SetUserAvatarRsp *response,
+                                   const ::SnowK::SetUserAvatarReq *request,
+                                   ::SnowK::SetUserAvatarRsp *response,
                                    ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户头像设置请求！");
@@ -492,22 +505,22 @@ namespace bite_im
             // 1. 从请求中取出用户 ID 与头像数据
             std::string uid = request->user_id();
             // 2. 从数据库通过用户 ID 进行用户信息查询，判断用户是否存在
-            auto user = _mysql_user->select_by_id(uid);
+            auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
                 LOG_ERROR("{} - 未找到用户信息 - {}！", request->request_id(), uid);
                 return err_response(request->request_id(), "未找到用户信息!");
             }
             // 3. 上传头像文件到文件子服务，
-            auto channel = _mm_channels->choose(_file_service_name);
+            auto channel = _mm_channels->Choose(_file_service_name);
             if (!channel)
             {
                 LOG_ERROR("{} - 未找到文件管理子服务节点 - {}！", request->request_id(), _file_service_name);
                 return err_response(request->request_id(), "未找到文件管理子服务节点!");
             }
-            bite_im::FileService_Stub stub(channel.get());
-            bite_im::PutSingleFileReq req;
-            bite_im::PutSingleFileRsp rsp;
+            SnowK::FileService_Stub stub(channel.get());
+            SnowK::PutSingleFileReq req;
+            SnowK::PutSingleFileRsp rsp;
             req.set_request_id(request->request_id());
             req.mutable_file_data()->set_file_name("");
             req.mutable_file_data()->set_file_size(request->avatar().size());
@@ -522,14 +535,14 @@ namespace bite_im
             std::string avatar_id = rsp.file_info().file_id();
             // 4. 将返回的头像文件 ID 更新到数据库中
             user->avatar_id(avatar_id);
-            bool ret = _mysql_user->update(user);
+            bool ret = _mysql_user->Update(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - 更新数据库用户头像ID失败 ：{}！", request->request_id(), avatar_id);
                 return err_response(request->request_id(), "更新数据库用户头像ID失败!");
             }
             // 5. 更新 ES 服务器中用户信息
-            ret = _es_user->appendData(user->user_id(), user->phone(),
+            ret = _es_user->AppendData(user->user_id(), user->phone(),
                                        user->nickname(), user->description(), user->avatar_id());
             if (ret == false)
             {
@@ -540,9 +553,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void SetUserNickname(::google::protobuf::RpcController *controller,
-                                     const ::bite_im::SetUserNicknameReq *request,
-                                     ::bite_im::SetUserNicknameRsp *response,
+                                     const ::SnowK::SetUserNicknameReq *request,
+                                     ::SnowK::SetUserNicknameRsp *response,
                                      ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户昵称设置请求！");
@@ -559,14 +573,14 @@ namespace bite_im
             std::string uid = request->user_id();
             std::string new_nickname = request->nickname();
             // 2. 判断昵称格式是否正确
-            bool ret = nickname_check(new_nickname);
+            bool ret = Nickname_Check(new_nickname);
             if (ret == false)
             {
                 LOG_ERROR("{} - 用户名长度不合法！", request->request_id());
                 return err_response(request->request_id(), "用户名长度不合法！");
             }
             // 3. 从数据库通过用户 ID 进行用户信息查询，判断用户是否存在
-            auto user = _mysql_user->select_by_id(uid);
+            auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
                 LOG_ERROR("{} - 未找到用户信息 - {}！", request->request_id(), uid);
@@ -574,14 +588,14 @@ namespace bite_im
             }
             // 4. 将新的昵称更新到数据库中
             user->nickname(new_nickname);
-            ret = _mysql_user->update(user);
+            ret = _mysql_user->Update(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - 更新数据库用户昵称失败 ：{}！", request->request_id(), new_nickname);
                 return err_response(request->request_id(), "更新数据库用户昵称失败!");
             }
             // 5. 更新 ES 服务器中用户信息
-            ret = _es_user->appendData(user->user_id(), user->phone(),
+            ret = _es_user->AppendData(user->user_id(), user->phone(),
                                        user->nickname(), user->description(), user->avatar_id());
             if (ret == false)
             {
@@ -592,9 +606,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void SetUserDescription(::google::protobuf::RpcController *controller,
-                                        const ::bite_im::SetUserDescriptionReq *request,
-                                        ::bite_im::SetUserDescriptionRsp *response,
+                                        const ::SnowK::SetUserDescriptionReq *request,
+                                        ::SnowK::SetUserDescriptionRsp *response,
                                         ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户签名设置请求！");
@@ -611,7 +626,7 @@ namespace bite_im
             std::string uid = request->user_id();
             std::string new_description = request->description();
             // 3. 从数据库通过用户 ID 进行用户信息查询，判断用户是否存在
-            auto user = _mysql_user->select_by_id(uid);
+            auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
                 LOG_ERROR("{} - 未找到用户信息 - {}！", request->request_id(), uid);
@@ -619,14 +634,14 @@ namespace bite_im
             }
             // 4. 将新的昵称更新到数据库中
             user->description(new_description);
-            bool ret = _mysql_user->update(user);
+            bool ret = _mysql_user->Update(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - 更新数据库用户签名失败 ：{}！", request->request_id(), new_description);
                 return err_response(request->request_id(), "更新数据库用户签名失败!");
             }
             // 5. 更新 ES 服务器中用户信息
-            ret = _es_user->appendData(user->user_id(), user->phone(),
+            ret = _es_user->AppendData(user->user_id(), user->phone(),
                                        user->nickname(), user->description(), user->avatar_id());
             if (ret == false)
             {
@@ -637,9 +652,10 @@ namespace bite_im
             response->set_request_id(request->request_id());
             response->set_success(true);
         }
+
         virtual void SetUserPhoneNumber(::google::protobuf::RpcController *controller,
-                                        const ::bite_im::SetUserPhoneNumberReq *request,
-                                        ::bite_im::SetUserPhoneNumberRsp *response,
+                                        const ::SnowK::SetUserPhoneNumberReq *request,
+                                        ::SnowK::SetUserPhoneNumberRsp *response,
                                         ::google::protobuf::Closure *done)
         {
             LOG_DEBUG("收到用户手机号设置请求！");
@@ -665,7 +681,7 @@ namespace bite_im
                 return err_response(request->request_id(), "验证码错误!");
             }
             // 3. 从数据库通过用户 ID 进行用户信息查询，判断用户是否存在
-            auto user = _mysql_user->select_by_id(uid);
+            auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
                 LOG_ERROR("{} - 未找到用户信息 - {}！", request->request_id(), uid);
@@ -673,14 +689,14 @@ namespace bite_im
             }
             // 4. 将新的昵称更新到数据库中
             user->phone(new_phone);
-            bool ret = _mysql_user->update(user);
+            bool ret = _mysql_user->Update(user);
             if (ret == false)
             {
                 LOG_ERROR("{} - 更新数据库用户手机号失败 ：{}！", request->request_id(), new_phone);
                 return err_response(request->request_id(), "更新数据库用户手机号失败!");
             }
             // 5. 更新 ES 服务器中用户信息
-            ret = _es_user->appendData(user->user_id(), user->phone(),
+            ret = _es_user->AppendData(user->user_id(), user->phone(),
                                        user->nickname(), user->description(), user->avatar_id());
             if (ret == false)
             {
@@ -702,7 +718,7 @@ namespace bite_im
         std::string _file_service_name;
         ServiceManager::ptr _mm_channels;
         DMSClient::ptr _dms_client;
-    };
+    }; // end of UserServiceImpl
 
     class UserServer
     {
@@ -741,97 +757,95 @@ namespace bite_im
     class UserServerBuilder
     {
     public:
-        // 构造es客户端对象
         void Make_Es_Object(const std::vector<std::string> host_list)
         {
-            _es_client = ESClientFactory::create(host_list);
+            _es_client = ESClientFactory::Create(host_list);
         }
+
         void Make_Dms_Object(const std::string &access_key_id,
                              const std::string &access_key_secret)
         {
             _dms_client = std::make_shared<DMSClient>(access_key_id, access_key_secret);
         }
 
-        // 构造mysql客户端对象
-        void Make_MySQL_Object(
-            const std::string &user,
-            const std::string &pswd,
-            const std::string &host,
-            const std::string &db,
-            const std::string &cset,
-            int port,
-            int conn_pool_count)
+        void Make_MySQL_Object(const std::string &user,
+                               const std::string &pswd,
+                               const std::string &host,
+                               const std::string &db,
+                               const std::string &cset,
+                               int port,
+                               int conn_pool_count)
         {
-            _mysql_client = ODBFactory::create(user, pswd, host, db, cset, port, conn_pool_count);
+            _mysql_client = ODBFactory::Create(user, pswd, host, db, cset, port, conn_pool_count);
         }
 
-        // 构造redis客户端对象
         void Make_Redis_Object(const std::string &host,
                                int port,
                                int db,
                                bool keep_alive)
         {
-            _redis_client = RedisClientFactory::create(host, port, db, keep_alive);
+            _redis_client = RedisClientFactory::Create(host, port, db, keep_alive);
         }
-        // 用于构造服务发现客户端&信道管理对象
+
         void Make_Discovery_Object(const std::string &reg_host,
                                    const std::string &base_service_name,
                                    const std::string &file_service_name)
         {
             _file_service_name = file_service_name;
             _mm_channels = std::make_shared<ServiceManager>();
-            _mm_channels->declared(file_service_name);
+            _mm_channels->Declare(file_service_name);
             LOG_DEBUG("设置文件子服务为需添加管理的子服务：{}", file_service_name);
             auto put_cb = std::bind(&ServiceManager::onServiceOnline, _mm_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::onServiceOffline, _mm_channels.get(), std::placeholders::_1, std::placeholders::_2);
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
-        // 用于构造服务注册客户端对象
         void Make_Registry_Object(const std::string &reg_host,
                                   const std::string &service_name,
                                   const std::string &access_host)
         {
             _registry_client = std::make_shared<Registry>(reg_host);
-            _registry_client->registry(service_name, access_host);
+            _registry_client->Registry_Service(service_name, access_host);
         }
 
         void Make_Rpc_Server(uint16_t port, int32_t timeout, uint8_t num_threads)
         {
             if (!_es_client)
             {
-                LOG_ERROR("还未初始化ES搜索引擎模块！");
+                LOG_ERROR("The ES search engine module has not been initialized");
                 abort();
             }
             if (!_mysql_client)
             {
-                LOG_ERROR("还未初始化Mysql数据库模块！");
+                LOG_ERROR("The Mysql database module has not been initialized");
                 abort();
             }
             if (!_redis_client)
             {
-                LOG_ERROR("还未初始化Redis数据库模块！");
+                LOG_ERROR("The Redis database module has not been initialized");
                 abort();
             }
             if (!_mm_channels)
             {
-                LOG_ERROR("还未初始化信道管理模块！");
+                LOG_ERROR("The channel management module has not been initialized");
                 abort();
             }
             if (!_dms_client)
             {
-                LOG_ERROR("还未初始化短信平台模块！");
+                LOG_ERROR("The SMS platform module has not been initialized");
                 abort();
             }
+
             _rpc_server = std::make_shared<brpc::Server>();
 
             UserServiceImpl *user_service = new UserServiceImpl(_dms_client, _es_client,
-                                                                _mysql_client, _redis_client, _mm_channels, _file_service_name);
+                                                                _mysql_client, _redis_client, 
+                                                                _mm_channels, _file_service_name);
             int ret = _rpc_server->AddService(user_service,
                                               brpc::ServiceOwnership::SERVER_OWNS_SERVICE);
             if (ret == -1)
             {
-                LOG_ERROR("添加Rpc服务失败！");
+                LOG_ERROR("Failed to add RPC service");
                 abort();
             }
             brpc::ServerOptions options;
@@ -840,7 +854,7 @@ namespace bite_im
             ret = _rpc_server->Start(port, &options);
             if (ret == -1)
             {
-                LOG_ERROR("服务启动失败！");
+                LOG_ERROR("Service startup failed");
                 abort();
             }
         }

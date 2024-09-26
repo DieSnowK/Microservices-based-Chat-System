@@ -23,7 +23,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add user {}: {}", user->nickname(), e.what());
+                LOG_ERROR("Failed to add user {}: {}", user->Nickname(), e.what());
                 return false;
             }
 
@@ -40,7 +40,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to update user {}: {}", user->nickname(), e.what());
+                LOG_ERROR("Failed to update user {}: {}", user->Nickname(), e.what());
                 return false;
             }
 
@@ -65,7 +65,7 @@ namespace SnowK
             return ret;
         }
 
-        std::shared_ptr<User> Select_Ny_Phone(const std::string &phone)
+        std::shared_ptr<User> Select_By_Phone(const std::string &phone)
         {
             std::shared_ptr<User> ret;
 
@@ -114,7 +114,7 @@ namespace SnowK
             {
                 odb::transaction trans(_db->begin());
 
-                // TODO ÄÜ·ñ¸üÓÅÑÅ£¿
+                // TODO èƒ½å¦æ›´ä¼˜é›…ï¼Ÿ
                 std::stringstream ss;
                 ss << "user_id in (";
                 for (const auto &id : id_list)
@@ -126,7 +126,7 @@ namespace SnowK
                 condition += ")";
 
                 odb::result<User> r(_db->query<User>(condition));
-                for (auto iterator i(r.begin()); i != r.end(); ++i)
+                for (auto i(r.begin()); i != r.end(); ++i)
                 {
                     ret.push_back(*i);
                 }
