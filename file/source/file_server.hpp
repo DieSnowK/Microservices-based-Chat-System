@@ -31,20 +31,18 @@ namespace SnowK
         {
             brpc::ClosureGuard rpc_guard(done);
             response->set_request_id(request->request_id());
-            // 1. 取出请求中的文件ID（起始就是文件名）
+
             std::string fid = request->file_id();
             std::string filename = _storage_path + fid;
-            // 2. 将文件ID作为文件名，读取文件数据
             std::string body;
-            bool ret = readFile(filename, body);
-            if (ret == false)
+            if (ReadFile(filename, body) == false)
             {
                 response->set_success(false);
-                response->set_errmsg("读取文件数据失败！");
-                LOG_ERROR("{} 读取文件数据失败！", request->request_id());
+                response->set_errmsg("Failed to read file data");
+                LOG_ERROR("{} failed to read file data", request->request_id());
                 return;
             }
-            // 3. 组织响应
+
             response->set_success(true);
             response->mutable_file_data()->set_file_id(fid);
             response->mutable_file_data()->set_file_content(body);
@@ -57,25 +55,26 @@ namespace SnowK
         {
             brpc::ClosureGuard rpc_guard(done);
             response->set_request_id(request->request_id());
-            // 循环取出请求中的文件ID，读取文件数据进行填充
+
             for (int i = 0; i < request->file_id_list_size(); i++)
             {
                 std::string fid = request->file_id_list(i);
                 std::string filename = _storage_path + fid;
                 std::string body;
-                bool ret = readFile(filename, body);
-                if (ret == false)
+                if (ReadFile(filename, body) == false)
                 {
                     response->set_success(false);
-                    response->set_errmsg("读取文件数据失败！");
-                    LOG_ERROR("{} 读取文件数据失败！", request->request_id());
+                    response->set_errmsg("Failed to read file data");
+                    LOG_ERROR("{} failed to read file data", request->request_id());
                     return;
                 }
+
                 FileDownloadData data;
                 data.set_file_id(fid);
                 data.set_file_content(body);
                 response->mutable_file_data()->insert({fid, data});
             }
+            
             response->set_success(true);
         }
 
@@ -86,19 +85,17 @@ namespace SnowK
         {
             brpc::ClosureGuard rpc_guard(done);
             response->set_request_id(request->request_id());
-            // 1. 为文件生成一个唯一uudi作为文件名 以及 文件ID
-            std::string fid = uuid();
+
+            std::string fid = UUID();
             std::string filename = _storage_path + fid;
-            // 2. 取出请求中的文件数据，进行文件数据写入
-            bool ret = writeFile(filename, request->file_data().file_content());
-            if (ret == false)
+            if (WriteFile(filename, request->file_data().file_content()) == false)
             {
                 response->set_success(false);
-                response->set_errmsg("读取文件数据失败！");
-                LOG_ERROR("{} 写入文件数据失败！", request->request_id());
+                response->set_errmsg("Failed to write file data");
+                LOG_ERROR("{} failed to write file data", request->request_id());
                 return;
             }
-            // 3. 组织响应
+
             response->set_success(true);
             response->mutable_file_info()->set_file_id(fid);
             response->mutable_file_info()->set_file_size(request->file_data().file_size());
@@ -112,23 +109,25 @@ namespace SnowK
         {
             brpc::ClosureGuard rpc_guard(done);
             response->set_request_id(request->request_id());
+
             for (int i = 0; i < request->file_data_size(); i++)
             {
-                std::string fid = uuid();
+                std::string fid = UUID();
                 std::string filename = _storage_path + fid;
-                bool ret = writeFile(filename, request->file_data(i).file_content());
-                if (ret == false)
+                if (WriteFile(filename, request->file_data(i).file_content()) == false)
                 {
                     response->set_success(false);
-                    response->set_errmsg("读取文件数据失败！");
-                    LOG_ERROR("{} 写入文件数据失败！", request->request_id());
+                    response->set_errmsg("Failed to write file data");
+                    LOG_ERROR("{} failed to write file data", request->request_id());
                     return;
                 }
+
                 SnowK::FileMessageInfo *info = response->add_file_info();
                 info->set_file_id(fid);
                 info->set_file_size(request->file_data(i).file_size());
                 info->set_file_name(request->file_data(i).file_name());
             }
+            
             response->set_success(true);
         }
 
@@ -168,7 +167,7 @@ namespace SnowK
                              const std::string &access_host)
         {
             _reg_client = std::make_shared<Registry>(reg_host);
-            _reg_client->registry(service_name, access_host);
+            _reg_client->Registry_Service(service_name, access_host);
         }
 
         void Make_Rpc_Server(uint16_t port, int32_t timeout,

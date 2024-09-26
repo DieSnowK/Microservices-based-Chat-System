@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.1.3)
 project(speech_server)
 
-set(TARGET "speech_server")
-set(TEST_CLIENT "speech_client")
+set(TARGET "file_server")
+set(TEST_CLIENT "file_client")
 
 set(PROTO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../proto)
-set(PROTO_FILES speech.proto)
+set(PROTO_FILES file.proto base.proto)
 
 set(PROTO_CC "")
 set(PROTO_H "")
@@ -35,16 +35,14 @@ add_executable(${TARGET} ${SRC_FILES} ${PROTO_SRCS})
 target_link_libraries(${TARGET} 
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
 )
 
 set(TEST_FILES "")
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test TEST_FILES)
 add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
 target_link_libraries(${TEST_CLIENT} 
-    -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
+    -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
