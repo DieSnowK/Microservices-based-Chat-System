@@ -16,9 +16,8 @@ namespace SnowK
             opts.port = port;
             opts.db = db;
             opts.keep_alive = keep_alive;
-            auto ret = std::make_shared<sw::redis::Redis>(opts);
 
-            return ret;
+            return std::make_shared<sw::redis::Redis>(opts);
         }
     };
 }

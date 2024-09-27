@@ -23,10 +23,9 @@ namespace SnowK
             std::unique_ptr<odb::mysql::connection_pool_factory> cpf(
                 new odb::mysql::connection_pool_factory(conn_pool_count, 0));
 
-            auto ret = std::make_shared<odb::mysql::database>(user, pwd, db, host, port, 
-                                                              "", cset, 0, std::move(cpf));
-            
-            return ret;
+
+            return std::make_shared<odb::mysql::database>(user, pwd, db, host, port,
+                                                            "", cset, 0, std::move(cpf));
         }
     };
 }
