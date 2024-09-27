@@ -1,71 +1,67 @@
 #include <gflags/gflags.h>
 #include <thread>
-#include "data_redis.hpp"
 #include "redis.hpp"
+#include "data_redis.hpp"
 
-DEFINE_bool(run_mode, false, "³ÌĞòµÄÔËĞĞÄ£Ê½£¬false-µ÷ÊÔ£» true-·¢²¼£»");
-DEFINE_string(log_file, "", "·¢²¼Ä£Ê½ÏÂ£¬ÓÃÓÚÖ¸¶¨ÈÕÖ¾µÄÊä³öÎÄ¼ş");
-DEFINE_int32(log_level, 0, "·¢²¼Ä£Ê½ÏÂ£¬ÓÃÓÚÖ¸¶¨ÈÕÖ¾Êä³öµÈ¼¶");
+DEFINE_string(ip, "127.0.0.1", "Server ip, format: 127.0.0.1");
+DEFINE_int32(port, 6379, "Server port, format: 6379");
+DEFINE_int32(db, 0, "The number of the library, default number 0");
+DEFINE_bool(keep_alive, true, "Whether to keep the connection alive for a long time");
 
-DEFINE_string(ip, "127.0.0.1", "ÕâÊÇ·şÎñÆ÷µÄIPµØÖ·£¬¸ñÊ½£º127.0.0.1");
-DEFINE_int32(port, 6379, "ÕâÊÇ·şÎñÆ÷µÄ¶Ë¿Ú, ¸ñÊ½: 8080");
-DEFINE_int32(db, 0, "¿âµÄ±àºÅ£ºÄ¬ÈÏ0ºÅ");
-DEFINE_bool(keep_alive, true, "ÊÇ·ñ½øĞĞ³¤Á¬½Ó±£»î");
-
-void session_test(const std::shared_ptr<sw::redis::Redis> &client)
+void Session_Test(const std::shared_ptr<sw::redis::Redis> &client)
 {
-    bite_im::Session ss(client);
-    ss.append("»á»°ID1", "ÓÃ»§ID1");
-    ss.append("»á»°ID2", "ÓÃ»§ID2");
-    ss.append("»á»°ID3", "ÓÃ»§ID3");
-    ss.append("»á»°ID4", "ÓÃ»§ID4");
+    SnowK::Session ss(client);
+    ss.Append("ä¼šè¯ID1", "ç”¨æˆ·ID1");
+    ss.Append("ä¼šè¯ID2", "ç”¨æˆ·ID2");
+    ss.Append("ä¼šè¯ID3", "ç”¨æˆ·ID3");
+    ss.Append("ä¼šè¯ID4", "ç”¨æˆ·ID4");
 
-    ss.remove("»á»°ID2");
-    ss.remove("»á»°ID3");
+    ss.Remove("ä¼šè¯ID2");
+    ss.Remove("ä¼šè¯ID3");
 
-    auto res1 = ss.uid("»á»°ID1");
+    auto res1 = ss.Uid("ä¼šè¯ID1");
     if (res1)
         std::cout << *res1 << std::endl;
-    auto res2 = ss.uid("»á»°ID2");
+    auto res2 = ss.Uid("ä¼šè¯ID2");
     if (res2)
         std::cout << *res2 << std::endl;
-    auto res3 = ss.uid("»á»°ID3");
+    auto res3 = ss.Uid("ä¼šè¯ID3");
     if (res3)
         std::cout << *res3 << std::endl;
-    auto res4 = ss.uid("»á»°ID4");
+    auto res4 = ss.Uid("ä¼šè¯ID4");
     if (res4)
         std::cout << *res4 << std::endl;
 }
 
-void status_test(const std::shared_ptr<sw::redis::Redis> &client)
+void Status_Test(const std::shared_ptr<sw::redis::Redis> &client)
 {
-    bite_im::Status status(client);
-    status.append("ÓÃ»§ID1");
-    status.append("ÓÃ»§ID2");
-    status.append("ÓÃ»§ID3");
+    SnowK::Status status(client);
+    status.Append("ç”¨æˆ·ID1");
+    status.Append("ç”¨æˆ·ID2");
+    status.Append("ç”¨æˆ·ID3");
 
-    status.remove("ÓÃ»§ID2");
+    status.Remove("ç”¨æˆ·ID2");
 
-    if (status.exists("ÓÃ»§ID1"))
-        std::cout << "ÓÃ»§1ÔÚÏß£¡" << std::endl;
-    if (status.exists("ÓÃ»§ID2"))
-        std::cout << "ÓÃ»§2ÔÚÏß£¡" << std::endl;
-    if (status.exists("ÓÃ»§ID3"))
-        std::cout << "ÓÃ»§3ÔÚÏß£¡" << std::endl;
+    if (status.Exists("ç”¨æˆ·ID1"))
+        std::cout << "ç”¨æˆ·1åœ¨çº¿" << std::endl;
+    if (status.Exists("ç”¨æˆ·ID2"))
+        std::cout << "ç”¨æˆ·2åœ¨çº¿" << std::endl;
+    if (status.Exists("ç”¨æˆ·ID3"))
+        std::cout << "ç”¨æˆ·3åœ¨çº¿" << std::endl;
 }
 
-void code_test(const std::shared_ptr<sw::redis::Redis> &client)
+void Code_Test(const std::shared_ptr<sw::redis::Redis> &client)
 {
-    bite_im::Codes codes(client);
-    codes.append("ÑéÖ¤ÂëID1", "ÑéÖ¤Âë1");
-    codes.append("ÑéÖ¤ÂëID2", "ÑéÖ¤Âë2");
-    codes.append("ÑéÖ¤ÂëID3", "ÑéÖ¤Âë3");
+    SnowK::Codes Codes(client);
+    Codes.Append("éªŒè¯ç ID1", "éªŒè¯ç 1", std::chrono::milliseconds(3000));
+    Codes.Append("éªŒè¯ç ID2", "éªŒè¯ç 2", std::chrono::milliseconds(3000));
+    Codes.Append("éªŒè¯ç ID3", "éªŒè¯ç 3", std::chrono::milliseconds(3000));
 
-    codes.remove("ÑéÖ¤ÂëID2");
+    Codes.Remove("éªŒè¯ç ID2");
 
-    auto y1 = codes.code("ÑéÖ¤ÂëID1");
-    auto y2 = codes.code("ÑéÖ¤ÂëID2");
-    auto y3 = codes.code("ÑéÖ¤ÂëID3");
+    auto y1 = Codes.Code("éªŒè¯ç ID1");
+    auto y2 = Codes.Code("éªŒè¯ç ID2");
+    auto y3 = Codes.Code("éªŒè¯ç ID3");
     if (y1)
         std::cout << *y1 << std::endl;
     if (y2)
@@ -74,26 +70,26 @@ void code_test(const std::shared_ptr<sw::redis::Redis> &client)
         std::cout << *y3 << std::endl;
 
     std::this_thread::sleep_for(std::chrono::seconds(4));
-    auto y4 = codes.code("ÑéÖ¤ÂëID1");
-    auto y5 = codes.code("ÑéÖ¤ÂëID2");
-    auto y6 = codes.code("ÑéÖ¤ÂëID3");
+    auto y4 = Codes.Code("éªŒè¯ç ID1");
+    auto y5 = Codes.Code("éªŒè¯ç ID2");
+    auto y6 = Codes.Code("éªŒè¯ç ID3");
     if (!y4)
-        std::cout << "ÑéÖ¤ÂëID1²»´æÔÚ" << std::endl;
+        std::cout << "éªŒè¯ç ID1ä¸å­˜åœ¨" << std::endl;
     if (!y5)
-        std::cout << "ÑéÖ¤ÂëID2²»´æÔÚ" << std::endl;
+        std::cout << "éªŒè¯ç ID2ä¸å­˜åœ¨" << std::endl;
     if (!y6)
-        std::cout << "ÑéÖ¤ÂëID3²»´æÔÚ" << std::endl;
+        std::cout << "éªŒè¯ç ID3ä¸å­˜åœ¨" << std::endl;
 }
 
 int main(int argc, char *argv[])
 {
     google::ParseCommandLineFlags(&argc, &argv, true);
-    // bite_im::init_logger(FLAGS_run_mode, FLAGS_log_file, FLAGS_log_level);
 
     auto client = SnowK::RedisClientFactory::Create(FLAGS_ip, FLAGS_port, FLAGS_db, FLAGS_keep_alive);
 
-    // session_test(client);
-    // status_test(client);
-    code_test(client);
+    // Session_Test(client);
+    // Status_Test(client);
+    Code_Test(client);
+
     return 0;
 }
