@@ -32,19 +32,19 @@ namespace SnowK
         return ss.str();
     }
 
-    // std::string VCode()
-    // {
-    //     std::random_device rd;                                 // 实例化设备随机数对象-用于生成设备随机数
-    //     std::mt19937 generator(rd());                          // 以设备随机数为种子，实例化伪随机数对象
-    //     std::uniform_int_distribution<int> distribution(0, 9); // 限定数据范围
+    std::string VerifyCode()
+    {
+        std::random_device rd;                                 // 实例化设备随机数对象-用于生成设备随机数
+        std::mt19937 generator(rd());                          // 以设备随机数为种子，实例化伪随机数对象
+        std::uniform_int_distribution<int> distribution(0, 9); // 限定数据范围
 
-    //     std::stringstream ss;
-    //     for (int i = 0; i < 4; i++)
-    //     {
-    //         ss << distribution(generator);
-    //     }
-    //     return ss.str();
-    // }
+        std::stringstream ss;
+        for (int i = 0; i < 4; i++)
+        {
+            ss << distribution(generator);
+        }
+        return ss.str();
+    }
 
     // TODO 研究流输入输出
     bool ReadFile(const std::string &filename, std::string &body)

@@ -80,6 +80,7 @@ namespace SnowK
 
             std::unique_lock<std::mutex> lock(_mutex);
             int32_t index = _index++ % _channels.size();
+            
             return _channels[index];
         }
 
