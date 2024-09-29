@@ -9,7 +9,7 @@ DEFINE_bool(mode, false, "true: Release, false: Debug");
 DEFINE_string(log_file, "", "In Release, specify the output file of the log");
 DEFINE_int32(log_level, 0, "In Release, specify the log output level");
 
-DEFINE_string(registry_host, "http://127.0.0.1:2379", "Service registry address");
+DEFINE_string(etcd_host, "http://127.0.0.1:2379", "Service registry address");
 DEFINE_string(base_service, "/service", "The root directory of service monitoring");
 DEFINE_string(speech_service, "/service/speech_service", "Name of the current instance");
 
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     auto put_cb = std::bind(&SnowK::ServiceManager::ServiceOnline, sm.get(), std::placeholders::_1, std::placeholders::_2);
     auto del_cb = std::bind(&SnowK::ServiceManager::ServiceOffline, sm.get(), std::placeholders::_1, std::placeholders::_2);
-    SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_registry_host, FLAGS_base_service, put_cb, del_cb);
+    SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
 
     auto channel = sm->Choose(FLAGS_speech_service);
     SnowK::SpeechService_Stub stub(channel.get());
