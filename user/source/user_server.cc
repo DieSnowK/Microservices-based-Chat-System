@@ -39,14 +39,14 @@ int main(int argc, char *argv[])
     SnowK::InitLogger(FLAGS_mode, FLAGS_log_file, FLAGS_log_level);
 
     SnowK::UserServerBuilder usb;
-    usb.make_dms_object(FLAGS_dms_key_id, FLAGS_dms_key_secret);
-    usb.make_es_object({FLAGS_es_host});
-    usb.make_mysql_object(FLAGS_mysql_user, FLAGS_mysql_pwd, FLAGS_mysql_host,
+    usb.Make_Dms_Object(FLAGS_dms_key_id, FLAGS_dms_key_secret);
+    usb.Make_Es_Object({FLAGS_es_host});
+    usb.Make_MySQL_Object(FLAGS_mysql_user, FLAGS_mysql_pwd, FLAGS_mysql_host,
                           FLAGS_mysql_db, FLAGS_mysql_cset, FLAGS_mysql_port, FLAGS_mysql_pool_count);
-    usb.make_redis_object(FLAGS_redis_host, FLAGS_redis_port, FLAGS_redis_db, FLAGS_redis_keep_alive);
-    usb.make_discovery_object(FLAGS_registry_host, FLAGS_base_service, FLAGS_file_service);
-    usb.make_rpc_server(FLAGS_listen_port, FLAGS_rpc_timeout, FLAGS_rpc_threads);
-    usb.make_registry_object(FLAGS_registry_host, FLAGS_base_service + FLAGS_instance_name, FLAGS_access_host);
+    usb.Make_Redis_Object(FLAGS_redis_host, FLAGS_redis_port, FLAGS_redis_db, FLAGS_redis_keep_alive);
+    usb.Make_Discovery_Object(FLAGS_registry_host, FLAGS_base_service, FLAGS_file_service);
+    usb.Make_Rpc_Server(FLAGS_listen_port, FLAGS_rpc_timeout, FLAGS_rpc_threads);
+    usb.Make_Registry_Object(FLAGS_registry_host, FLAGS_base_service + FLAGS_instance_name, FLAGS_access_host);
 
     auto server = usb.Build();
     server->Start();

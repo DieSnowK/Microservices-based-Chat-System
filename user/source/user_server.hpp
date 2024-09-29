@@ -3,6 +3,9 @@
 #include <brpc/server.h>
 #include <butil/logging.h>
 
+#include "es.hpp"
+#include "mysql.hpp"
+#include "redis.hpp"
 #include "data_es.hpp"
 #include "data_redis.hpp"
 #include "mysql_user.hpp"
@@ -364,7 +367,7 @@ namespace SnowK
             {
                 LOG_ERROR("{} - The number of user information looked up from the database is inconsistent {} - {}",
                           request->request_id(), request->users_id_size(), users.size());
-                return Err_Response(request->request_id(), "The number of user information \\
+                return Err_Response(request->request_id(), "The number of user information \
                                     looked up from the database is inconsistent");
             }
 
