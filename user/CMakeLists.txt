@@ -64,15 +64,15 @@ target_link_libraries(${TARGET}
     /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
 )
 
-# set(TEST_CLIENT "user_client")
-# set(TEST_FILES "")
-# aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test TEST_FILES)
-# add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
-# target_link_libraries(${TEST_CLIENT} 
-#     -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
-#     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl 
-#     /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
-# )
+set(TEST_CLIENT "user_client")
+set(TEST_FILES "")
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test/test TEST_FILES)
+add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
+target_link_libraries(${TEST_CLIENT} 
+    -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
+    -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl 
+    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)

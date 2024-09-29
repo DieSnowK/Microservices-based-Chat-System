@@ -11,24 +11,20 @@ DEFINE_bool(mode, false, "true: Release, false: Debug");
 DEFINE_string(log_file, "", "In Release, specify the output file of the log");
 DEFINE_int32(log_level, 0, "In Release, specify the log output level");
 
-DEFINE_string(etcd_host, "http://127.0.0.1:2379", "·şÎñ×¢²áÖĞĞÄµØÖ·");
-DEFINE_string(base_service, "/service", "·şÎñ¼à¿Ø¸ùÄ¿Â¼");
-DEFINE_string(user_service, "/service/user_service", "·şÎñ¼à¿Ø¸ùÄ¿Â¼");
-
 DEFINE_string(etcd_host, "http://127.0.0.1:2379", "Service registry address");
 DEFINE_string(base_service, "/service", "The root directory of service monitoring");
 DEFINE_string(user_service, "/service/user_service", "Name of the current instance");
 
-SnowK::ChannelPtr channel;
+SnowK::ServiceChannel::ChannelPtr channel;
 
 SnowK::UserInfo user_info;
 
 std::string login_ssid;
-std::string new_nickname = "Ç×°®µÄÖíÂèÂè";
+std::string new_nickname = "äº²çˆ±çš„çŒªå¦ˆå¦ˆ";
 
 TEST(User_subservice_test, UserRegister)
 {
-    user_info.set_nickname("ÖíÂèÂè");
+    user_info.set_nickname("çŒªå¦ˆå¦ˆ");
 
     SnowK::UserRegisterReq req;
     req.set_request_id(SnowK::UUID());
@@ -48,7 +44,7 @@ TEST(User_subservice_test, UserLogin)
 {
     SnowK::UserLoginReq req;
     req.set_request_id(SnowK::UUID());
-    req.set_nickname("Ç×°®µÄÖíÂèÂè");
+    req.set_nickname("äº²çˆ±çš„çŒªå¦ˆå¦ˆ");
     req.set_password("123456");
 
     SnowK::UserLoginRsp rsp;
@@ -153,13 +149,13 @@ void set_user_avatar(const std::string &uid, const std::string &avatar)
 
 TEST(User_subservice_test, GetMultiUserInfo)
 {
-    set_user_avatar("ÓÃ»§ID1", "Ğ¡ÖíÅåÆæµÄÍ·ÏñÊı¾İ");
-    set_user_avatar("ÓÃ»§ID2", "Ğ¡ÖíÇÇÖÎµÄÍ·ÏñÊı¾İ");
+    set_user_avatar("ç”¨æˆ·ID1", "å°çŒªä½©å¥‡çš„å¤´åƒæ•°æ®");
+    set_user_avatar("ç”¨æˆ·ID2", "å°çŒªä¹”æ²»çš„å¤´åƒæ•°æ®");
 
     SnowK::GetMultiUserInfoReq req;
     req.set_request_id(SnowK::UUID());
-    req.add_users_id("ÓÃ»§ID1");
-    req.add_users_id("ÓÃ»§ID2");
+    req.add_users_id("ç”¨æˆ·ID1");
+    req.add_users_id("ç”¨æˆ·ID2");
     req.add_users_id("ee55-9043bfd7-0001");
 
     SnowK::GetMultiUserInfoRsp rsp;
@@ -173,24 +169,24 @@ TEST(User_subservice_test, GetMultiUserInfo)
     auto users_map = rsp.mutable_users_info();
     SnowK::UserInfo fuser = (*users_map)["ee55-9043bfd7-0001"];
     ASSERT_EQ(fuser.user_id(), "ee55-9043bfd7-0001");
-    ASSERT_EQ(fuser.nickname(), "Öí°Ö°Ö");
+    ASSERT_EQ(fuser.nickname(), "çŒªçˆ¸çˆ¸");
     ASSERT_EQ(fuser.description(), "");
     ASSERT_EQ(fuser.phone(), "");
     ASSERT_EQ(fuser.avatar(), "");
 
-    SnowK::UserInfo puser = (*users_map)["ÓÃ»§ID1"];
-    ASSERT_EQ(puser.user_id(), "ÓÃ»§ID1");
-    ASSERT_EQ(puser.nickname(), "Ğ¡ÖíÅåÆæ");
-    ASSERT_EQ(puser.description(), "ÕâÊÇÒ»Ö»Ğ¡Öí");
-    ASSERT_EQ(puser.phone(), "ÊÖ»úºÅ1");
-    ASSERT_EQ(puser.avatar(), "Ğ¡ÖíÅåÆæµÄÍ·ÏñÊı¾İ");
+    SnowK::UserInfo puser = (*users_map)["ç”¨æˆ·ID1"];
+    ASSERT_EQ(puser.user_id(), "ç”¨æˆ·ID1");
+    ASSERT_EQ(puser.nickname(), "å°çŒªä½©å¥‡");
+    ASSERT_EQ(puser.description(), "è¿™æ˜¯ä¸€åªå°çŒª");
+    ASSERT_EQ(puser.phone(), "æ‰‹æœºå·1");
+    ASSERT_EQ(puser.avatar(), "å°çŒªä½©å¥‡çš„å¤´åƒæ•°æ®");
 
-    SnowK::UserInfo quser = (*users_map)["ÓÃ»§ID2"];
-    ASSERT_EQ(quser.user_id(), "ÓÃ»§ID2");
-    ASSERT_EQ(quser.nickname(), "Ğ¡ÖíÇÇÖÎ");
-    ASSERT_EQ(quser.description(), "ÕâÊÇÒ»Ö»Ğ¡Ğ¡Öí");
-    ASSERT_EQ(quser.phone(), "ÊÖ»úºÅ2");
-    ASSERT_EQ(quser.avatar(), "Ğ¡ÖíÇÇÖÎµÄÍ·ÏñÊı¾İ");
+    SnowK::UserInfo quser = (*users_map)["ç”¨æˆ·ID2"];
+    ASSERT_EQ(quser.user_id(), "ç”¨æˆ·ID2");
+    ASSERT_EQ(quser.nickname(), "å°çŒªä¹”æ²»");
+    ASSERT_EQ(quser.description(), "è¿™æ˜¯ä¸€åªå°å°çŒª");
+    ASSERT_EQ(quser.phone(), "æ‰‹æœºå·2");
+    ASSERT_EQ(quser.avatar(), "å°çŒªä¹”æ²»çš„å¤´åƒæ•°æ®");
 }
 
 std::string code_id;
@@ -199,12 +195,15 @@ void Get_Code()
     SnowK::PhoneVerifyCodeReq req;
     req.set_request_id(SnowK::UUID());
     req.set_phone_number(user_info.phone());
+
     SnowK::PhoneVerifyCodeRsp rsp;
     brpc::Controller cntl;
     SnowK::UserService_Stub stub(channel.get());
     stub.GetPhoneVerifyCode(&cntl, &req, &rsp, nullptr);
+
     ASSERT_FALSE(cntl.Failed());
     ASSERT_TRUE(rsp.success());
+
     code_id = rsp.verify_code_id();
 }
 
@@ -216,7 +215,7 @@ TEST(User_subservice_test, PhoneRegister)
     req.set_request_id(SnowK::UUID());
     req.set_phone_number(user_info.phone());
     req.set_verify_code_id(code_id);
-    std::cout << "ÊÖ»úºÅ×¢²á£¬ÊäÈëÑéÖ¤Âë£º" << std::endl;
+    std::cout << "æ‰‹æœºå·æ³¨å†Œï¼Œè¾“å…¥éªŒè¯ç ï¼š" << std::endl;
     std::string code;
     std::cin >> code;
     req.set_verify_code(code);
@@ -239,7 +238,7 @@ TEST(User_subservice_test, PhoneLogin)
     req.set_request_id(SnowK::UUID());
     req.set_phone_number(user_info.phone());
     req.set_verify_code_id(code_id);
-    std::cout << "ÊÖ»úºÅµÇÂ¼£¬ÊäÈëÑéÖ¤Âë£º" << std::endl;
+    std::cout << "æ‰‹æœºå·ç™»å½•ï¼Œè¾“å…¥éªŒè¯ç ï¼š" << std::endl;
     std::string code;
     std::cin >> code;
     req.set_verify_code(code);
@@ -251,8 +250,8 @@ TEST(User_subservice_test, PhoneLogin)
 
     ASSERT_FALSE(cntl.Failed());
     ASSERT_TRUE(rsp.success());
-    
-    std::cout << "ÊÖ»úµÇÂ¼»á»°ID: " << rsp.login_session_id() << std::endl;
+
+    std::cout << "æ‰‹æœºç™»å½•ä¼šè¯ID: " << rsp.login_session_id() << std::endl;
 }
 
 TEST(User_subservice_test, SetUserPhoneNumber)
@@ -262,13 +261,13 @@ TEST(User_subservice_test, SetUserPhoneNumber)
 
     SnowK::SetUserPhoneNumberReq req;
     req.set_request_id(SnowK::UUID());
-    std::cout << "ÊÖ»úºÅÉèÖÃÊ±, ÊäÈëÓÃ»§ID: " << std::endl;
+    std::cout << "æ‰‹æœºå·è®¾ç½®æ—¶, è¾“å…¥ç”¨æˆ·ID: " << std::endl;
     std::string user_id;
     std::cin >> user_id;
     req.set_user_id(user_id);
     req.set_phone_number("18888888888");
     req.set_phone_verify_code_id(code_id);
-    std::cout << "ÊÖ»úºÅÉèÖÃÊ±£¬ÊäÈëÑéÖ¤Âë£º" << std::endl;
+    std::cout << "æ‰‹æœºå·è®¾ç½®æ—¶ï¼Œè¾“å…¥éªŒè¯ç ï¼š" << std::endl;
     std::string code;
     std::cin >> code;
     req.set_phone_verify_code(code);
@@ -295,11 +294,11 @@ int main(int argc, char *argv[])
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
     channel = user_channels->Choose(FLAGS_user_service);
 
-    user_info.set_nickname("ÖíÂèÂè");
+    user_info.set_nickname("çŒªå¦ˆå¦ˆ");
     user_info.set_user_id("1d56-513d8e49-0002");
-    user_info.set_description("ÕâÊÇÒ»¸öÃÀÀöµÄÖíÂèÂè");
+    user_info.set_description("è¿™æ˜¯ä¸€ä¸ªç¾ä¸½çš„çŒªå¦ˆå¦ˆ");
     user_info.set_phone("15929917272");
-    user_info.set_avatar("ÖíÂèÂèÍ·ÏñÊı¾İ");
+    user_info.set_avatar("çŒªå¦ˆå¦ˆå¤´åƒæ•°æ®");
     
     return RUN_ALL_TESTS();
 }
