@@ -44,7 +44,7 @@ namespace SnowK
 
     private:
         ASRClient::ptr _asr_client;
-    };
+    }; // end of SpeechServiceImpl
 
     // TODO 考虑是否维护这么多成员变量
     class SpeechServer
@@ -71,7 +71,7 @@ namespace SnowK
         ASRClient::ptr _asr_client;
         Registry::ptr _reg_client;
         std::shared_ptr<brpc::Server> _rpc_server;
-    };
+    }; // end of SpeechServer
 
     // Builder Pattern
     // SpeechServer构造依赖一定次序
@@ -148,5 +148,5 @@ namespace SnowK
         ASRClient::ptr _asr_client;
         Registry::ptr _reg_client;
         std::shared_ptr<brpc::Server> _rpc_server;
-    };
+    }; // end of SpeechServerBuilder
 }

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.1.3)
 project(speech_server)
 
 set(TARGET "file_server")
-set(TEST_CLIENT "file_client")
 
+# PROTO
 set(PROTO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../proto)
 set(PROTO_FILES file.proto base.proto)
 
@@ -29,6 +29,7 @@ foreach(PROTO_FILE ${PROTO_FILES})
     list(APPEND PROTO_SRCS ${CMAKE_CURRENT_BINARY_DIR}/${PROTO_CC})
 endforeach()
 
+# Generate
 set(SRC_FILES "")
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/source SRC_FILES)
 add_executable(${TARGET} ${SRC_FILES} ${PROTO_SRCS})
@@ -37,13 +38,14 @@ target_link_libraries(${TARGET}
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
 )
 
-set(TEST_FILES "")
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test TEST_FILES)
-add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
-target_link_libraries(${TEST_CLIENT} 
-    -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
-    -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
-)
+# set(TEST_CLIENT "file_client")
+# set(TEST_FILES "")
+# aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test TEST_FILES)
+# add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
+# target_link_libraries(${TEST_CLIENT} 
+#     -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
+#     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
+# )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)

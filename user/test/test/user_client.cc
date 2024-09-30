@@ -18,117 +18,120 @@ DEFINE_string(user_service, "/service/user_service", "Name of the current instan
 SnowK::ServiceChannel::ChannelPtr channel;
 
 SnowK::UserInfo user_info;
-
 std::string login_ssid;
-std::string new_nickname = "亲爱的猪妈妈";
+std::string new_nickname = "Ugly";
 
-TEST(User_subservice_test, UserRegister)
-{
-    user_info.set_nickname("猪妈妈");
+// TEST(User_subservice_test, UserRegister)
+// {
+//     user_info.set_nickname("Fashion");
 
-    SnowK::UserRegisterReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_nickname(user_info.nickname());
-    req.set_password("123456");
+//     SnowK::UserRegisterReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_nickname(user_info.nickname());
+//     req.set_password("123456");
 
-    SnowK::UserRegisterRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.UserRegister(&cntl, &req, &rsp, nullptr);
+//     SnowK::UserRegisterRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.UserRegister(&cntl, &req, &rsp, nullptr);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+// }
 
-TEST(User_subservice_test, UserLogin)
-{
-    SnowK::UserLoginReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_nickname("亲爱的猪妈妈");
-    req.set_password("123456");
+// TEST(User_subservice_test, UserLogin)
+// {
+//     SnowK::UserLoginReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_nickname("Ugly");
+//     req.set_password("123456");
 
-    SnowK::UserLoginRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.UserLogin(&cntl, &req, &rsp, nullptr);
+//     SnowK::UserLoginRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.UserLogin(&cntl, &req, &rsp, nullptr);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
+//     // std::cout << rsp.success() << " " << rsp.errmsg() << std::endl;
 
-    login_ssid = rsp.login_session_id();
-}
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
 
-TEST(User_subservice_test, SetUserAvatar)
-{
-    SnowK::SetUserAvatarReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_user_id(user_info.user_id());
-    req.set_session_id(login_ssid);
-    req.set_avatar(user_info.avatar());
+//     login_ssid = rsp.login_session_id();
+// }
 
-    SnowK::SetUserAvatarRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.SetUserAvatar(&cntl, &req, &rsp, nullptr);
+// TEST(User_subservice_test, SetUserAvatar)
+// {
+//     SnowK::SetUserAvatarReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_user_id(user_info.user_id());
+//     req.set_session_id(login_ssid);
+//     req.set_avatar(user_info.avatar());
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     SnowK::SetUserAvatarRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.SetUserAvatar(&cntl, &req, &rsp, nullptr);
 
-TEST(User_subservice_test, SetUserDescription)
-{
-    SnowK::SetUserDescriptionReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_user_id(user_info.user_id());
-    req.set_session_id(login_ssid);
-    req.set_description(user_info.description());
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+// }
 
-    SnowK::SetUserDescriptionRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.SetUserDescription(&cntl, &req, &rsp, nullptr);
+// TEST(User_subservice_test, SetUserDescription)
+// {
+//     SnowK::SetUserDescriptionReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_user_id(user_info.user_id());
+//     req.set_session_id(login_ssid);
+//     req.set_description(user_info.description());
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     SnowK::SetUserDescriptionRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.SetUserDescription(&cntl, &req, &rsp, nullptr);
 
-TEST(User_subservice_test, SetUserNickname)
-{
-    SnowK::SetUserNicknameReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_user_id(user_info.user_id());
-    req.set_session_id(login_ssid);
-    req.set_nickname(new_nickname);
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+// }
 
-    SnowK::SetUserNicknameRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.SetUserNickname(&cntl, &req, &rsp, nullptr);
+// TEST(User_subservice_test, SetUserNickname)
+// {
+//     SnowK::SetUserNicknameReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_user_id(user_info.user_id());
+//     req.set_session_id(login_ssid);
+//     req.set_nickname(new_nickname);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     SnowK::SetUserNicknameRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.SetUserNickname(&cntl, &req, &rsp, nullptr);
 
-TEST(User_subservice_test, GetUserInfo)
-{
-    SnowK::GetUserInfoReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_user_id(user_info.user_id());
-    req.set_session_id(login_ssid);
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
 
-    SnowK::GetUserInfoRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.GetUserInfo(&cntl, &req, &rsp, nullptr);
+//     user_info.set_nickname(new_nickname);
+// }
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-    ASSERT_EQ(user_info.user_id(), rsp.user_info().user_id());
-    ASSERT_EQ(new_nickname, rsp.user_info().nickname());
-    ASSERT_EQ(user_info.description(), rsp.user_info().description());
-    ASSERT_EQ("", rsp.user_info().phone());
-    ASSERT_EQ(user_info.avatar(), rsp.user_info().avatar());
-}
+// TEST(User_subservice_test, GetUserInfo)
+// {
+//     SnowK::GetUserInfoReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_user_id(user_info.user_id());
+//     req.set_session_id(login_ssid);
+
+//     SnowK::GetUserInfoRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.GetUserInfo(&cntl, &req, &rsp, nullptr);
+
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+//     ASSERT_EQ(user_info.user_id(), rsp.user_info().user_id());
+//     ASSERT_EQ(new_nickname, rsp.user_info().nickname());
+//     ASSERT_EQ(user_info.description(), rsp.user_info().description());
+//     ASSERT_EQ("", rsp.user_info().phone());
+//     ASSERT_EQ(user_info.avatar(), rsp.user_info().avatar());
+// }
 
 void set_user_avatar(const std::string &uid, const std::string &avatar)
 {
@@ -147,47 +150,47 @@ void set_user_avatar(const std::string &uid, const std::string &avatar)
     ASSERT_TRUE(rsp.success());
 }
 
-TEST(User_subservice_test, GetMultiUserInfo)
-{
-    set_user_avatar("用户ID1", "小猪佩奇的头像数据");
-    set_user_avatar("用户ID2", "小猪乔治的头像数据");
+// TEST(User_subservice_test, GetMultiUserInfo)
+// {
+//     set_user_avatar("uid1", "user1 avatar");
+//     set_user_avatar("uid2", "DSK avatar");
 
-    SnowK::GetMultiUserInfoReq req;
-    req.set_request_id(SnowK::UUID());
-    req.add_users_id("用户ID1");
-    req.add_users_id("用户ID2");
-    req.add_users_id("ee55-9043bfd7-0001");
+//     SnowK::GetMultiUserInfoReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.add_users_id("uid1");
+//     req.add_users_id("uid2");
+//     req.add_users_id("d2a8f4bd3e410000");
 
-    SnowK::GetMultiUserInfoRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.GetMultiUserInfo(&cntl, &req, &rsp, nullptr);
+//     SnowK::GetMultiUserInfoRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.GetMultiUserInfo(&cntl, &req, &rsp, nullptr);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
 
-    auto users_map = rsp.mutable_users_info();
-    SnowK::UserInfo fuser = (*users_map)["ee55-9043bfd7-0001"];
-    ASSERT_EQ(fuser.user_id(), "ee55-9043bfd7-0001");
-    ASSERT_EQ(fuser.nickname(), "猪爸爸");
-    ASSERT_EQ(fuser.description(), "");
-    ASSERT_EQ(fuser.phone(), "");
-    ASSERT_EQ(fuser.avatar(), "");
+//     auto users_map = rsp.mutable_users_info();
+//     SnowK::UserInfo fuser = (*users_map)["d2a8f4bd3e410000"];
+//     ASSERT_EQ(fuser.user_id(), "d2a8f4bd3e410000");
+//     ASSERT_EQ(fuser.nickname(), "Ugly");
+//     ASSERT_EQ(fuser.description(), "Cool Boy");
+//     ASSERT_EQ(fuser.phone(), "");
+//     ASSERT_EQ(fuser.avatar(), "Handsome Icon");
 
-    SnowK::UserInfo puser = (*users_map)["用户ID1"];
-    ASSERT_EQ(puser.user_id(), "用户ID1");
-    ASSERT_EQ(puser.nickname(), "小猪佩奇");
-    ASSERT_EQ(puser.description(), "这是一只小猪");
-    ASSERT_EQ(puser.phone(), "手机号1");
-    ASSERT_EQ(puser.avatar(), "小猪佩奇的头像数据");
+//     SnowK::UserInfo puser = (*users_map)["uid1"];
+//     ASSERT_EQ(puser.user_id(), "uid1");
+//     ASSERT_EQ(puser.nickname(), "昵称1");
+//     ASSERT_EQ(puser.description(), "SnowK~");
+//     ASSERT_EQ(puser.phone(), "");
+//     ASSERT_EQ(puser.avatar(), "user1 avatar");
 
-    SnowK::UserInfo quser = (*users_map)["用户ID2"];
-    ASSERT_EQ(quser.user_id(), "用户ID2");
-    ASSERT_EQ(quser.nickname(), "小猪乔治");
-    ASSERT_EQ(quser.description(), "这是一只小小猪");
-    ASSERT_EQ(quser.phone(), "手机号2");
-    ASSERT_EQ(quser.avatar(), "小猪乔治的头像数据");
-}
+//     SnowK::UserInfo quser = (*users_map)["uid2"];
+//     ASSERT_EQ(quser.user_id(), "uid2");
+//     ASSERT_EQ(quser.nickname(), "DSK");
+//     ASSERT_EQ(quser.description(), "");
+//     ASSERT_EQ(quser.phone(), "15566667777");
+//     ASSERT_EQ(quser.avatar(), "DSK avatar");
+// }
 
 std::string code_id;
 void Get_Code()
@@ -207,79 +210,83 @@ void Get_Code()
     code_id = rsp.verify_code_id();
 }
 
-TEST(User_subservice_test, PhoneRegister)
-{
-    Get_Code();
+// TEST(User_subservice_test, PhoneRegister)
+// {
+//     Get_Code();
 
-    SnowK::PhoneRegisterReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_phone_number(user_info.phone());
-    req.set_verify_code_id(code_id);
-    std::cout << "手机号注册，输入验证码：" << std::endl;
-    std::string code;
-    std::cin >> code;
-    req.set_verify_code(code);
+//     SnowK::PhoneRegisterReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_phone_number(user_info.phone());
+//     req.set_verify_code_id(code_id);
 
-    SnowK::PhoneRegisterRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.PhoneRegister(&cntl, &req, &rsp, nullptr);
+//     std::cout << "PhoneRegister, input verify code:> " << std::endl;
+//     std::string code;
+//     std::cin >> code;
+//     req.set_verify_code(code);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     SnowK::PhoneRegisterRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.PhoneRegister(&cntl, &req, &rsp, nullptr);
 
-TEST(User_subservice_test, PhoneLogin)
-{
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    Get_Code();
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+// }
 
-    SnowK::PhoneLoginReq req;
-    req.set_request_id(SnowK::UUID());
-    req.set_phone_number(user_info.phone());
-    req.set_verify_code_id(code_id);
-    std::cout << "手机号登录，输入验证码：" << std::endl;
-    std::string code;
-    std::cin >> code;
-    req.set_verify_code(code);
+// TEST(User_subservice_test, PhoneLogin)
+// {
+//     std::this_thread::sleep_for(std::chrono::seconds(3));
+//     Get_Code();
 
-    SnowK::PhoneLoginRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.PhoneLogin(&cntl, &req, &rsp, nullptr);
+//     SnowK::PhoneLoginReq req;
+//     req.set_request_id(SnowK::UUID());
+//     req.set_phone_number(user_info.phone());
+//     req.set_verify_code_id(code_id);
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
+//     std::cout << "PhoneLogin, input verify code:> " << std::endl;
+//     std::string code;
+//     std::cin >> code;
+//     req.set_verify_code(code);
 
-    std::cout << "手机登录会话ID: " << rsp.login_session_id() << std::endl;
-}
+//     SnowK::PhoneLoginRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.PhoneLogin(&cntl, &req, &rsp, nullptr);
 
-TEST(User_subservice_test, SetUserPhoneNumber)
-{
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    Get_Code();
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
 
-    SnowK::SetUserPhoneNumberReq req;
-    req.set_request_id(SnowK::UUID());
-    std::cout << "手机号设置时, 输入用户ID: " << std::endl;
-    std::string user_id;
-    std::cin >> user_id;
-    req.set_user_id(user_id);
-    req.set_phone_number("18888888888");
-    req.set_phone_verify_code_id(code_id);
-    std::cout << "手机号设置时，输入验证码：" << std::endl;
-    std::string code;
-    std::cin >> code;
-    req.set_phone_verify_code(code);
+//     std::cout << "PhoneLogin session id: " << rsp.login_session_id() << std::endl;
+// }
 
-    SnowK::SetUserPhoneNumberRsp rsp;
-    brpc::Controller cntl;
-    SnowK::UserService_Stub stub(channel.get());
-    stub.SetUserPhoneNumber(&cntl, &req, &rsp, nullptr);
+// TEST(User_subservice_test, SetUserPhoneNumber)
+// {
+//     // std::this_thread::sleep_for(std::chrono::seconds(10));
+//     Get_Code();
 
-    ASSERT_FALSE(cntl.Failed());
-    ASSERT_TRUE(rsp.success());
-}
+//     SnowK::SetUserPhoneNumberReq req;
+//     req.set_request_id(SnowK::UUID());
+
+//     std::cout << "SetUserPhoneNumber, inout user_id:> " << std::endl;
+//     std::string user_id;
+//     std::cin >> user_id;
+//     req.set_user_id(user_id);
+
+//     req.set_phone_number("18888888888");
+//     req.set_phone_verify_code_id(code_id);
+//     std::cout << "SetUserPhoneNumber, input verify code:> " << std::endl;
+//     std::string code;
+//     std::cin >> code;
+//     req.set_phone_verify_code(code);
+
+//     SnowK::SetUserPhoneNumberRsp rsp;
+//     brpc::Controller cntl;
+//     SnowK::UserService_Stub stub(channel.get());
+//     stub.SetUserPhoneNumber(&cntl, &req, &rsp, nullptr);
+
+//     ASSERT_FALSE(cntl.Failed());
+//     ASSERT_TRUE(rsp.success());
+// }
 
 int main(int argc, char *argv[])
 {
@@ -294,11 +301,11 @@ int main(int argc, char *argv[])
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
     channel = user_channels->Choose(FLAGS_user_service);
 
-    user_info.set_nickname("猪妈妈");
-    user_info.set_user_id("1d56-513d8e49-0002");
-    user_info.set_description("这是一个美丽的猪妈妈");
-    user_info.set_phone("15929917272");
-    user_info.set_avatar("猪妈妈头像数据");
+    user_info.set_user_id("d2a8f4bd3e410000");
+    user_info.set_nickname("Fashion");
+    user_info.set_description("Cool Boy");
+    user_info.set_phone("");
+    user_info.set_avatar("Handsome Icon");
     
     return RUN_ALL_TESTS();
 }

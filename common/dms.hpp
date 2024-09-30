@@ -39,7 +39,7 @@ namespace SnowK
             request.setQueryParameter("Action", "SendSms");
             request.setQueryParameter("SignName", "SnowK6");
             request.setQueryParameter("TemplateCode", "SMS_474020138");
-            request.setQueryParameter("PhoneNumbers", "18351958129");
+            request.setQueryParameter("PhoneNumbers", phone);
             std::string param_code = "{\"code\":\"" + code + "\"}";
             request.setQueryParameter("TemplateParam", param_code);
 

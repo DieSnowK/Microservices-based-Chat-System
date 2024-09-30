@@ -714,7 +714,7 @@ namespace SnowK
         std::shared_ptr<odb::core::database> _mysql_client;
         std::shared_ptr<sw::redis::Redis> _redis_client;
         std::shared_ptr<brpc::Server> _rpc_server;
-    };
+    }; // end of UserServer
 
     // Builder Pattern
     class UserServerBuilder
@@ -862,5 +862,5 @@ namespace SnowK
         std::shared_ptr<DMSClient> _dms_client;
 
         std::shared_ptr<brpc::Server> _rpc_server;
-    };
+    }; // end of UserServerBuilder
 }
