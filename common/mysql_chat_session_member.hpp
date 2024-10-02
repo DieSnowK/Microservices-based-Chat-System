@@ -105,7 +105,7 @@ namespace SnowK
                 result r(_db->query<ChatSessionMember>(query::session_id == ssid));
                 for (auto i(r.begin()); i != r.end(); ++i)
                 {
-                    ret.push_back(i->user_id());
+                    ret.push_back(i->User_Id());
                 }
                 trans.commit();
             }
