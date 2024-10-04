@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.1.3)
-project(user_server)
+project(transmite_server)
 
-set(TARGET "user_server")
+set(TARGET "transmite_server")
 
 # PROTO
 set(PROTO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../proto)
-set(PROTO_FILES file.proto base.proto user.proto)
+set(PROTO_FILES base.proto user.proto transmite.proto)
 
 set(PROTO_CC "")
 set(PROTO_H "")
@@ -31,7 +31,7 @@ endforeach()
 
 # ODB
 set(ODB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../odb)
-set(ODB_FILES user.hpp)
+set(ODB_FILES chat_session_member.hpp)
 
 set(ODB_HXX "")
 set(ODB_CXX "")
@@ -59,9 +59,7 @@ target_link_libraries(${TARGET}
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
     -lprotobuf -lleveldb -letcd-cpp-api 
     -lcpprest -lcurl -lodb-mysql -lodb -lodb-boost
-    -lhiredis -lredis++
-    -lalibabacloud-sdk-core -lcpr -lelasticlient
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    -lamqpcpp -lev
 )
 
 # set(TEST_CLIENT "user_client")

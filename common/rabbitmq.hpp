@@ -11,8 +11,9 @@ namespace SnowK
     class MQClient
     {
     public:
+        using ptr = std::shared_ptr<MQClient>;
         using MessageCallback = std::function<void(const char *, size_t)>;
-
+        
         MQClient(const std::string &user, const std::string pwd, const std::string host)
         {
             _loop = EV_DEFAULT;

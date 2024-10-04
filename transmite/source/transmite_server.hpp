@@ -178,7 +178,6 @@ namespace SnowK
             _registry_client->Registry_Service(service_name, access_host);
         }
 
-        // 用于构造rabbitmq客户端对象
         void Make_Mq_Object(const std::string &user,
                             const std::string &pwd,
                             const std::string &host,
