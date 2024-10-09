@@ -131,7 +131,7 @@ namespace SnowK
                            .Append_Item("user_id", user_id)
                            .Append_Item("chat_session_id", chat_session_id)
                            .Append_Item("content", content)
-                           .Append_Item(message_id);
+                           .Insert(message_id);
             if (ret == false)
             {
                 LOG_ERROR("Failed to insert/update user data");
@@ -158,9 +158,9 @@ namespace SnowK
         {
             std::vector<SnowK::Message> ret;
             Json::Value json = ESSearch(_es_client, "message")
-                                    .Append_must_term("chat_session_id.keyword", ssid)
-                                    .Append_must_match("content", key)
-                                    .search();
+                                    .Append_Must_Term("chat_session_id.keyword", ssid)
+                                    .Append_Must_Match("content", key)
+                                    .Search();
             if (json.isArray() == false)
             {
                 LOG_ERROR("The user search result is empty, or the result is not of array type");
