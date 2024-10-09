@@ -1,6 +1,6 @@
 #include "elasticsearch.hpp"
 #include "user.hpp"
-// #include "message.hpp"
+#include "message.hpp"
 
 namespace SnowK
 {
@@ -91,90 +91,102 @@ namespace SnowK
         std::shared_ptr<elasticlient::Client> _es_client;
     };
 
-//     class ESMessage
-//     {
-//     public:
-//         using ptr = std::shared_ptr<ESMessage>;
-//         ESMessage(const std::shared_ptr<elasticlient::Client> &es_client) : _es_client(es_client) {}
-//         bool createIndex()
-//         {
-//             bool ret = ESIndex(_es_client, "message")
-//                            .Append("user_id", "keyword", "standard", false)
-//                            .Append("message_id", "keyword", "standard", false)
-//                            .Append("create_time", "long", "standard", false)
-//                            .Append("chat_session_id", "keyword", "standard", true)
-//                            .Append("content")
-//                            .create();
-//             if (ret == false)
-//             {
-//                 LOG_INFO("消息信息索引创建失败!");
-//                 return false;
-//             }
-//             LOG_INFO("消息信息索引创建成功!");
-//             return true;
-//         }
-//         bool AppendData(const std::string &user_id,
-//                         const std::string &message_id,
-//                         const long create_time,
-//                         const std::string &chat_session_id,
-//                         const std::string &content)
-//         {
-//             bool ret = ESInsert(_es_client, "message")
-//                            .Append("message_id", message_id)
-//                            .Append("create_time", create_time)
-//                            .Append("user_id", user_id)
-//                            .Append("chat_session_id", chat_session_id)
-//                            .Append("content", content)
-//                            .insert(message_id);
-//             if (ret == false)
-//             {
-//                 LOG_ERROR("消息数据插入/更新失败!");
-//                 return false;
-//             }
-//             LOG_INFO("消息数据新增/更新成功!");
-//             return true;
-//         }
-//         bool remove(const std::string &mid)
-//         {
-//             bool ret = ESRemove(_es_client, "message").remove(mid);
-//             if (ret == false)
-//             {
-//                 LOG_ERROR("消息数据删除失败!");
-//                 return false;
-//             }
-//             LOG_INFO("消息数据删除成功!");
-//             return true;
-//         }
-//         std::vector<SnowK::Message> search(const std::string &key, const std::string &ssid)
-//         {
-//             std::vector<SnowK::Message> res;
-//             Json::Value json_user = ESSearch(_es_client, "message")
-//                                         .Append_must_term("chat_session_id.keyword", ssid)
-//                                         .Append_must_match("content", key)
-//                                         .search();
-//             if (json_user.isArray() == false)
-//             {
-//                 LOG_ERROR("用户搜索结果为空，或者结果不是数组类型");
-//                 return res;
-//             }
-//             int sz = json_user.size();
-//             LOG_DEBUG("检索结果条目数量：{}", sz);
-//             for (int i = 0; i < sz; i++)
-//             {
-//                 SnowK::Message message;
-//                 message.user_id(json_user[i]["_source"]["user_id"].asString());
-//                 message.message_id(json_user[i]["_source"]["message_id"].asString());
-//                 boost::posix_time::ptime ctime(boost::posix_time::from_time_t(
-//                     json_user[i]["_source"]["create_time"].asInt64()));
-//                 message.create_time(ctime);
-//                 message.session_id(json_user[i]["_source"]["chat_session_id"].asString());
-//                 message.content(json_user[i]["_source"]["content"].asString());
-//                 res.push_back(message);
-//             }
-//             return res;
-//         }
+    class ESMessage
+    {
+    public:
+        using ptr = std::shared_ptr<ESMessage>;
 
-//     private:
-//         std::shared_ptr<elasticlient::Client> _es_client;
-//     };
+        ESMessage(const std::shared_ptr<elasticlient::Client> &es_client) 
+            : _es_client(es_client) 
+        {}
+
+        bool CreateIndex()
+        {
+            bool ret = ESIndex(_es_client, "message")
+                           .Append_Properties("user_id", "keyword", "standard", false)
+                           .Append_Properties("message_id", "keyword", "standard", false)
+                           .Append_Properties("create_time", "long", "standard", false)
+                           .Append_Properties("chat_session_id", "keyword", "standard", true)
+                           .Append_Properties("content")
+                           .Create();
+            if (ret == false)
+            {
+                LOG_ERROR("Failed to create a message index");
+                return false;
+            }
+
+            LOG_INFO("The message index is created");
+            return true;
+        }
+
+        bool AppendData(const std::string &user_id,
+                        const std::string &message_id,
+                        const long create_time,
+                        const std::string &chat_session_id,
+                        const std::string &content)
+        {
+            bool ret = ESInsert(_es_client, "message")
+                           .Append_Item("message_id", message_id)
+                           .Append_Item("create_time", create_time)
+                           .Append_Item("user_id", user_id)
+                           .Append_Item("chat_session_id", chat_session_id)
+                           .Append_Item("content", content)
+                           .Append_Item(message_id);
+            if (ret == false)
+            {
+                LOG_ERROR("Failed to insert/update user data");
+                return false;
+            }
+
+            LOG_INFO("Message data is added/updated successfully");
+            return true;
+        }
+
+        bool Remove(const std::string &mid)
+        {
+            if (ESRemove(_es_client, "message").Remove(mid) == false)
+            {
+                LOG_ERROR("Failed to delete message data");
+                return false;
+            }
+
+            LOG_INFO("The message data was deleted");
+            return true;
+        }
+
+        std::vector<SnowK::Message> Search(const std::string &key, const std::string &ssid)
+        {
+            std::vector<SnowK::Message> ret;
+            Json::Value json = ESSearch(_es_client, "message")
+                                    .Append_must_term("chat_session_id.keyword", ssid)
+                                    .Append_must_match("content", key)
+                                    .search();
+            if (json.isArray() == false)
+            {
+                LOG_ERROR("The user search result is empty, or the result is not of array type");
+                return ret;
+            }
+            
+            for (int i = 0; i < json.size(); i++)
+            {
+                SnowK::Message message;
+
+                message.Message_Id(json[i]["_source"]["message_id"].asString());
+                message.Session_Id(json[i]["_source"]["chat_session_id"].asString());
+                message.User_Id(json[i]["_source"]["user_id"].asString());
+                message.Content(json[i]["_source"]["content"].asString());
+
+                boost::posix_time::ptime ctime(boost::posix_time::from_time_t(
+                    json[i]["_source"]["create_time"].asInt64()));
+                message.Create_Time(ctime);
+
+                ret.push_back(message);
+            }
+            
+            return ret;
+        }
+
+    private:
+        std::shared_ptr<elasticlient::Client> _es_client;
+    };
 }
