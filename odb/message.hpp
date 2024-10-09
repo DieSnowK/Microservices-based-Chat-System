@@ -146,4 +146,4 @@ namespace SnowK
     };
 }
 
-// odb -d mysql --std c++11 --generate-query --generate-schema --profile boost/date-time message.hxx
+// odb -d mysql --std c++11 --generate-query --generate-schema --profile boost/date-time message.hpp

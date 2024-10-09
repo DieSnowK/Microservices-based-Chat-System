@@ -24,7 +24,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add a new message {}:{}", msg.message_id(), e.what());
+                LOG_ERROR("Failed to add a new message {}:{}", msg.Message_Id(), e.what());
                 return false;
             }
 
