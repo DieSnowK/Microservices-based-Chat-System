@@ -158,89 +158,98 @@ namespace SnowK
                 return;
             };
 
-            // 1. 提取请求中的关键要素：请求ID，会话ID，要获取的消息数量
             std::string rid = request->request_id();
             std::string chat_ssid = request->chat_session_id();
             int msg_count = request->msg_count();
-            // 2. 从数据库，获取最近的消息元信息
-            auto msg_lists = _mysql_message->recent(chat_ssid, msg_count);
+
+            auto msg_lists = _mysql_message->Recent(chat_ssid, msg_count);
             if (msg_lists.empty())
             {
                 response->set_request_id(rid);
                 response->set_success(true);
                 return;
             }
-            // 3. 统计所有消息中文件类型消息的文件ID列表，从文件子服务下载文件
+
+            // Collects file IDs for all file type messages
             std::unordered_set<std::string> file_id_lists;
             for (const auto &msg : msg_lists)
             {
-                if (msg.file_id().empty())
+                if (msg.File_Id().empty()) // Non-text messages
+                {
                     continue;
-                LOG_DEBUG("需要下载的文件ID: {}", msg.file_id());
-                file_id_lists.insert(msg.file_id());
+                }
+
+                LOG_DEBUG("The ID of the file that needs to be downloaded: {}", msg.File_Id());
+                file_id_lists.insert(msg.File_Id());
             }
+
+            // Bulk file downloads from the Files subservice
             std::unordered_map<std::string, std::string> file_data_lists;
-            bool ret = _GetFile(rid, file_id_lists, file_data_lists);
-            if (ret == false)
+            if (_GetFile(rid, file_id_lists, file_data_lists) == false)
             {
-                LOG_ERROR("{} 批量文件数据下载失败！", rid);
-                return Err_Response(rid, "批量文件数据下载失败!");
+                LOG_ERROR("{} - Failed to download batch file data", rid);
+                return Err_Response(rid, "Failed to download batch file data");
             }
-            // 4. 统计所有消息的发送者用户ID，从用户子服务进行批量用户信息获取
+
+            // Collects the sender user ID of all messages
             std::unordered_set<std::string> user_id_lists;
             for (const auto &msg : msg_lists)
             {
-                user_id_lists.insert(msg.user_id());
+                user_id_lists.insert(msg.User_Id());
             }
+
+            // Obtain bulk user information from user subservices
             std::unordered_map<std::string, UserInfo> user_lists;
-            ret = _GetUser(rid, user_id_lists, user_lists);
-            if (ret == false)
+            if (_GetUser(rid, user_id_lists, user_lists) == false)
             {
-                LOG_ERROR("{} 批量用户数据获取失败！", rid);
-                return Err_Response(rid, "批量用户数据获取失败!");
+                LOG_ERROR("{} - Failed to obtain bulk user data", rid);
+                return Err_Response(rid, "Failed to obtain bulk user data");
             }
-            // 5. 组织响应
+
+            // Organize responses
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &msg : msg_lists)
             {
                 auto message_info = response->add_msg_list();
-                message_info->set_message_id(msg.message_id());
-                message_info->set_chat_session_id(msg.session_id());
-                message_info->set_timestamp(boost::posix_time::to_time_t(msg.create_time()));
-                message_info->mutable_sender()->CopyFrom(user_lists[msg.user_id()]);
-                switch (msg.message_type())
+                message_info->set_message_id(msg.Message_Id());
+                message_info->set_chat_session_id(msg.Session_Id());
+                message_info->set_timestamp(boost::posix_time::to_time_t(msg.Create_Time()));
+                message_info->mutable_sender()->CopyFrom(user_lists[msg.User_Id()]);
+
+                switch (msg.Message_Type())
                 {
                 case MessageType::STRING:
                     message_info->mutable_message()->set_message_type(MessageType::STRING);
-                    message_info->mutable_message()->mutable_string_message()->set_content(msg.content());
+                    message_info->mutable_message()->mutable_string_message()->set_content(msg.Content());
                     break;
                 case MessageType::IMAGE:
                     message_info->mutable_message()->set_message_type(MessageType::IMAGE);
-                    message_info->mutable_message()->mutable_image_message()->set_file_id(msg.file_id());
-                    message_info->mutable_message()->mutable_image_message()->set_image_content(file_data_lists[msg.file_id()]);
+                    message_info->mutable_message()->mutable_image_message()->set_file_id(msg.File_Id());
+                    message_info->mutable_message()->mutable_image_message()->set_image_content(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::FILE:
                     message_info->mutable_message()->set_message_type(MessageType::FILE);
-                    message_info->mutable_message()->mutable_file_message()->set_file_id(msg.file_id());
-                    message_info->mutable_message()->mutable_file_message()->set_file_size(msg.file_size());
-                    message_info->mutable_message()->mutable_file_message()->set_file_name(msg.file_name());
-                    message_info->mutable_message()->mutable_file_message()->set_file_contents(file_data_lists[msg.file_id()]);
+                    message_info->mutable_message()->mutable_file_message()->set_file_id(msg.File_Id());
+                    message_info->mutable_message()->mutable_file_message()->set_file_size(msg.File_Size());
+                    message_info->mutable_message()->mutable_file_message()->set_file_name(msg.File_Name());
+                    message_info->mutable_message()->mutable_file_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::SPEECH:
                     message_info->mutable_message()->set_message_type(MessageType::SPEECH);
-                    message_info->mutable_message()->mutable_speech_message()->set_file_id(msg.file_id());
-                    message_info->mutable_message()->mutable_speech_message()->set_file_contents(file_data_lists[msg.file_id()]);
+                    message_info->mutable_message()->mutable_speech_message()->set_file_id(msg.File_Id());
+                    message_info->mutable_message()->mutable_speech_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 default:
-                    LOG_ERROR("消息类型错误！！");
+                    LOG_ERROR("The message type is incorrect");
                     return;
                 }
             }
 
             return;
-        }
+        } // end of GetRecentMsg
 
+        // Message search for keywords – for text messages only
         virtual void MsgSearch(::google::protobuf::RpcController *controller,
                                const ::SnowK::MsgSearchReq *request,
                                ::SnowK::MsgSearchRsp *response,
@@ -255,136 +264,129 @@ namespace SnowK
                 response->set_errmsg(errmsg);
                 return;
             };
-            // 关键字的消息搜索--只针对文本消息
-            // 1. 从请求中提取关键要素：请求ID，会话ID, 关键字
+
             std::string rid = request->request_id();
             std::string chat_ssid = request->chat_session_id();
             std::string skey = request->search_key();
-            // 2. 从ES搜索引擎中进行关键字消息搜索，得到消息列表
-            auto msg_lists = _es_message->search(skey, chat_ssid);
+
+            auto msg_lists = _es_message->Search(skey, chat_ssid);
             if (msg_lists.empty())
             {
                 response->set_request_id(rid);
                 response->set_success(true);
                 return;
             }
-            // 3. 组织所有消息的用户ID，从用户子服务获取用户信息
+
+            // Collects the sender user ID of all messages
             std::unordered_set<std::string> user_id_lists;
             for (const auto &msg : msg_lists)
             {
-                user_id_lists.insert(msg.user_id());
+                user_id_lists.insert(msg.User_Id());
             }
+
+            // Obtain bulk user information from user subservices
             std::unordered_map<std::string, UserInfo> user_lists;
-            bool ret = _GetUser(rid, user_id_lists, user_lists);
-            if (ret == false)
+            if (_GetUser(rid, user_id_lists, user_lists) == false)
             {
-                LOG_ERROR("{} 批量用户数据获取失败！", rid);
-                return Err_Response(rid, "批量用户数据获取失败!");
+                LOG_ERROR("{} - Failed to obtain bulk user data", rid);
+                return Err_Response(rid, "Failed to obtain bulk user data");
             }
-            // 4. 组织响应
+
+            // Organize responses
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &msg : msg_lists)
             {
                 auto message_info = response->add_msg_list();
-                message_info->set_message_id(msg.message_id());
-                message_info->set_chat_session_id(msg.session_id());
-                message_info->set_timestamp(boost::posix_time::to_time_t(msg.create_time()));
-                message_info->mutable_sender()->CopyFrom(user_lists[msg.user_id()]);
+                message_info->set_message_id(msg.Message_Id());
+                message_info->set_chat_session_id(msg.Session_Id());
+                message_info->set_timestamp(boost::posix_time::to_time_t(msg.Create_Time()));
+                message_info->mutable_sender()->CopyFrom(user_lists[msg.User_Id()]);
                 message_info->mutable_message()->set_message_type(MessageType::STRING);
-                message_info->mutable_message()->mutable_string_message()->set_content(msg.content());
+                message_info->mutable_message()->mutable_string_message()->set_content(msg.Content());
             }
+
             return;
         }
 
         void OnMessage(const char *body, size_t sz)
         {
-            LOG_DEBUG("收到新消息，进行存储处理！");
-            // 1. 取出序列化的消息内容，进行反序列化
             SnowK::MessageInfo message;
-            bool ret = message.ParseFromArray(body, sz);
-            if (ret == false)
+            if (message.ParseFromArray(body, sz) == false)
             {
-                LOG_ERROR("对消费到的消息进行反序列化失败！");
+                LOG_ERROR("Failed to deserialize the consumed message");
                 return;
             }
-            // 2. 根据不同的消息类型进行不同的处理
+
+            // Different processing is carried out according to different message types
             std::string file_id, file_name, content;
             int64_t file_size;
             switch (message.message().message_type())
             {
-            //  1. 如果是一个文本类型消息，取元信息存储到ES中
+            // If it is a text message, the meta information is stored in Elasticsearch data
             case MessageType::STRING:
                 content = message.message().string_message().content();
-                ret = _es_message->appendData(
-                    message.sender().user_id(),
-                    message.message_id(),
-                    message.timestamp(),
-                    message.chat_session_id(),
-                    content);
-                if (ret == false)
+                if (_es_message->AppendData(message.sender().user_id(), message.message_id(),
+                                            message.timestamp(), message.chat_session_id(), content) == false)
                 {
-                    LOG_ERROR("文本消息向存储引擎进行存储失败！");
+                    LOG_ERROR("Failed to store text messages to the storage engine");
                     return;
                 }
                 break;
-            //  2. 如果是一个图片/语音/文件消息，则取出数据存储到文件子服务中，并获取文件ID
+            // If it is a picture/voice/file message, 
+            // the data is retrieved and stored in the file subservice and the file ID is obtained
             case MessageType::IMAGE:
             {
                 const auto &msg = message.message().image_message();
-                ret = _PutFile("", msg.image_content(), msg.image_content().size(), file_id);
-                if (ret == false)
+                if (_PutFile("", msg.image_content(), msg.image_content().size(), file_id) == false)
                 {
-                    LOG_ERROR("上传图片到文件子服务失败！");
+                    LOG_ERROR("Failed to upload image to file subservice");
                     return;
                 }
+                break;
             }
-            break;
             case MessageType::FILE:
             {
                 const auto &msg = message.message().file_message();
                 file_name = msg.file_name();
                 file_size = msg.file_size();
-                ret = _PutFile(file_name, msg.file_contents(), file_size, file_id);
-                if (ret == false)
+                if (_PutFile(file_name, msg.file_contents(), file_size, file_id) == false)
                 {
-                    LOG_ERROR("上传文件到文件子服务失败！");
+                    LOG_ERROR("Failed to upload files to the file subservice");
                     return;
                 }
+                break;
             }
-            break;
             case MessageType::SPEECH:
             {
                 const auto &msg = message.message().speech_message();
-                ret = _PutFile("", msg.file_contents(), msg.file_contents().size(), file_id);
-                if (ret == false)
+                if (_PutFile("", msg.file_contents(), msg.file_contents().size(), file_id) == false)
                 {
-                    LOG_ERROR("上传语音到文件子服务失败！");
+                    LOG_ERROR("Failed to upload voice to file subservice");
                     return;
                 }
+                break;
             }
-            break;
             default:
-                LOG_ERROR("消息类型错误！");
+                LOG_ERROR("Message type incorrect");
                 return;
-            }
-            // 3. 提取消息的元信息，存储到mysql数据库中
-            SnowK::Message msg(message.message_id(),
-                                 message.chat_session_id(),
-                                 message.sender().user_id(),
-                                 message.message().message_type(),
-                                 boost::posix_time::from_time_t(message.timestamp()));
+            } // end of switch (message.message().message_type())
+
+            // Extract the meta information of the message and store it in the MySQL database
+            SnowK::Message msg(message.message_id(), message.chat_session_id(),
+                               message.sender().user_id(), message.message().message_type(),
+                               boost::posix_time::from_time_t(message.timestamp()));
             msg.content(content);
             msg.file_id(file_id);
             msg.file_name(file_name);
             msg.file_size(file_size);
-            ret = _mysql_message->insert(msg);
-            if (ret == false)
+
+            if (_mysql_message->Insert(msg) == false)
             {
-                LOG_ERROR("向数据库插入新消息失败！");
+                LOG_ERROR("Failed to insert a new message into the database");
                 return;
             }
-        }
+        } // end of OnMessage
 
     private:
         bool _GetUser(const std::string &rid,
