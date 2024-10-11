@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     msb.Make_Mq_Object(FLAGS_mq_user, FLAGS_mq_pswd, FLAGS_mq_host,
                        FLAGS_mq_msg_exchange, FLAGS_mq_msg_queue, FLAGS_mq_msg_binding_key);
     msb.Make_Es_Object({FLAGS_es_host});
-    msb.Make_MySQL_Object(FLAGS_mysql_user, FLAGS_mysql_pswd, FLAGS_mysql_host,
+    msb.Make_MySQL_Object(FLAGS_mysql_user, FLAGS_mysql_pwd, FLAGS_mysql_host,
                           FLAGS_mysql_db, FLAGS_mysql_cset, FLAGS_mysql_port, FLAGS_mysql_pool_count);
     msb.Make_Discovery_Object(FLAGS_registry_host, FLAGS_base_service, FLAGS_file_service, FLAGS_user_service);
     msb.Make_Rpc_Server(FLAGS_listen_port, FLAGS_rpc_timeout, FLAGS_rpc_threads);

@@ -376,10 +376,10 @@ namespace SnowK
             SnowK::Message msg(message.message_id(), message.chat_session_id(),
                                message.sender().user_id(), message.message().message_type(),
                                boost::posix_time::from_time_t(message.timestamp()));
-            msg.content(content);
-            msg.file_id(file_id);
-            msg.file_name(file_name);
-            msg.file_size(file_size);
+            msg.Content(content);
+            msg.File_Id(file_id);
+            msg.File_Name(file_name);
+            msg.File_Size(file_size);
 
             if (_mysql_message->Insert(msg) == false)
             {
@@ -565,13 +565,17 @@ namespace SnowK
         // TODO
         void Make_Discovery_Object(const std::string &reg_host,
                                    const std::string &base_service_name,
-                                   const std::string &file_service_name)
+                                   const std::string &file_service_name,
+                                   const std::string &user_service_name)
         {
+            _user_service_name = user_service_name;
             _file_service_name = file_service_name;
             _svrmgr_channels = std::make_shared<ServiceManager>();
             _svrmgr_channels->Declare(file_service_name);
+            _svrmgr_channels->Declare(user_service_name);
 
             LOG_DEBUG("Set the file sub-service as the sub-service to be added and managed: {}", file_service_name);
+            LOG_DEBUG("Set the user sub-service as the sub-service to be added and managed: {}", user_service_name);
 
             auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::ServiceOffline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
@@ -583,7 +587,7 @@ namespace SnowK
                                   const std::string &access_host)
         {
             _registry_client = std::make_shared<Registry>(reg_host);
-            _registry_client->registry(service_name, access_host);
+            _registry_client->Registry_Service(service_name, access_host);
         }
 
         void Make_Mq_Object(const std::string &user,
