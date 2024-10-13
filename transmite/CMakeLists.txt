@@ -62,14 +62,22 @@ target_link_libraries(${TARGET}
     -lamqpcpp -lev
 )
 
-set(TEST_CLIENT "transmite_client")
-set(TEST_FILES "")
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/test/test TEST_FILES)
-add_executable(${TEST_CLIENT} ${TEST_FILES} ${PROTO_SRCS})
-target_link_libraries(${TEST_CLIENT} 
+set(TRANSMITE_CLIENT "transmite_client")
+set(TRANSMITE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/test/test/transmite_client.cc)
+add_executable(${TRANSMITE_CLIENT} ${TRANSMITE_FILES} ${PROTO_SRCS})
+target_link_libraries(${TRANSMITE_CLIENT} 
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl 
     /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+)
+
+set(TRANS_USER_CLIENT "trans_user_client")
+set(TRANS_USER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/test/test/user_client.cc)
+add_executable(${TRANS_USER_CLIENT} ${TRANS_USER_FILES} ${PROTO_SRCS})
+target_link_libraries(${TRANS_USER_CLIENT} 
+    -pthread -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
+    -lprotobuf -lleveldb -letcd-cpp-api -lcpprest 
+    -lcurl /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -77,4 +85,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../common)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../odb)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../third)
 
-INSTALL(TARGETS ${TARGET} RUNTIME DESTINATION bin)
+INSTALL(TARGETS ${TARGET} ${TRANSMITE_CLIENT} ${TRANS_USER_CLIENT} RUNTIME DESTINATION bin)

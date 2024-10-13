@@ -101,11 +101,10 @@ int main(int argc, char *argv[])
     auto del_cb = std::bind(&SnowK::ServiceManager::ServiceOffline, sm.get(), std::placeholders::_1, std::placeholders::_2);
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
 
-    String_Message("d2a8f4bd3e410000", "会话ID1", "How are you?");
-    // String_Message("c4dc-68239a9a-0001", "会话ID1", "I'm fine, thank you");
-    // Image_Message("731f-50086884-0000", "会话ID1", "可爱表情图片数据");
-    // Speech_Message("731f-50086884-0000", "会话ID1", "动听猪叫声数据");
-    // File_Message("731f-50086884-0000", "0d90-755571d8-0003", "猪爸爸的文件名称", "猪爸爸的文件数据");
+    String_Message("c4dc68239a9a0001", "会话ID1", "I'm fine, thank you");
+    Image_Message("731f500868840000", "会话ID1", "Slim Icon");
+    Speech_Message("731f500868840000", "会话ID1", "hai hai hai");
+    File_Message("731f500868840000", "0d90-755571d8-0003", "GTA5", "Start~");
 
     return 0;
 }

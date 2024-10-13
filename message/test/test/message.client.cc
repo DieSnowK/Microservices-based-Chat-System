@@ -175,11 +175,11 @@ int main(int argc, char *argv[])
     auto del_cb = std::bind(&SnowK::ServiceManager::ServiceOffline, sm.get(), std::placeholders::_1, std::placeholders::_2);
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
 
-    boost::posix_time::ptime stime(boost::posix_time::time_from_string("2024-08-02 00:00:00"));
-    boost::posix_time::ptime etime(boost::posix_time::time_from_string("2024-08-09 00:00:00"));
+    boost::posix_time::ptime stime(boost::posix_time::time_from_string("2024-10-13 05:44:23"));
+    boost::posix_time::ptime etime(boost::posix_time::time_from_string("2024-10-13 05:44:29"));
     Range_Test("会话ID1", stime, etime);
     Recent_Test("会话ID1", 2);
-    Search_Test("会话ID1", "盖浇");
+    Search_Test("会话ID1", "thank");
     
     return 0;
 }
