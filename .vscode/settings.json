@@ -87,5 +87,6 @@
         "*.txx": "cpp",
         "cfenv": "cpp",
         "stdfloat": "cpp"
-    }
+    },
+    "workbench.tree.indent": 4
 }
