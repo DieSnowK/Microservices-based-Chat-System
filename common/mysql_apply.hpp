@@ -1,6 +1,6 @@
 #pragma once
 #include "mysql.hpp"
-#include "friend_apply.hxx"
+#include "friend_apply.hpp"
 #include "friend_apply-odb.hxx"
 
 namespace SnowK
