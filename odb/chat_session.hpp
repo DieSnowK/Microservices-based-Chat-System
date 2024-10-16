@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <odb/nullable.hxx>
 #include <odb/core.hxx>
-#include "chat_session_member.hxx"
+#include "chat_session_member.hpp"
 
 namespace SnowK
 {
@@ -92,3 +92,5 @@ namespace SnowK
         std::string chat_session_name;
     };
 }
+
+// odb -d mysql --std c++11 --generate-query --generate-schema --profile boost/date-time chat_session.hpp
