@@ -15,7 +15,7 @@ void R_Insert_Test(SnowK::RelationTable &tb)
 
 void R_Select_Test(SnowK::RelationTable &tb)
 {
-    auto ret = tb.Friends("c4dc68239a9a0001");
+    auto ret = tb.Friends("用户ID1");
     for (auto &uid : ret)
     {
         std::cout << uid << std::endl;
@@ -44,6 +44,7 @@ void A_Insert_Test(SnowK::FriendApplyTable &tb)
     SnowK::FriendApply fa3("uuid3", "用户ID2", "用户ID3");
     tb.Insert(fa3);
 }
+
 void A_Remove_Test(SnowK::FriendApplyTable &tb)
 {
     tb.Remove("用户ID2", "用户ID3");
@@ -54,7 +55,7 @@ void A_Select_Test(SnowK::FriendApplyTable &tb)
     // SnowK::FriendApply fa3("uuid3", "用户ID2", "用户ID3");
     // tb.Insert(fa3);
 
-    auto ret = tb.ApplyUsers("用户ID2");
+    auto ret = tb.ApplyUsers("用户ID3");
     for (auto &uid : ret)
     {
         std::cout << uid << std::endl;
@@ -76,13 +77,12 @@ void C_Insert_Test(SnowK::ChatSessionTable &tb)
     tb.Insert(cs2);
 }
 
-// TODO
 void C_Select_Test(SnowK::ChatSessionTable &tb)
 {
-    auto res = tb.Select("会话ID1");
-    std::cout << res->Chat_Session_Id() << std::endl;
-    std::cout << res->Chat_Session_Name() << std::endl;
-    std::cout << (int)res->Chat_Session_Type() << std::endl;
+    auto ret = tb.Select("会话ID1");
+    std::cout << ret->Chat_Session_Id() << std::endl;
+    std::cout << ret->Chat_Session_Name() << std::endl;
+    std::cout << (int)ret->Chat_Session_Type() << std::endl;
 }
 
 void C_Single_Test(SnowK::ChatSessionTable &tb)
@@ -107,12 +107,12 @@ void C_Group_Test(SnowK::ChatSessionTable &tb)
 
 void C_Remove_Test(SnowK::ChatSessionTable &tb)
 {
-    tb.Remove("会话ID3");
+    tb.Remove("会话ID2");
 }
 
 void C_Remove_Test2(SnowK::ChatSessionTable &tb)
 {
-    tb.Remove("731f50086884-0000", "c4dc68239a9a-0001");
+    tb.Remove("731f500868840000", "c4dc68239a9a0001");
 }
 
 int main(int argc, char *argv[])
@@ -138,7 +138,6 @@ int main(int argc, char *argv[])
     // C_Insert_Test(cstb);
     // C_Select_Test(cstb);
     // C_Single_Test(cstb);
-    // std::cout << "--------------\n";
     // C_Group_Test(cstb);
     // C_Remove_Test(cstb);
     // C_Remove_Test2(cstb);
