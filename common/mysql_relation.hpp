@@ -89,7 +89,7 @@ namespace SnowK
                 result r(_db->query<Relation>(query::user_id == uid));
                 for (auto i(r.begin()); i != r.end(); ++i)
                 {
-                    ret.push_back(i->peer_id());
+                    ret.push_back(i->Peer_Id());
                 }
 
                 trans.commit();

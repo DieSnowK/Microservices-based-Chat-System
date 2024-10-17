@@ -1,8 +1,8 @@
 #pragma once
 #include "mysql.hpp"
 #include "chat_session.hpp"
-#include "chat_session-odb.hpp"
 #include "mysql_chat_session_member.hpp"
+#include "chat_session-odb.hxx"
 
 namespace SnowK
 {
@@ -25,8 +25,8 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add a new session {}:{}", 
-                          cs.chat_session_name(), e.what());
+                LOG_ERROR("Failed to add a new session {}:{}",
+                          cs.Chat_Session_Name(), e.what());
                 return false;
             }
 
@@ -102,7 +102,7 @@ namespace SnowK
             return ret;
         }
 
-        std::vector<SingleChatSession> SingleChatSession(const std::string &uid)
+        std::vector<SingleChatSession> SingleChatSessions(const std::string &uid)
         {
             std::vector<SingleChatSession> ret;
             typedef odb::query<SingleChatSession> query;
@@ -132,7 +132,7 @@ namespace SnowK
             return ret;
         }
 
-        std::vector<GroupChatSession> GroupChatSession(const std::string &uid)
+        std::vector<GroupChatSession> GroupChatSessions(const std::string &uid)
         {
             std::vector<GroupChatSession> ret;
             typedef odb::query<GroupChatSession> query;

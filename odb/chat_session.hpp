@@ -69,7 +69,7 @@ namespace SnowK
     // condition:  css::chat_session_type==1 && csm1.user_id=uid && csm2.user_id != csm1.user_id
     #pragma db view object(ChatSession = css)                                             \
             object(ChatSessionMember = csm1 : css::_chat_session_id == csm1::_session_id) \
-            object(ChatSessionMember = csm2 : css::_chat_session_id == csm3::_session_id) \
+            object(ChatSessionMember = csm2 : css::_chat_session_id == csm2::_session_id) \
             query((?))
     struct SingleChatSession
     {

@@ -24,8 +24,8 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("The application for a new friend event failed {}-{}:{}", 
-                          ev.user_id(), ev.peer_id(), e.what());
+                LOG_ERROR("The application for a new friend event failed {}-{}:{}",
+                          ev.User_Id(), ev.Peer_Id(), e.what());
                 return false;
             }
 
@@ -83,7 +83,7 @@ namespace SnowK
                 result r(_db->query<FriendApply>(query::peer_id == uid));
                 for (auto i(r.begin()); i != r.end(); ++i)
                 {
-                    ret.push_back(i->user_id());
+                    ret.push_back(i->User_Id());
                 }
 
                 trans.commit();
