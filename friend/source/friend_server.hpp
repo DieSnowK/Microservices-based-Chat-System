@@ -1,4 +1,4 @@
-// ÊµÏÖÓïÒôÊ¶±ğ×Ó·şÎñ
+// å®ç°è¯­éŸ³è¯†åˆ«å­æœåŠ¡
 #include <brpc/server.h>
 #include <butil/logging.h>
 
@@ -53,23 +53,21 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡ÇëÇóÖĞµÄ¹Ø¼üÒªËØ£ºÓÃ»§ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
-            // 2. ´ÓÊı¾İ¿âÖĞ²éÑ¯»ñÈ¡ÓÃ»§µÄºÃÓÑID
-            auto friend_id_lists = _mysql_relation->friends(uid);
+
+            auto friend_id_lists = _mysql_relation->Friends(uid);
             std::unordered_set<std::string> user_id_lists;
             for (auto &id : friend_id_lists)
             {
                 user_id_lists.insert(id);
             }
-            // 3. ´ÓÓÃ»§×Ó·şÎñÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢
+
             std::unordered_map<std::string, UserInfo> user_list;
-            bool ret = GetUserInfo(rid, user_id_lists, user_list);
-            if (ret == false)
+            if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!", rid);
-                return Err_Response(rid, "ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
+                return Err_Response(rid, "Failed to obtain user information in batches");
             }
 
             response->set_request_id(rid);
@@ -96,23 +94,20 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡¹Ø¼üÒªËØ£ºµ±Ç°ÓÃ»§ID£¬ÒªÉ¾³ıµÄºÃÓÑID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string pid = request->peer_id();
-            // 2. ´ÓºÃÓÑ¹ØÏµ±íÖĞÉ¾³ıºÃÓÑ¹ØÏµĞÅÏ¢
-            bool ret = _mysql_relation->remove(uid, pid);
-            if (ret == false)
+            
+            if (_mysql_relation->Remove(uid, pid) == false)
             {
-                LOG_ERROR("{} - ´ÓÊı¾İ¿âÉ¾³ıºÃÓÑĞÅÏ¢Ê§°Ü£¡", rid);
-                return Err_Response(rid, "´ÓÊı¾İ¿âÉ¾³ıºÃÓÑĞÅÏ¢Ê§°Ü£¡");
+                LOG_ERROR("{} - Failed to delete friend information from the database", rid);
+                return Err_Response(rid, "Failed to delete friend information from the database");
             }
-            // 3. ´Ó»á»°ĞÅÏ¢±íÖĞ£¬É¾³ı¶ÔÓ¦µÄÁÄÌì»á»° -- Í¬Ê±É¾³ı»á»°³ÉÔ±±íÖĞµÄ³ÉÔ±ĞÅÏ¢
-            ret = _mysql_chat_session->remove(uid, pid);
-            if (ret == false)
+
+            if (_mysql_chat_session->remove(uid, pid) == false)
             {
-                LOG_ERROR("{}- ´ÓÊı¾İ¿âÉ¾³ıºÃÓÑ»á»°ĞÅÏ¢Ê§°Ü£¡", rid);
-                return Err_Response(rid, "´ÓÊı¾İ¿âÉ¾³ıºÃÓÑ»á»°ĞÅÏ¢Ê§°Ü£¡");
+                LOG_ERROR("{}- Failed to delete friend session information from the database", rid);
+                return Err_Response(rid, "Failed to delete friend session information from the database");
             }
 
             response->set_request_id(rid);
@@ -134,34 +129,32 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡ÇëÇóÖĞµÄ¹Ø¼üÒªËØ£ºÉêÇëÈËÓÃ»§ID£» ±»ÉêÇëÈËÓÃ»§ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string pid = request->respondent_id();
-            // 2. ÅĞ¶ÏÁ½ÈËÊÇ·ñÒÑ¾­ÊÇºÃÓÑ
-            bool ret = _mysql_relation->exists(uid, pid);
-            if (ret == true)
+
+            if (_mysql_relation->Exists(uid, pid) == true)
             {
-                LOG_ERROR("{}- ÉêÇëºÃÓÑÊ§°Ü-Á½Õß{}-{}ÒÑ¾­ÊÇºÃÓÑ¹ØÏµ", rid, uid, pid);
-                return Err_Response(rid, "Á½ÕßÒÑ¾­ÊÇºÃÓÑ¹ØÏµ£¡");
+                LOG_ERROR("{} - Failed to apply for friends, {}-{} is already a friend", 
+                          rid, uid, pid);
+                return Err_Response(rid, "The two are already friends!");
             }
-            // 3. µ±Ç°ÊÇ·ñÒÑ¾­ÉêÇë¹ıºÃÓÑ
-            ret = _mysql_apply->exists(uid, pid);
-            if (ret == true)
+
+            if (_mysql_apply->Exists(uid, pid) == true)
             {
-                LOG_ERROR("{}- ÉêÇëºÃÓÑÊ§°Ü-ÒÑ¾­ÉêÇë¹ı¶Ô·½ºÃÓÑ£¡", rid, uid, pid);
-                return Err_Response(rid, "ÒÑ¾­ÉêÇë¹ı¶Ô·½ºÃÓÑ£¡");
+                LOG_ERROR("{} - Failed to apply for a friend, have already applied \ 
+                          for a friend of the other party", rid, uid, pid);
+                return Err_Response(rid, "have already applied for a friend of the other party");
             }
-            // 4. ÏòºÃÓÑÉêÇë±íÖĞ£¬ĞÂÔöÉêÇëĞÅÏ¢
-            std::string eid = uuid();
+
+            std::string eid = UUID();
             FriendApply ev(eid, uid, pid);
-            ret = _mysql_apply->insert(ev);
-            if (ret == false)
+            if (_mysql_apply->Insert(ev) == false)
             {
-                LOG_ERROR("{} - ÏòÊı¾İ¿âĞÂÔöºÃÓÑÉêÇëÊÂ¼şÊ§°Ü£¡", rid);
-                return Err_Response(rid, "ÏòÊı¾İ¿âĞÂÔöºÃÓÑÉêÇëÊÂ¼şÊ§°Ü£¡");
+                LOG_ERROR("{} - Failed to add a friend event to the database", rid);
+                return Err_Response(rid, "Failed to add a friend event to the database");
             }
-            // 3. ×éÖ¯ÏìÓ¦
+
             response->set_request_id(rid);
             response->set_success(true);
             response->set_notify_event_id(eid);
@@ -182,55 +175,52 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡ÇëÇóÖĞµÄ¹Ø¼üÒªËØ£ºÉêÇëÈËÓÃ»§ID£»±»ÉêÇëÈËÓÃ»§ID£»´¦Àí½á¹û£»ÊÂ¼şID
             std::string rid = request->request_id();
             std::string eid = request->notify_event_id();
-            std::string uid = request->user_id();       // ±»ÉêÇëÈË
-            std::string pid = request->apply_user_id(); // ÉêÇëÈË
-            bool agree = request->agree();
-            // 2. ÅĞ¶ÏÓĞÃ»ÓĞ¸ÃÉêÇëÊÂ¼ş
-            bool ret = _mysql_apply->exists(pid, uid);
-            if (ret == false)
+            std::string pid = request->apply_user_id();
+            std::string uid = request->user_id();
+
+            if (_mysql_apply->Exists(pid, uid) == false)
             {
-                LOG_ERROR("{}- Ã»ÓĞÕÒµ½{}-{}¶ÔÓ¦µÄºÃÓÑÉêÇëÊÂ¼ş£¡", rid, pid, uid);
-                return Err_Response(rid, "Ã»ÓĞÕÒµ½¶ÔÓ¦µÄºÃÓÑÉêÇëÊÂ¼ş!");
+                LOG_ERROR("{} - No friend request events were found for {}-{}", 
+                          rid, pid, uid);
+                return Err_Response(rid, "No friend request event found");
             }
-            // 3. Èç¹ûÓĞ£º ¿ÉÒÔ´¦Àí£» --- É¾³ıÉêÇëÊÂ¼ş--ÊÂ¼şÒÑ¾­´¦ÀíÍê±Ï
-            ret = _mysql_apply->remove(pid, uid);
-            if (ret == false)
+
+            if (_mysql_apply->Remove(pid, uid) == false)
             {
-                LOG_ERROR("{}- ´ÓÊı¾İ¿âÉ¾³ıÉêÇëÊÂ¼ş {}-{} Ê§°Ü£¡", rid, pid, uid);
-                return Err_Response(rid, "´ÓÊı¾İ¿âÉ¾³ıÉêÇëÊÂ¼şÊ§°Ü!");
+                LOG_ERROR("{} - Failed to delete request event {}-{} from the database", rid, pid, uid);
+                return Err_Response(rid, "Failed to delete request event from the database");
             }
-            // 4. Èç¹û´¦Àí½á¹ûÊÇÍ¬Òâ£ºÏòÊı¾İ¿âĞÂÔöºÃÓÑ¹ØÏµĞÅÏ¢£»ĞÂÔöµ¥ÁÄ»á»°ĞÅÏ¢¼°»á»°³ÉÔ±
+
             std::string cssid;
-            if (agree == true)
+            if (request->agree() == true)
             {
-                ret = _mysql_relation->insert(uid, pid);
-                if (ret == false)
+                if (_mysql_relation->Insert(uid, pid) == false)
                 {
-                    LOG_ERROR("{}- ĞÂÔöºÃÓÑ¹ØÏµĞÅÏ¢-{}-{}£¡", rid, uid, pid);
-                    return Err_Response(rid, "ĞÂÔöºÃÓÑ¹ØÏµĞÅÏ¢!");
+                    LOG_ERROR("{} - Failed to add friend relationship information: {}-{}", 
+                              rid, uid, pid);
+                    return Err_Response(rid, "Failed to add friend relationship information");
                 }
-                cssid = uuid();
+
+                cssid = UUID();
                 ChatSession cs(cssid, "", ChatSessionType::SINGLE);
-                ret = _mysql_chat_session->insert(cs);
-                if (ret == false)
+                if (_mysql_chat_session->Insert(cs) == false)
                 {
-                    LOG_ERROR("{}- ĞÂÔöµ¥ÁÄ»á»°ĞÅÏ¢-{}£¡", rid, cssid);
-                    return Err_Response(rid, "ĞÂÔöµ¥ÁÄ»á»°ĞÅÏ¢Ê§°Ü!");
+                    LOG_ERROR("{} - Failed to add one-to-one chat session information: {}", rid, cssid);
+                    return Err_Response(rid, "Failed to add one-to-one chat session information");
                 }
+
                 ChatSessionMember csm1(cssid, uid);
                 ChatSessionMember csm2(cssid, pid);
                 std::vector<ChatSessionMember> mlist = {csm1, csm2};
-                ret = _mysql_chat_session_member->append(mlist);
-                if (ret == false)
+                if (_mysql_chat_session_member->Append(mlist) == false)
                 {
-                    LOG_ERROR("{}- Ã»ÓĞÕÒµ½{}-{}¶ÔÓ¦µÄºÃÓÑÉêÇëÊÂ¼ş£¡", rid, pid, uid);
-                    return Err_Response(rid, "Ã»ÓĞÕÒµ½¶ÔÓ¦µÄºÃÓÑÉêÇëÊÂ¼ş!");
+                    LOG_ERROR("{} - Failed to insert session member: {}-{}", rid, pid, uid);
+                    return Err_Response(rid, "Inserting session member failed");
                 }
             }
-            // 5. ×éÖ¯ÏìÓ¦
+
             response->set_request_id(rid);
             response->set_success(true);
             response->set_new_session_id(cssid);
@@ -251,30 +241,27 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡ÇëÇóÖĞµÄ¹Ø¼üÒªËØ£ºËÑË÷¹Ø¼ü×Ö£¨¿ÉÄÜÊÇÓÃ»§ID£¬¿ÉÄÜÊÇÊÖ»úºÅ£¬¿ÉÄÜÊÇêÇ³ÆµÄÒ»²¿·Ö£©
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string skey = request->search_key();
-            LOG_DEBUG("{} ºÃÓÑËÑË÷ £º {}", uid, skey);
-            // 2. ¸ù¾İÓÃ»§ID£¬»ñÈ¡ÓÃ»§µÄºÃÓÑIDÁĞ±í
-            auto friend_id_lists = _mysql_relation->friends(uid);
-            // 3. ´ÓESËÑË÷ÒıÇæ½øĞĞÓÃ»§ĞÅÏ¢ËÑË÷ --- ¹ıÂËµôµ±Ç°µÄºÃÓÑ
+
+            auto friend_id_lists = _mysql_relation->Friends(uid);
+            friend_id_lists.push_back(uid); // Filter self out
+
             std::unordered_set<std::string> user_id_lists;
-            friend_id_lists.push_back(uid); // °Ñ×Ô¼ºÒ²¹ıÂËµô
-            auto search_res = _es_user->search(skey, friend_id_lists);
-            for (auto &it : search_res)
+            auto search_ret = _es_user->Search(skey, friend_id_lists);
+            for (auto &it : search_ret)
             {
-                user_id_lists.insert(it.user_id());
+                user_id_lists.insert(it.User_Id());
             }
-            // 4. ¸ù¾İ»ñÈ¡µ½µÄÓÃ»§ID£¬ ´ÓÓÃ»§×Ó·şÎñÆ÷½øĞĞÅúÁ¿ÓÃ»§ĞÅÏ¢»ñÈ¡
+
             std::unordered_map<std::string, UserInfo> user_list;
-            bool ret = GetUserInfo(rid, user_id_lists, user_list);
-            if (ret == false)
+            if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!", rid);
-                return Err_Response(rid, "ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
+                return Err_Response(rid, "Failed to obtain user information in batches");
             }
-            // 5. ×éÖ¯ÏìÓ¦
+
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &user_it : user_list)
@@ -299,25 +286,23 @@ namespace SnowK
                 return;
             };
 
-            // 1. ÌáÈ¡¹Ø¼üÒªËØ£ºµ±Ç°ÓÃ»§ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
-            // 2. ´ÓÊı¾İ¿â»ñÈ¡´ı´¦ÀíµÄÉêÇëÊÂ¼şĞÅÏ¢ --- ÉêÇëÈËÓÃ»§IDÁĞ±í
-            auto res = _mysql_apply->applyUsers(uid);
+
+            auto ret = _mysql_apply->ApplyUsers(uid);
             std::unordered_set<std::string> user_id_lists;
-            for (auto &id : res)
+            for (auto &id : ret)
             {
                 user_id_lists.insert(id);
             }
-            // 3. ÅúÁ¿»ñÈ¡ÉêÇëÈËÓÃ»§ĞÅÏ¢¡¢
+
             std::unordered_map<std::string, UserInfo> user_list;
-            bool ret = GetUserInfo(rid, user_id_lists, user_list);
-            if (ret == false)
+            if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!", rid);
-                return Err_Response(rid, "ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
+                return Err_Response(rid, "Failed to obtain user information in batches");
             }
-            // 4. ×éÖ¯ÏìÓ¦
+
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &user_it : user_list)
@@ -327,6 +312,8 @@ namespace SnowK
             }
         }
 
+        // Function of obtaining chat sessions: After a user successfully logs in, 
+        // he or she can display his or her historical chat information
         virtual void GetChatSessionList(::google::protobuf::RpcController *controller,
                                         const ::SnowK::GetChatSessionListReq *request,
                                         ::SnowK::GetChatSessionListRsp *response,
@@ -342,13 +329,11 @@ namespace SnowK
                 return;
             };
 
-            // »ñÈ¡ÁÄÌì»á»°µÄ×÷ÓÃ£ºÒ»¸öÓÃ»§µÇÂ¼³É¹¦ºó£¬ÄÜ¹»Õ¹Ê¾×Ô¼ºµÄÀúÊ·ÁÄÌìĞÅÏ¢
-            // 1. ÌáÈ¡ÇëÇóÖĞµÄ¹Ø¼üÒªËØ£ºµ±Ç°ÇëÇóÓÃ»§ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
-            // 2. ´ÓÊı¾İ¿âÖĞ²éÑ¯³öÓÃ»§µÄµ¥ÁÄ»á»°ÁĞ±í
-            auto sf_list = _mysql_chat_session->singleChatSession(uid);
-            //  1. ´Óµ¥ÁÄ»á»°ÁĞ±íÖĞ£¬È¡³öËùÓĞµÄºÃÓÑID£¬´ÓÓÃ»§×Ó·şÎñ»ñÈ¡ÓÃ»§ĞÅÏ¢
+
+            auto sf_list = _mysql_chat_session->SingleChatSessions(uid);
+            //  1. ä»å•èŠä¼šè¯åˆ—è¡¨ä¸­ï¼Œå–å‡ºæ‰€æœ‰çš„å¥½å‹IDï¼Œä»ç”¨æˆ·å­æœåŠ¡è·å–ç”¨æˆ·ä¿¡æ¯
             std::unordered_set<std::string> users_id_list;
             for (const auto &f : sf_list)
             {
@@ -358,15 +343,15 @@ namespace SnowK
             bool ret = GetUserInfo(rid, users_id_list, user_list);
             if (ret == false)
             {
-                LOG_ERROR("{} - ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü£¡", rid);
-                return Err_Response(rid, "ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - æ‰¹é‡è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥ï¼", rid);
+                return Err_Response(rid, "æ‰¹é‡è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥!");
             }
-            //  2. ÉèÖÃÏìÓ¦»á»°ĞÅÏ¢£º»á»°Ãû³Æ¾ÍÊÇºÃÓÑÃû³Æ£»»á»°Í·Ïñ¾ÍÊÇºÃÓÑÍ·Ïñ
-            // 3. ´ÓÊı¾İ¿âÖĞ²éÑ¯³öÓÃ»§µÄÈºÁÄ»á»°ÁĞ±í
+            //  2. è®¾ç½®å“åº”ä¼šè¯ä¿¡æ¯ï¼šä¼šè¯åç§°å°±æ˜¯å¥½å‹åç§°ï¼›ä¼šè¯å¤´åƒå°±æ˜¯å¥½å‹å¤´åƒ
+            // 3. ä»æ•°æ®åº“ä¸­æŸ¥è¯¢å‡ºç”¨æˆ·çš„ç¾¤èŠä¼šè¯åˆ—è¡¨
             auto gc_list = _mysql_chat_session->groupChatSession(uid);
 
-            // 4. ¸ù¾İËùÓĞµÄ»á»°ID£¬´ÓÏûÏ¢´æ´¢×Ó·şÎñ»ñÈ¡»á»°×îºóÒ»ÌõÏûÏ¢
-            // 5. ×éÖ¯ÏìÓ¦
+            // 4. æ ¹æ®æ‰€æœ‰çš„ä¼šè¯IDï¼Œä»æ¶ˆæ¯å­˜å‚¨å­æœåŠ¡è·å–ä¼šè¯æœ€åä¸€æ¡æ¶ˆæ¯
+            // 5. ç»„ç»‡å“åº”
             for (const auto &f : sf_list)
             {
                 auto chat_session_info = response->add_chat_session_info_list();
@@ -414,20 +399,20 @@ namespace SnowK
                 return;
             };
 
-            // ´´½¨»á»°£¬ÆäÊµÕë¶ÔµÄÊÇÓÃ»§Òª´´½¨Ò»¸öÈºÁÄ»á»°
-            // 1. ÌáÈ¡ÇëÇó¹Ø¼üÒªËØ£º»á»°Ãû³Æ£¬»á»°³ÉÔ±
+            // åˆ›å»ºä¼šè¯ï¼Œå…¶å®é’ˆå¯¹çš„æ˜¯ç”¨æˆ·è¦åˆ›å»ºä¸€ä¸ªç¾¤èŠä¼šè¯
+            // 1. æå–è¯·æ±‚å…³é”®è¦ç´ ï¼šä¼šè¯åç§°ï¼Œä¼šè¯æˆå‘˜
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string cssname = request->chat_session_name();
 
-            // 2. Éú³É»á»°ID£¬ÏòÊı¾İ¿âÌí¼Ó»á»°ĞÅÏ¢£¬Ìí¼Ó»á»°³ÉÔ±ĞÅÏ¢
-            std::string cssid = uuid();
+            // 2. ç”Ÿæˆä¼šè¯IDï¼Œå‘æ•°æ®åº“æ·»åŠ ä¼šè¯ä¿¡æ¯ï¼Œæ·»åŠ ä¼šè¯æˆå‘˜ä¿¡æ¯
+            std::string cssid = UUID();
             ChatSession cs(cssid, cssname, ChatSessionType::GROUP);
             bool ret = _mysql_chat_session->insert(cs);
             if (ret == false)
             {
-                LOG_ERROR("{} - ÏòÊı¾İ¿âÌí¼Ó»á»°ĞÅÏ¢Ê§°Ü: {}", rid, cssname);
-                return Err_Response(rid, "ÏòÊı¾İ¿âÌí¼Ó»á»°ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - å‘æ•°æ®åº“æ·»åŠ ä¼šè¯ä¿¡æ¯å¤±è´¥: {}", rid, cssname);
+                return Err_Response(rid, "å‘æ•°æ®åº“æ·»åŠ ä¼šè¯ä¿¡æ¯å¤±è´¥!");
             }
             std::vector<ChatSessionMember> member_list;
             for (int i = 0; i < request->member_id_list_size(); i++)
@@ -438,10 +423,10 @@ namespace SnowK
             ret = _mysql_chat_session_member->append(member_list);
             if (ret == false)
             {
-                LOG_ERROR("{} - ÏòÊı¾İ¿âÌí¼Ó»á»°³ÉÔ±ĞÅÏ¢Ê§°Ü: {}", rid, cssname);
-                return Err_Response(rid, "ÏòÊı¾İ¿âÌí¼Ó»á»°³ÉÔ±ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - å‘æ•°æ®åº“æ·»åŠ ä¼šè¯æˆå‘˜ä¿¡æ¯å¤±è´¥: {}", rid, cssname);
+                return Err_Response(rid, "å‘æ•°æ®åº“æ·»åŠ ä¼šè¯æˆå‘˜ä¿¡æ¯å¤±è´¥!");
             }
-            // 3. ×éÖ¯ÏìÓ¦---×éÖ¯»á»°ĞÅÏ¢
+            // 3. ç»„ç»‡å“åº”---ç»„ç»‡ä¼šè¯ä¿¡æ¯
             response->set_request_id(rid);
             response->set_success(true);
             response->mutable_chat_session_info()->set_chat_session_id(cssid);
@@ -463,27 +448,27 @@ namespace SnowK
                 return;
             };
 
-            // ÓÃÓÚÓÃ»§²é¿´ÈºÁÄ³ÉÔ±ĞÅÏ¢µÄÊ±ºò£º½øĞĞ³ÉÔ±ĞÅÏ¢Õ¹Ê¾
-            // 1. ÌáÈ¡¹Ø¼üÒªËØ£ºÁÄÌì»á»°ID
+            // ç”¨äºç”¨æˆ·æŸ¥çœ‹ç¾¤èŠæˆå‘˜ä¿¡æ¯çš„æ—¶å€™ï¼šè¿›è¡Œæˆå‘˜ä¿¡æ¯å±•ç¤º
+            // 1. æå–å…³é”®è¦ç´ ï¼šèŠå¤©ä¼šè¯ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string cssid = request->chat_session_id();
-            // 2. ´ÓÊı¾İ¿â»ñÈ¡»á»°³ÉÔ±IDÁĞ±í
+            // 2. ä»æ•°æ®åº“è·å–ä¼šè¯æˆå‘˜IDåˆ—è¡¨
             auto member_id_lists = _mysql_chat_session_member->members(cssid);
             std::unordered_set<std::string> uid_list;
             for (const auto &id : member_id_lists)
             {
                 uid_list.insert(id);
             }
-            // 3. ´ÓÓÃ»§×Ó·şÎñÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢
+            // 3. ä»ç”¨æˆ·å­æœåŠ¡æ‰¹é‡è·å–ç”¨æˆ·ä¿¡æ¯
             std::unordered_map<std::string, UserInfo> user_list;
             bool ret = GetUserInfo(rid, uid_list, user_list);
             if (ret == false)
             {
-                LOG_ERROR("{} - ´ÓÓÃ»§×Ó·şÎñ»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü£¡", rid);
-                return Err_Response(rid, "´ÓÓÃ»§×Ó·şÎñ»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü!");
+                LOG_ERROR("{} - ä»ç”¨æˆ·å­æœåŠ¡è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥ï¼", rid);
+                return Err_Response(rid, "ä»ç”¨æˆ·å­æœåŠ¡è·å–ç”¨æˆ·ä¿¡æ¯å¤±è´¥!");
             }
-            // 4. ×éÖ¯ÏìÓ¦
+            // 4. ç»„ç»‡å“åº”
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &uit : user_list)
@@ -497,47 +482,55 @@ namespace SnowK
         bool GetRecentMsg(const std::string &rid,
                           const std::string &cssid, MessageInfo &msg)
         {
-            auto channel = _svrmgr_channels->choose(_message_service_name);
+            auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} - »ñÈ¡ÏûÏ¢×Ó·şÎñĞÅµÀÊ§°Ü£¡£¡", rid);
+                LOG_ERROR("{} - There are no message sub-service nodes available for access", rid);
                 return false;
             }
+
+            brpc::Controller cntl;
             GetRecentMsgReq req;
             GetRecentMsgRsp rsp;
             req.set_request_id(rid);
             req.set_chat_session_id(cssid);
             req.set_msg_count(1);
-            brpc::Controller cntl;
+
             SnowK::MsgStorageService_Stub stub(channel.get());
             stub.GetRecentMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed() == true)
             {
-                LOG_ERROR("{} - ÏûÏ¢´æ´¢×Ó·şÎñµ÷ÓÃÊ§°Ü: {}", rid, cntl.ErrorText());
+                LOG_ERROR("{} - The message subservice call failed: {}",
+                          rid, cntl.ErrorText());
                 return false;
             }
             if (rsp.success() == false)
             {
-                LOG_ERROR("{} - »ñÈ¡»á»° {} ×î½üÏûÏ¢Ê§°Ü: {}", rid, cssid, rsp.errmsg());
+                LOG_ERROR("{} - Failed to get recent messages for session {}: {}", rid, cssid, rsp.errmsg());
                 return false;
             }
+
             if (rsp.msg_list_size() > 0)
             {
                 msg.CopyFrom(rsp.msg_list(0));
                 return true;
             }
+
             return false;
         }
+
         bool GetUserInfo(const std::string &rid,
                          const std::unordered_set<std::string> &uid_list,
                          std::unordered_map<std::string, UserInfo> &user_list)
         {
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} - »ñÈ¡ÓÃ»§×Ó·şÎñĞÅµÀÊ§°Ü£¡£¡", rid);
+                LOG_ERROR("{} - There are no user sub-service nodes available for access", rid);
                 return false;
             }
+
+            brpc::Controller cntl;
             GetMultiUserInfoReq req;
             GetMultiUserInfoRsp rsp;
             req.set_request_id(rid);
@@ -545,23 +538,26 @@ namespace SnowK
             {
                 req.add_users_id(id);
             }
-            brpc::Controller cntl;
+
             SnowK::UserService_Stub stub(channel.get());
             stub.GetMultiUserInfo(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed() == true)
             {
-                LOG_ERROR("{} - ÓÃ»§×Ó·şÎñµ÷ÓÃÊ§°Ü: {}", rid, cntl.ErrorText());
+                LOG_ERROR("{} - The file subservice call failed: {}", rid, cntl.ErrorText());
                 return false;
             }
             if (rsp.success() == false)
             {
-                LOG_ERROR("{} - ÅúÁ¿»ñÈ¡ÓÃ»§ĞÅÏ¢Ê§°Ü: {}", rid, rsp.errmsg());
+                LOG_ERROR("{} - Failed to obtain user information in batches: {}", 
+                          rid, rsp.errmsg());
                 return false;
             }
+            
             for (const auto &user_it : rsp.users_info())
             {
                 user_list.insert(std::make_pair(user_it.first, user_it.second));
             }
+
             return true;
         }
 
