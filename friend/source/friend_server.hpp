@@ -1,4 +1,3 @@
-// 实现语音识别子服务
 #include <brpc/server.h>
 #include <butil/logging.h>
 
@@ -333,25 +332,19 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto sf_list = _mysql_chat_session->SingleChatSessions(uid);
-            //  1. 从单聊会话列表中，取出所有的好友ID，从用户子服务获取用户信息
             std::unordered_set<std::string> users_id_list;
             for (const auto &f : sf_list)
             {
                 users_id_list.insert(f.friend_id);
             }
-            std::unordered_map<std::string, UserInfo> user_list;
-            bool ret = GetUserInfo(rid, users_id_list, user_list);
-            if (ret == false)
-            {
-                LOG_ERROR("{} - 批量获取用户信息失败！", rid);
-                return Err_Response(rid, "批量获取用户信息失败!");
-            }
-            //  2. 设置响应会话信息：会话名称就是好友名称；会话头像就是好友头像
-            // 3. 从数据库中查询出用户的群聊会话列表
-            auto gc_list = _mysql_chat_session->groupChatSession(uid);
 
-            // 4. 根据所有的会话ID，从消息存储子服务获取会话最后一条消息
-            // 5. 组织响应
+            std::unordered_map<std::string, UserInfo> user_list;
+            if (GetUserInfo(rid, users_id_list, user_list) == false)
+            {
+                LOG_ERROR("{} - Failed to get user information in bulk", rid);
+                return Err_Response(rid, "Failed to get user information in bulk");
+            }
+
             for (const auto &f : sf_list)
             {
                 auto chat_session_info = response->add_chat_session_info_list();
@@ -359,31 +352,35 @@ namespace SnowK
                 chat_session_info->set_chat_session_id(f.chat_session_id);
                 chat_session_info->set_chat_session_name(user_list[f.friend_id].nickname());
                 chat_session_info->set_avatar(user_list[f.friend_id].avatar());
+
                 MessageInfo msg;
-                ret = GetRecentMsg(rid, f.chat_session_id, msg);
-                if (ret == false)
+                if (GetRecentMsg(rid, f.chat_session_id, msg) == false)
                 {
                     continue;
                 }
                 chat_session_info->mutable_prev_message()->CopyFrom(msg);
             }
+
+            auto gc_list = _mysql_chat_session->GroupChatSessions(uid);
             for (const auto &f : gc_list)
             {
                 auto chat_session_info = response->add_chat_session_info_list();
                 chat_session_info->set_chat_session_id(f.chat_session_id);
                 chat_session_info->set_chat_session_name(f.chat_session_name);
+
                 MessageInfo msg;
-                ret = GetRecentMsg(rid, f.chat_session_id, msg);
-                if (ret == false)
+                if (GetRecentMsg(rid, f.chat_session_id, msg) == false)
                 {
                     continue;
                 }
                 chat_session_info->mutable_prev_message()->CopyFrom(msg);
             }
+
             response->set_request_id(rid);
             response->set_success(true);
         }
 
+        // Creating a session is actually for users to create a group chat session
         virtual void ChatSessionCreate(::google::protobuf::RpcController *controller,
                                        const ::SnowK::ChatSessionCreateReq *request,
                                        ::SnowK::ChatSessionCreateRsp *response,
@@ -399,40 +396,39 @@ namespace SnowK
                 return;
             };
 
-            // 创建会话，其实针对的是用户要创建一个群聊会话
-            // 1. 提取请求关键要素：会话名称，会话成员
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string cssname = request->chat_session_name();
 
-            // 2. 生成会话ID，向数据库添加会话信息，添加会话成员信息
             std::string cssid = UUID();
             ChatSession cs(cssid, cssname, ChatSessionType::GROUP);
-            bool ret = _mysql_chat_session->insert(cs);
-            if (ret == false)
+            if (_mysql_chat_session->insert(cs) == false)
             {
-                LOG_ERROR("{} - 向数据库添加会话信息失败: {}", rid, cssname);
-                return Err_Response(rid, "向数据库添加会话信息失败!");
+                LOG_ERROR("{} - Failed to add session information to the database: {}", rid, cssname);
+                return Err_Response(rid, "Failed to add session information to the database");
             }
+
             std::vector<ChatSessionMember> member_list;
             for (int i = 0; i < request->member_id_list_size(); i++)
             {
                 ChatSessionMember csm(cssid, request->member_id_list(i));
                 member_list.push_back(csm);
             }
-            ret = _mysql_chat_session_member->append(member_list);
-            if (ret == false)
+
+            if (_mysql_chat_session_member->Append(member_list) == false)
             {
-                LOG_ERROR("{} - 向数据库添加会话成员信息失败: {}", rid, cssname);
-                return Err_Response(rid, "向数据库添加会话成员信息失败!");
+                LOG_ERROR("{} - Failed to add session member information to the database: {}", 
+                          rid, cssname);
+                return Err_Response(rid, "Failed to add session member information to the database");
             }
-            // 3. 组织响应---组织会话信息
+
             response->set_request_id(rid);
             response->set_success(true);
             response->mutable_chat_session_info()->set_chat_session_id(cssid);
             response->mutable_chat_session_info()->set_chat_session_name(cssname);
         }
 
+        // Used when users view group chat member information: display member information
         virtual void GetChatSessionMember(::google::protobuf::RpcController *controller,
                                           const ::SnowK::GetChatSessionMemberReq *request,
                                           ::SnowK::GetChatSessionMemberRsp *response,
@@ -448,27 +444,24 @@ namespace SnowK
                 return;
             };
 
-            // 用于用户查看群聊成员信息的时候：进行成员信息展示
-            // 1. 提取关键要素：聊天会话ID
             std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string cssid = request->chat_session_id();
-            // 2. 从数据库获取会话成员ID列表
-            auto member_id_lists = _mysql_chat_session_member->members(cssid);
+
+            auto member_id_lists = _mysql_chat_session_member->Members(cssid);
             std::unordered_set<std::string> uid_list;
             for (const auto &id : member_id_lists)
             {
                 uid_list.insert(id);
             }
-            // 3. 从用户子服务批量获取用户信息
+
             std::unordered_map<std::string, UserInfo> user_list;
-            bool ret = GetUserInfo(rid, uid_list, user_list);
-            if (ret == false)
+            if (GetUserInfo(rid, uid_list, user_list) == false)
             {
-                LOG_ERROR("{} - 从用户子服务获取用户信息失败！", rid);
-                return Err_Response(rid, "从用户子服务获取用户信息失败!");
+                LOG_ERROR("{} - Failed to get user information from user subservice", rid);
+                return Err_Response(rid, "Failed to get user information from user subservice");
             }
-            // 4. 组织响应
+
             response->set_request_id(rid);
             response->set_success(true);
             for (const auto &uit : user_list)
