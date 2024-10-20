@@ -11,7 +11,7 @@ DEFINE_int32(listen_port, 10006, "The RPC server listens on the port");
 DEFINE_int32(rpc_timeout, -1, "RPC call timeout period");
 DEFINE_int32(rpc_threads, 1, "The number of I/O threads of the rpc");
 
-DEFINE_string(instance_name, "/friend_service/instance", "当前实例名称");
+DEFINE_string(instance_name, "/friend_service/instance", "Name of the current instance");
 DEFINE_string(base_service, "/service", "The root directory of service monitoring");
 DEFINE_string(user_service, "/service/user_service", "The name of the file management subservice");
 DEFINE_string(message_service, "/service/message_service", "The name of the message management subservice");
