@@ -62,7 +62,7 @@ namespace SnowK
                                         .Append_Should_Match("phone.keyword", key)
                                         .Append_Should_Match("user_id.keyword", key)
                                         .Append_Should_Match("nickname", key)
-                                        .Append_Must_Not_Terms("user_id.keyword", uid_list) // TODO
+                                        .Append_Must_Not_Terms("user_id.keyword", uid_list)
                                         .Search();
             if (json_user.isArray() == false)
             {

@@ -6,6 +6,7 @@
 #include "mysql_chat_session.hpp"
 #include "mysql_relation.hpp"
 #include "mysql_apply.hpp"
+#include "es.hpp"
 #include "etcd.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
@@ -103,7 +104,7 @@ namespace SnowK
                 return Err_Response(rid, "Failed to delete friend information from the database");
             }
 
-            if (_mysql_chat_session->remove(uid, pid) == false)
+            if (_mysql_chat_session->Remove(uid, pid) == false)
             {
                 LOG_ERROR("{}- Failed to delete friend session information from the database", rid);
                 return Err_Response(rid, "Failed to delete friend session information from the database");
@@ -141,7 +142,7 @@ namespace SnowK
 
             if (_mysql_apply->Exists(uid, pid) == true)
             {
-                LOG_ERROR("{} - Failed to apply for a friend, have already applied \ 
+                LOG_ERROR("{} - Failed to apply for a friend, have already applied \
                           for a friend of the other party", rid, uid, pid);
                 return Err_Response(rid, "have already applied for a friend of the other party");
             }
@@ -402,7 +403,7 @@ namespace SnowK
 
             std::string cssid = UUID();
             ChatSession cs(cssid, cssname, ChatSessionType::GROUP);
-            if (_mysql_chat_session->insert(cs) == false)
+            if (_mysql_chat_session->Insert(cs) == false)
             {
                 LOG_ERROR("{} - Failed to add session information to the database: {}", rid, cssname);
                 return Err_Response(rid, "Failed to add session information to the database");

@@ -59,7 +59,7 @@ void Get_Apply_List(const std::string &uid1)
     }
 }
 
-void Process_Apply_Test(const std::string &uid1, bool agree, const std::string &apply_user_id)
+void Process_Apply_Test(const std::string &uid, bool agree, const std::string &apply_user_id)
 {
     auto channel = sm->Choose(FLAGS_friend_service);
     SnowK::FriendService_Stub stub(channel.get());
@@ -69,7 +69,7 @@ void Process_Apply_Test(const std::string &uid1, bool agree, const std::string &
     SnowK::FriendAddProcessRsp rsp;
 
     req.set_request_id(SnowK::UUID());
-    req.set_user_id(uid1);
+    req.set_user_id(uid);
     req.set_agree(agree);
     req.set_apply_user_id(apply_user_id);
     stub.FriendAddProcess(&cntl, &req, &rsp, nullptr);
@@ -83,7 +83,7 @@ void Process_Apply_Test(const std::string &uid1, bool agree, const std::string &
     }
 }
 
-void Search_Test(const std::string &uid1, const std::string &key)
+void Search_Test(const std::string &uid, const std::string &key)
 {
     auto channel = sm->Choose(FLAGS_friend_service);
     SnowK::FriendService_Stub stub(channel.get());
@@ -93,7 +93,7 @@ void Search_Test(const std::string &uid1, const std::string &key)
     SnowK::FriendSearchRsp rsp;
 
     req.set_request_id(SnowK::UUID());
-    req.set_user_id(uid1);
+    req.set_user_id(uid);
     req.set_search_key(key);
     stub.FriendSearch(&cntl, &req, &rsp, nullptr);
 
@@ -220,7 +220,7 @@ void Csslist_Test(const std::string &uid1)
 
     ASSERT_FALSE(cntl.Failed());
     ASSERT_TRUE(rsp.success());
-    
+
     for (int i = 0; i < rsp.chat_session_info_list_size(); i++)
     {
         std::cout << "-------------------\n";
@@ -247,40 +247,49 @@ int main(int argc, char *argv[])
 
     sm = std::make_shared<SnowK::ServiceManager>();
     sm->Declare(FLAGS_friend_service);
-    auto put_cb = std::bind(&SnowK::ServiceManager::onServiceOnline, sm.get(), std::placeholders::_1, std::placeholders::_2);
-    auto del_cb = std::bind(&SnowK::ServiceManager::onServiceOffline, sm.get(), std::placeholders::_1, std::placeholders::_2);
+
+    auto put_cb = std::bind(&SnowK::ServiceManager::ServiceOnline, sm.get(), std::placeholders::_1, std::placeholders::_2);
+    auto del_cb = std::bind(&SnowK::ServiceManager::ServiceOffline, sm.get(), std::placeholders::_1, std::placeholders::_2);
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
 
-    // apply_test("731f-50086884-0000", "c4dc-68239a9a-0001");
-    // apply_test("31ab-86a1209d-0000", "c4dc-68239a9a-0001");
-    // apply_test("053f-04e5e4c5-0001", "c4dc-68239a9a-0001");
-    // get_apply_list("c4dc-68239a9a-0001");
-    // process_apply_test("c4dc-68239a9a-0001", true, "731f-50086884-0000");
-    // process_apply_test("c4dc-68239a9a-0001", false, "31ab-86a1209d-0000");
-    // process_apply_test("c4dc-68239a9a-0001", true, "053f-04e5e4c5-0001");
-    // std::cout << "**********************\n";
-    // search_test("c4dc-68239a9a-0001", "猪");
-    // std::cout << "++++++++++++++++++++++\n";
-    // search_test("731f-50086884-0000", "猪");
-    // std::cout << "======================\n";
-    // search_test("31ab-86a1209d-0000", "乔治");
-    // friend_list_test("c4dc-68239a9a-0001");
-    // std::cout << "++++++++++++++++++++++\n";
-    // friend_list_test("731f-50086884-0000");
-    // std::cout << "++++++++++++++++++++++\n";
-    // friend_list_test("31ab-86a1209d-0000");
-    // remove_test("c4dc-68239a9a-0001", "053f-04e5e4c5-0001");
-    // std::vector<std::string> uidlist = {
-    //     "731f-50086884-0000",
-    //     "c4dc-68239a9a-0001",
-    //     "31ab-86a1209d-0000",
-    //     "053f-04e5e4c5-0001"};
-    // create_css_test("731f-50086884-0000", uidlist);
-    // cssmember_test("731f-50086884-0000", "36b5-edaf4987-0000");
-    // std::cout << "++++++++++++++++++++++\n";
-    // cssmember_test("c4dc-68239a9a-0001", "36b5-edaf4987-0000");
+    // Apply_Test("846e6111b5690000", "2e9235b101050003");
+    // Apply_Test("dd40103d33540001", "2e9235b101050003");
+    // Apply_Test("6d941c5ee3ef0002", "2e9235b101050003");
 
-    // csslist_test("c4dc-68239a9a-0001");
+    // Get_Apply_List("2e9235b101050003");
+
+    // Process_Apply_Test("2e9235b101050003", true, "846e6111b5690000");
+    // Process_Apply_Test("2e9235b101050003", false, "dd40103d33540001");
+    // Process_Apply_Test("2e9235b101050003", true, "6d941c5ee3ef0002");
+
+    // std::cout << "**********************\n";
+    // Search_Test("2e9235b101050003", "猪");
+    // std::cout << "++++++++++++++++++++++\n";
+    // Search_Test("6d941c5ee3ef0002", "猪");
+    // std::cout << "======================\n";
+    // Search_Test("846e6111b5690000", "猪");
+
+    // Friend_List_Test("2e9235b101050003");
+    // std::cout << "++++++++++++++++++++++\n";
+    // Friend_List_Test("6d941c5ee3ef0002");
+    // std::cout << "++++++++++++++++++++++\n";
+    // Friend_List_Test("846e6111b5690000");
+
+    // Remove_Test("2e9235b101050003", "846e6111b5690000");
+
+    // std::vector<std::string> uidlist = {
+    //     "846e6111b5690000",
+    //     "dd40103d33540001",
+    //     "6d941c5ee3ef0002",
+    //     "2e9235b101050003"
+    // };
+    // Create_Css_Test("6d941c5ee3ef0002", uidlist);
+
+    // Cssmember_Test("6d941c5ee3ef0002", "25f2a37515f20005");
+    // std::cout << "++++++++++++++++++++++\n";
+    // Cssmember_Test("2e9235b101050003", "25f2a37515f20005");
+
+    Csslist_Test("2e9235b101050003");
 
     return 0;
 }

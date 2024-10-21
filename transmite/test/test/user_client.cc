@@ -19,7 +19,7 @@ SnowK::ServiceManager::ptr user_channels;
 
 void Reg_User(const std::string &nickname, const std::string &pwd)
 {
-    auto channel = user_channels->Choose(FLAGS_user_service); // 获取通信信道
+    auto channel = user_channels->Choose(FLAGS_user_service);
 
     brpc::Controller cntl;
     SnowK::UserRegisterReq req;
@@ -62,19 +62,19 @@ int main(int argc, char *argv[])
 
     SnowK::Discovery::ptr dclient = std::make_shared<SnowK::Discovery>(FLAGS_etcd_host, FLAGS_base_service, put_cb, del_cb);
 
-    // Reg_User("SnowK", "123456");
-    // Reg_User("DieSnowK", "123456");
+    Reg_User("猪爸爸", "123456");
+    Reg_User("猪妈妈", "123456");
 
-    // std::string uid1, uid2;
-    // std::cout << "输入佩奇用户ID:";
-    // std::fflush(stdout);
-    // std::cin >> uid1;
-    // std::cout << "输入乔治用户ID:";
-    // std::fflush(stdout);
-    // std::cin >> uid2;
+    std::string uid1, uid2;
+    std::cout << "输入佩奇用户ID:";
+    std::fflush(stdout);
+    std::cin >> uid1;
+    std::cout << "输入乔治用户ID:";
+    std::fflush(stdout);
+    std::cin >> uid2;
 
-    Set_User_Avatar("731f500868840000", "SnowK Avatar");
-    Set_User_Avatar("c4dc68239a9a0001", "DieSnowK Avatar");
+    Set_User_Avatar(uid1, "猪爸爸头像数据");
+    Set_User_Avatar(uid2, "猪妈妈头像数据");
 
     return 0;
 }
