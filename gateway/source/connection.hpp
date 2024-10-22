@@ -22,6 +22,7 @@ namespace SnowK
         };
 
         using ptr = std::shared_ptr<Connection>;
+
         Connection() {}
         ~Connection() {}
 
@@ -47,37 +48,47 @@ namespace SnowK
                 LOG_ERROR("No persistent connection found for {} client", uid);
                 return server_t::connection_ptr();
             }
-            LOG_DEBUG("找到 {} 客户端的长连接！", uid);
+            
+            LOG_DEBUG("Locate the persistent connection for the {} client", uid);
             return it->second;
         }
 
+        // Obtained the persistent connection client information
         bool Client(const server_t::connection_ptr &conn, std::string &uid, std::string &ssid)
         {
             std::unique_lock<std::mutex> lock(_mutex);
+
             auto it = _conn_clients.find(conn);
             if (it == _conn_clients.end())
             {
-                LOG_ERROR("获取-未找到长连接 {} 对应的客户端信息！", (size_t)conn.get());
+                LOG_ERROR("Client information for persistent connection {}\
+                          not found", (size_t)conn.get());
                 return false;
             }
+
             uid = it->second.uid;
             ssid = it->second.ssid;
-            LOG_DEBUG("获取长连接客户端信息成功！");
+
+            LOG_DEBUG("Obtained the persistent connection client information");
             return true;
         }
 
         void Remove(const server_t::connection_ptr &conn)
         {
             std::unique_lock<std::mutex> lock(_mutex);
+
             auto it = _conn_clients.find(conn);
             if (it == _conn_clients.end())
             {
-                LOG_ERROR("删除-未找到长连接 {} 对应的客户端信息！", (size_t)conn.get());
+                LOG_ERROR("Client information for persistent connection {} \
+                          was not found", (size_t)conn.get());
                 return;
             }
+
             _uid_connections.erase(it->second.uid);
             _conn_clients.erase(it);
-            LOG_DEBUG("删除长连接信息完毕！");
+
+            LOG_DEBUG("Deleted persistent connection information is complete");
         }
 
     private:
