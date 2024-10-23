@@ -61,16 +61,25 @@ namespace SnowK
                       const std::string message_service_name,
                       const std::string transmite_service_name,
                       const std::string friend_service_name)
-            : _redis_session(std::make_shared<Session>(redis_client)), _redis_status(std::make_shared<Status>(redis_client)), _svrmgr_channels(channels), _service_discoverer(service_discoverer), _user_service_name(user_service_name), _file_service_name(file_service_name), _speech_service_name(speech_service_name), _message_service_name(message_service_name), _transmite_service_name(transmite_service_name), _friend_service_name(friend_service_name), _connections(std::make_shared<Connection>())
+            : _redis_session(std::make_shared<Session>(redis_client))
+            , _redis_status(std::make_shared<Status>(redis_client))
+            , _svrmgr_channels(channels)
+            , _service_discoverer(service_discoverer)
+            , _user_service_name(user_service_name)
+            , _file_service_name(file_service_name)
+            , _speech_service_name(speech_service_name)
+            , _message_service_name(message_service_name)
+            , _transmite_service_name(transmite_service_name)
+            , _friend_service_name(friend_service_name)
+            , _connections(std::make_shared<Connection>())
         {
 
             _ws_server.set_access_channels(websocketpp::log::alevel::none);
             _ws_server.init_asio();
-            _ws_server.set_open_handler(std::bind(&GatewayServer::onOpen, this, std::placeholders::_1));
-            _ws_server.set_close_handler(std::bind(&GatewayServer::onClose, this, std::placeholders::_1));
-            auto wscb = std::bind(&GatewayServer::onMessage, this,
-                                  std::placeholders::_1, std::placeholders::_2);
-            _ws_server.set_message_handler(wscb);
+            _ws_server.set_open_handler(std::bind(&GatewayServer::WsOnOpen, this, std::placeholders::_1));
+            _ws_server.set_close_handler(std::bind(&GatewayServer::WsOnClose, this, std::placeholders::_1));
+            _ws_server.set_message_handler(std::bind(&GatewayServer::WsOnMessage, this,
+                                                     std::placeholders::_1, std::placeholders::_2));
             _ws_server.set_reuse_addr(true);
             _ws_server.listen(websocket_port);
             _ws_server.start_accept();
@@ -199,506 +208,529 @@ namespace SnowK
         }
 
     private:
-        void onOpen(websocketpp::connection_hdl hdl)
+        void WsOnOpen(websocketpp::connection_hdl hdl)
         {
-            LOG_DEBUG("websocket长连接建立成功 {}", (size_t)_ws_server.get_con_from_hdl(hdl).get());
+            LOG_DEBUG("A persistent websocket connection is established {}", 
+                      (size_t)_ws_server.get_con_from_hdl(hdl).get());
         }
-        void onClose(websocketpp::connection_hdl hdl)
+
+        // Cleanup when a persistent connection is lost
+        void WsOnClose(websocketpp::connection_hdl hdl)
         {
-            // 长连接断开时做的清理工作
-            // 0. 通过连接对象，获取对应的用户ID与登录会话ID
             auto conn = _ws_server.get_con_from_hdl(hdl);
             std::string uid, ssid;
-            bool ret = _connections->client(conn, uid, ssid);
-            if (ret == false)
+            if (_connections->Client(conn, uid, ssid) == false)
             {
-                LOG_WARN("长连接断开，未找到长连接对应的客户端信息！");
+                LOG_WARN("The persistent connection is disconnected, and the client \
+                         information corresponding to the persistent connection cannot be found");
                 return;
             }
-            // 1. 移除登录会话信息
-            _redis_session->remove(ssid);
-            // 2. 移除登录状态信息
-            _redis_status->remove(uid);
-            // 3. 移除长连接管理数据
-            _connections->remove(conn);
-            LOG_DEBUG("{} {} {} 长连接断开，清理缓存数据!", ssid, uid, (size_t)conn.get());
+
+            _redis_session->Remove(ssid);
+            _redis_status->Remove(uid);
+            _connections->Remove(conn);
+
+            LOG_DEBUG("{} {} {} If the persistent connection is disconnected, \
+                      the cache data will be cleared", ssid, uid, (size_t)conn.get());
         }
-        void keepAlive(server_t::connection_ptr conn)
+
+        void KeepAlive(server_t::connection_ptr conn)
         {
             if (!conn || conn->get_state() != websocketpp::session::state::value::open)
             {
-                LOG_DEBUG("非正常连接状态，结束连接保活");
+                LOG_WARN("If the connection is abnormal, the connection \
+                          will be kept alive when the connection is terminated");
                 return;
             }
+
             conn->ping("");
-            _ws_server.set_timer(60000, std::bind(&GatewayServer::keepAlive, this, conn));
+            _ws_server.set_timer(60000, std::bind(&GatewayServer::KeepAlive, this, conn));
         }
-        void onMessage(websocketpp::connection_hdl hdl, server_t::message_ptr msg)
+
+        // After receiving the first message, the client persists the 
+        // client connection for management based on the session ID in the message
+        void WsOnMessage(websocketpp::connection_hdl hdl, server_t::message_ptr msg)
         {
-            // 收到第一条消息后，根据消息中的会话ID进行身份识别，将客户端长连接添加管理
-            // 1. 取出长连接对应的连接对象
             auto conn = _ws_server.get_con_from_hdl(hdl);
-            // 2. 针对消息内容进行反序列化 -- ClientAuthenticationReq -- 提取登录会话ID
+
             ClientAuthenticationReq request;
-            bool ret = request.ParseFromString(msg->get_payload());
-            if (ret == false)
+            if (request.ParseFromString(msg->get_payload()) == false)
             {
-                LOG_ERROR("长连接身份识别失败：正文反序列化失败！");
-                _ws_server.close(hdl, websocketpp::close::status::unsupported_data, "正文反序列化失败!");
+                LOG_ERROR("Persistent connection identification failure: The body deserialization fails");
+                _ws_server.close(hdl, websocketpp::close::status::unsupported_data, "Body deserialization failed");
                 return;
             }
-            // 3. 在会话信息缓存中，查找会话信息
+
             std::string ssid = request.session_id();
-            auto uid = _redis_session->uid(ssid);
-            // 4. 会话信息不存在则关闭连接
+            auto uid = _redis_session->Uid(ssid);
+
+            // If not exists
             if (!uid)
             {
-                LOG_ERROR("长连接身份识别失败：未找到会话信息 {}！", ssid);
-                _ws_server.close(hdl, websocketpp::close::status::unsupported_data, "未找到会话信息!");
+                LOG_ERROR("Persistent connection identification failed: \
+                          No session information found {}", ssid);
+                _ws_server.close(hdl, websocketpp::close::status::unsupported_data, 
+                                 "Session information not found");
                 return;
             }
-            // 5. 会话信息存在，则添加长连接管理
-            _connections->insert(conn, *uid, ssid);
-            LOG_DEBUG("新增长连接管理：{}-{}-{}", ssid, *uid, (size_t)conn.get());
-            keepAlive(conn);
+
+            // If exists
+            _connections->Insert(conn, *uid, ssid);
+            KeepAlive(conn);
+            LOG_DEBUG("New Growth Connectivity Management: {}-{}-{}", ssid, *uid, (size_t)conn.get());
         }
+
         void GetPhoneVerifyCode(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             PhoneVerifyCodeReq req;
             PhoneVerifyCodeRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取短信验证码请求正文反序列化失败！");
-                return err_response("获取短信验证码请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the request body to obtain the SMS verification code");
+                return Err_Response("Failed to deserialize the request body to obtain the SMS verification code");
             }
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.GetPhoneVerifyCode(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void UserRegister(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             UserRegisterReq req;
             UserRegisterRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户名注册请求正文反序列化失败！");
-                return err_response("用户名注册请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the user name registration request body");
+                return Err_Response("Failed to deserialize the user name registration request body");
             }
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.UserRegister(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void UserLogin(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             UserLoginReq req;
             UserLoginRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户登录请求正文反序列化失败！");
-                return err_response("用户登录请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize user login request body");
+                return Err_Response("Failed to deserialize user login request body");
             }
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.UserLogin(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void PhoneRegister(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             PhoneRegisterReq req;
             PhoneRegisterRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("手机号注册请求正文反序列化失败！");
-                return err_response("手机号注册请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the mobile phone number registration request");
+                return Err_Response("Failed to deserialize the body of the mobile phone number registration request");
             }
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.PhoneRegister(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void PhoneLogin(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             PhoneLoginReq req;
             PhoneLoginRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("手机号登录请求正文反序列化失败！");
-                return err_response("手机号登录请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the mobile phone number login request");
+                return Err_Response("Failed to deserialize the body of the mobile phone number login request");
             }
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.PhoneLogin(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
+        // Authentication is required to start with the following APIs:
         void GetUserInfo(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             GetUserInfoReq req;
             GetUserInfoRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取用户信息请求正文反序列化失败！");
-                return err_response("获取用户信息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the request to get user information");
+                return Err_Response("Failed to deserialize the body of the request to get user information");
             }
-            // 2. 客户端身份识别与鉴权
+
+            // Client Identification and Authentication
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.GetUserInfo(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void SetUserAvatar(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             SetUserAvatarReq req;
             SetUserAvatarRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
+
             bool ret = req.ParseFromString(request.body);
             if (ret == false)
             {
-                LOG_ERROR("用户头像设置请求正文反序列化失败！");
-                return err_response("用户头像设置请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the user avatar setting request");
+                return Err_Response("Failed to deserialize the body of the user avatar setting request");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.SetUserAvatar(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void SetUserNickname(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             SetUserNicknameReq req;
             SetUserNicknameRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户昵称设置请求正文反序列化失败！");
-                return err_response("用户昵称设置请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of user nickname setting request");
+                return Err_Response("Failed to deserialize the body of user nickname setting request");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.SetUserNickname(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void SetUserDescription(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             SetUserDescriptionReq req;
             SetUserDescriptionRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户签名设置请求正文反序列化失败！");
-                return err_response("用户签名设置请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the user signature setting request");
+                return Err_Response("Failed to deserialize the body of the user signature setting request");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.SetUserDescription(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
+        // TODO
         void SetUserPhoneNumber(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             SetUserPhoneNumberReq req;
             SetUserPhoneNumberRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("用户手机号设置请求正文反序列化失败！");
-                return err_response("用户手机号设置请求正文反序列化失败！");
+                return Err_Response("用户手机号设置请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.SetUserPhoneNumber(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
-                return err_response("用户子服务调用失败！");
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
+                return Err_Response("User sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetFriendList(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 取出http请求正文，将正文进行反序列化
             GetFriendListReq req;
             GetFriendListRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取好友列表请求正文反序列化失败！");
-                return err_response("获取好友列表请求正文反序列化失败！");
+                return Err_Response("获取好友列表请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 2. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.GetFriendList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
-            // 3. 得到用户子服务的响应后，将响应内容进行序列化作为http响应正文
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
@@ -708,23 +740,26 @@ namespace SnowK
             auto rsp = std::make_shared<GetUserInfoRsp>();
             req.set_request_id(rid);
             req.set_user_id(uid);
-            // 2. 将请求转发给用户子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_user_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
                 return std::shared_ptr<GetUserInfoRsp>();
             }
-            SnowK::UserService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::UserService_Stub stub(channel.get());
             stub.GetUserInfo(&cntl, &req, rsp.get(), nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 用户子服务调用失败！", req.request_id());
+                LOG_ERROR("{} User sub-service call failed", req.request_id());
                 return std::shared_ptr<GetUserInfoRsp>();
             }
+
             return rsp;
         }
+
         void FriendAdd(const httplib::Request &request, httplib::Response &response)
         {
             // 好友申请的业务处理中，好友子服务其实只是在数据库创建了申请事件
@@ -732,42 +767,44 @@ namespace SnowK
             // 1. 正文的反序列化，提取关键要素：登录会话ID
             FriendAddReq req;
             FriendAddRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("申请好友请求正文反序列化失败！");
-                return err_response("申请好友请求正文反序列化失败！");
+                return Err_Response("申请好友请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.FriendAdd(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
+
             // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             auto conn = _connections->connection(req.respondent_id());
             if (rsp.success() && conn)
@@ -777,7 +814,7 @@ namespace SnowK
                 if (!user_rsp)
                 {
                     LOG_ERROR("{} 获取当前客户端用户信息失败！", req.request_id());
-                    return err_response("获取当前客户端用户信息失败！");
+                    return Err_Response("获取当前客户端用户信息失败！");
                 }
                 NotifyMessage notify;
                 notify.set_notify_type(NotifyType::FRIEND_ADD_APPLY_NOTIFY);
@@ -787,46 +824,47 @@ namespace SnowK
             // 5. 向客户端进行响应
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void FriendAddProcess(const httplib::Request &request, httplib::Response &response)
         {
-            // 好友申请的处理-----
             FriendAddProcessReq req;
             FriendAddProcessRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("好友申请处理请求正文反序列化失败！");
-                return err_response("好友申请处理请求正文反序列化失败！");
+                return Err_Response("好友申请处理请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.FriendAddProcess(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
 
             if (rsp.success())
@@ -835,13 +873,13 @@ namespace SnowK
                 if (!process_user_rsp)
                 {
                     LOG_ERROR("{} 获取用户信息失败！", req.request_id());
-                    return err_response("获取用户信息失败！");
+                    return Err_Response("获取用户信息失败！");
                 }
                 auto apply_user_rsp = _GetUserInfo(req.request_id(), req.apply_user_id());
                 if (!process_user_rsp)
                 {
                     LOG_ERROR("{} 获取用户信息失败！", req.request_id());
-                    return err_response("获取用户信息失败！");
+                    return Err_Response("获取用户信息失败！");
                 }
                 auto process_conn = _connections->connection(*uid);
                 if (process_conn)
@@ -894,47 +932,49 @@ namespace SnowK
             // 6. 对客户端进行响应
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void FriendRemove(const httplib::Request &request, httplib::Response &response)
         {
-            // 1. 正文的反序列化，提取关键要素：登录会话ID
             FriendRemoveReq req;
             FriendRemoveRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("删除好友请求正文反序列化失败！");
-                return err_response("删除好友请求正文反序列化失败！");
+                return Err_Response("删除好友请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No user sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.FriendRemove(&cntl, &req, &rsp, nullptr);
-            if (cntl.Failed())
+            if (!channel)
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
+
             // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             auto conn = _connections->connection(req.peer_id());
             if (rsp.success() && conn)
@@ -945,221 +985,232 @@ namespace SnowK
                 notify.mutable_friend_remove()->set_user_id(*uid);
                 conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void FriendSearch(const httplib::Request &request, httplib::Response &response)
         {
             FriendSearchReq req;
             FriendSearchRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("用户搜索请求正文反序列化失败！");
-                return err_response("用户搜索请求正文反序列化失败！");
+                return Err_Response("用户搜索请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.FriendSearch(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetPendingFriendEventList(const httplib::Request &request, httplib::Response &response)
         {
             GetPendingFriendEventListReq req;
             GetPendingFriendEventListRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取待处理好友申请请求正文反序列化失败！");
-                return err_response("获取待处理好友申请请求正文反序列化失败！");
+                return Err_Response("获取待处理好友申请请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.GetPendingFriendEventList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetChatSessionList(const httplib::Request &request, httplib::Response &response)
         {
             GetChatSessionListReq req;
             GetChatSessionListRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取聊天会话列表请求正文反序列化失败！");
-                return err_response("获取聊天会话列表请求正文反序列化失败！");
+                return Err_Response("获取聊天会话列表请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.GetChatSessionList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetChatSessionMember(const httplib::Request &request, httplib::Response &response)
         {
             GetChatSessionMemberReq req;
             GetChatSessionMemberRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取聊天会话成员请求正文反序列化失败！");
-                return err_response("获取聊天会话成员请求正文反序列化失败！");
+                return Err_Response("获取聊天会话成员请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.GetChatSessionMember(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void ChatSessionCreate(const httplib::Request &request, httplib::Response &response)
         {
             ChatSessionCreateReq req;
             ChatSessionCreateRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("创建聊天会话请求正文反序列化失败！");
-                return err_response("创建聊天会话请求正文反序列化失败！");
+                return Err_Response("创建聊天会话请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_friend_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No friend sub-service node found to provide business processing");
             }
-            SnowK::FriendService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FriendService_Stub stub(channel.get());
             stub.ChatSessionCreate(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 好友子服务调用失败！", req.request_id());
-                return err_response("好友子服务调用失败！");
+                LOG_ERROR("{} friend sub-service call failed", req.request_id());
+                return Err_Response("friend sub-service call failed!");
             }
+
             // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             if (rsp.success())
             {
@@ -1179,397 +1230,414 @@ namespace SnowK
                     LOG_DEBUG("对群聊成员 {} 进行会话创建通知", req.member_id_list(i));
                 }
             }
-            // 5. 向客户端进行响应
+
             rsp.clear_chat_session_info();
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetHistoryMsg(const httplib::Request &request, httplib::Response &response)
         {
             GetHistoryMsgReq req;
             GetHistoryMsgRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取区间消息请求正文反序列化失败！");
-                return err_response("获取区间消息请求正文反序列化失败！");
+                return Err_Response("获取区间消息请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_message_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No message sub-service node found to provide business processing");
             }
+
             SnowK::MsgStorageService_Stub stub(channel.get());
             brpc::Controller cntl;
             stub.GetHistoryMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 消息存储子服务调用失败！", req.request_id());
-                return err_response("消息存储子服务调用失败！");
+                LOG_ERROR("{} message sub-service call failed", req.request_id());
+                return Err_Response("message sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetRecentMsg(const httplib::Request &request, httplib::Response &response)
         {
             GetRecentMsgReq req;
             GetRecentMsgRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("获取最近消息请求正文反序列化失败！");
-                return err_response("获取最近消息请求正文反序列化失败！");
+                return Err_Response("获取最近消息请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_message_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No message sub-service node found to provide business processing");
             }
-            SnowK::MsgStorageService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::MsgStorageService_Stub stub(channel.get());
             stub.GetRecentMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 消息存储子服务调用失败！", req.request_id());
-                return err_response("消息存储子服务调用失败！");
+                LOG_ERROR("{} message sub-service call failed", req.request_id());
+                return Err_Response("message sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void MsgSearch(const httplib::Request &request, httplib::Response &response)
         {
             MsgSearchReq req;
             MsgSearchRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("消息搜索请求正文反序列化失败！");
-                return err_response("消息搜索请求正文反序列化失败！");
+                return Err_Response("消息搜索请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_message_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No message sub-service node found to provide business processing");
             }
-            SnowK::MsgStorageService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::MsgStorageService_Stub stub(channel.get());
             stub.MsgSearch(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 消息存储子服务调用失败！", req.request_id());
-                return err_response("消息存储子服务调用失败！");
+                LOG_ERROR("{} message sub-service call failed", req.request_id());
+                return Err_Response("message sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetSingleFile(const httplib::Request &request, httplib::Response &response)
         {
             GetSingleFileReq req;
             GetSingleFileRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("单文件下载请求正文反序列化失败！");
-                return err_response("单文件下载请求正文反序列化失败！");
+                return Err_Response("单文件下载请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_file_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No file sub-service node found to provide business processing");
             }
-            SnowK::FileService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FileService_Stub stub(channel.get());
             stub.GetSingleFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 文件存储子服务调用失败！", req.request_id());
-                return err_response("文件存储子服务调用失败！");
+                LOG_ERROR("{} file sub-service call failed", req.request_id());
+                return Err_Response("file sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void GetMultiFile(const httplib::Request &request, httplib::Response &response)
         {
             GetMultiFileReq req;
             GetMultiFileRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("单文件下载请求正文反序列化失败！");
-                return err_response("单文件下载请求正文反序列化失败！");
+                return Err_Response("单文件下载请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_file_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No file sub-service node found to provide business processing");
             }
-            SnowK::FileService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FileService_Stub stub(channel.get());
             stub.GetMultiFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 文件存储子服务调用失败！", req.request_id());
-                return err_response("文件存储子服务调用失败！");
+                LOG_ERROR("{} file sub-service call failed", req.request_id());
+                return Err_Response("file sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void PutSingleFile(const httplib::Request &request, httplib::Response &response)
         {
             PutSingleFileReq req;
             PutSingleFileRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("单文件上传请求正文反序列化失败！");
-                return err_response("单文件上传请求正文反序列化失败！");
+                return Err_Response("单文件上传请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_file_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No file sub-service node found to provide business processing");
             }
-            SnowK::FileService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FileService_Stub stub(channel.get());
             stub.PutSingleFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 文件存储子服务调用失败！", req.request_id());
-                return err_response("文件存储子服务调用失败！");
+                LOG_ERROR("{} file sub-service call failed", req.request_id());
+                return Err_Response("file sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void PutMultiFile(const httplib::Request &request, httplib::Response &response)
         {
             PutMultiFileReq req;
             PutMultiFileRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("批量文件上传请求正文反序列化失败！");
-                return err_response("批量文件上传请求正文反序列化失败！");
+                return Err_Response("批量文件上传请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_file_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No file sub-service node found to provide business processing");
             }
-            SnowK::FileService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::FileService_Stub stub(channel.get());
             stub.PutMultiFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 文件存储子服务调用失败！", req.request_id());
-                return err_response("文件存储子服务调用失败！");
+                LOG_ERROR("{} file sub-service call failed", req.request_id());
+                return Err_Response("file sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
+
         void SpeechRecognition(const httplib::Request &request, httplib::Response &response)
         {
-            LOG_DEBUG("收到语音转文字请求！");
             SpeechRecognitionReq req;
             SpeechRecognitionRsp rsp;
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("语音识别请求正文反序列化失败！");
-                return err_response("语音识别请求正文反序列化失败！");
+                return Err_Response("语音识别请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_speech_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_speech_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No speech sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No speech sub-service node found to provide business processing");
             }
-            SnowK::SpeechService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::SpeechService_Stub stub(channel.get());
             stub.SpeechRecognition(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 语音识别子服务调用失败！", req.request_id());
-                return err_response("语音识别子服务调用失败！");
+                LOG_ERROR("{} speech sub-service call failed", req.request_id());
+                return Err_Response("speech sub-service call failed!");
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
         void NewMessage(const httplib::Request &request, httplib::Response &response)
         {
             NewMessageReq req;
-            NewMessageRsp rsp;               // 这是给客户端的响应
-            GetTransmitTargetRsp target_rsp; // 这是请求子服务的响应
-            auto err_response = [&req, &rsp, &response](const std::string &errmsg) -> void
+            NewMessageRsp rsp;               // Response to the client
+            GetTransmitTargetRsp target_rsp; // Response to the subservice
+            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
             {
                 rsp.set_success(false);
                 rsp.set_errmsg(errmsg);
                 response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
             };
-            bool ret = req.ParseFromString(request.body);
-            if (ret == false)
+
+            if (req.ParseFromString(request.body) == false)
             {
                 LOG_ERROR("新消息请求正文反序列化失败！");
-                return err_response("新消息请求正文反序列化失败！");
+                return Err_Response("新消息请求正文反序列化失败！");
             }
-            // 2. 客户端身份识别与鉴权
+
             std::string ssid = req.session_id();
-            auto uid = _redis_session->uid(ssid);
+            auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} 获取登录会话关联用户信息失败！", ssid);
-                return err_response("获取登录会话关联用户信息失败！");
+                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
+                return Err_Response("Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
-            // 3. 将请求转发给好友子服务进行业务处理
-            auto channel = _svrmgr_channels->choose(_transmite_service_name);
+
+            auto channel = _svrmgr_channels->Choose(_transmite_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} 未找到可提供业务处理的用户子服务节点！", req.request_id());
-                return err_response("未找到可提供业务处理的用户子服务节点！");
+                LOG_ERROR("{} No transmite sub-service node found to provide business processing", req.request_id());
+                return Err_Response("No transmite sub-service node found to provide business processing");
             }
-            SnowK::MsgTransmitService_Stub stub(channel.get());
+
             brpc::Controller cntl;
+            SnowK::MsgTransmitService_Stub stub(channel.get());
             stub.GetTransmitTarget(&cntl, &req, &target_rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} 消息转发子服务调用失败！", req.request_id());
-                return err_response("消息转发子服务调用失败！");
+                LOG_ERROR("{} file transmite-service call failed", req.request_id());
+                return Err_Response("file transmite-service call failed!");
             }
+
             // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             if (target_rsp.success())
             {
@@ -1590,7 +1658,7 @@ namespace SnowK
                     conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
             }
-            // 5. 向客户端进行响应
+
             rsp.set_request_id(req.request_id());
             rsp.set_success(target_rsp.success());
             rsp.set_errmsg(target_rsp.errmsg());
@@ -1615,7 +1683,7 @@ namespace SnowK
         server_t _ws_server;
         httplib::Server _http_server;
         std::thread _http_thread;
-    };
+    }; // end of GatewayServer
 
     // Builder Pattern
     class GatewayServerBuilder

@@ -1,8 +1,9 @@
 syntax = "proto3";
-package bite_im;
+package SnowK;
 option cc_generic_services = true;
 
-message ClientAuthenticationReq {
+message ClientAuthenticationReq 
+{
     string request_id = 1;
     string session_id = 2; // 用于向服务器表明当前长连接客户端的身份
 }
