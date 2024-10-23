@@ -85,117 +85,117 @@ namespace SnowK
             _ws_server.start_accept();
 
             _http_server.Post(GET_PHONE_VERIFY_CODE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetPhoneVerifyCode, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetPhoneVerifyCode, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(USERNAME_REGISTER,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::UserRegister, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::UserRegister, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(USERNAME_LOGIN,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::UserLogin, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::UserLogin, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(PHONE_REGISTER,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::PhoneRegister, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::PhoneRegister, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(PHONE_LOGIN,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::PhoneLogin, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::PhoneLogin, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(GET_USERINFO,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetUserInfo, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetUserInfo, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(SET_USER_AVATAR,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::SetUserAvatar, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::SetUserAvatar, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(SET_USER_NICKNAME,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::SetUserNickname, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::SetUserNickname, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(SET_USER_DESC,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::SetUserDescription, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::SetUserDescription, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(SET_USER_PHONE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::SetUserPhoneNumber, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::SetUserPhoneNumber, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_GET_LIST,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetFriendList, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetFriendList, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_APPLY,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::FriendAdd, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::FriendAdd, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_APPLY_PROCESS,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::FriendAddProcess, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::FriendAddProcess, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_REMOVE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::FriendRemove, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::FriendRemove, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_SEARCH,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::FriendSearch, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::FriendSearch, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FRIEND_GET_PENDING_EV,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetPendingFriendEventList, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetPendingFriendEventList, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(CSS_GET_LIST,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetChatSessionList, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetChatSessionList, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(CSS_CREATE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::ChatSessionCreate, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::ChatSessionCreate, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(CSS_GET_MEMBER,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetChatSessionMember, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetChatSessionMember, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(MSG_GET_RANGE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetHistoryMsg, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetHistoryMsg, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(MSG_GET_RECENT,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetRecentMsg, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetRecentMsg, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(MSG_KEY_SEARCH,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::MsgSearch, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::MsgSearch, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(NEW_MESSAGE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::NewMessage, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::NewMessage, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FILE_GET_SINGLE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetSingleFile, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetSingleFile, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FILE_GET_MULTI,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::GetMultiFile, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::GetMultiFile, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FILE_PUT_SINGLE,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::PutSingleFile, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::PutSingleFile, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(FILE_PUT_MULTI,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::PutMultiFile, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::PutMultiFile, this,
+                                std::placeholders::_1, std::placeholders::_2));
             _http_server.Post(SPEECH_RECOGNITION,
-                              (httplib::Server::Handler)std::bind(
-                                  &GatewayServer::SpeechRecognition, this,
-                                  std::placeholders::_1, std::placeholders::_2));
+                                (httplib::Server::Handler)std::bind(
+                                &GatewayServer::SpeechRecognition, this,
+                                std::placeholders::_1, std::placeholders::_2));
 
             _http_thread = std::thread([this, http_port]()
                                        { _http_server.listen("0.0.0.0", http_port); });
@@ -828,7 +828,6 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
-        // TODO
         void FriendAddProcess(const httplib::Request &request, httplib::Response &response)
         {
             FriendAddProcessReq req;
@@ -874,33 +873,18 @@ namespace SnowK
 
             if (rsp.success())
             {
-                // TODO
                 auto process_user_rsp = _GetUserInfo(req.request_id(), *uid);
-                if (!process_user_rsp)
-                {
-                    LOG_ERROR("{} 获取用户信息失败！", req.request_id());
-                    return Err_Response("获取用户信息失败！");
-                }
-
                 auto apply_user_rsp = _GetUserInfo(req.request_id(), req.apply_user_id());
-                if (!process_user_rsp)
+                if (!process_user_rsp || !apply_user_rsp)
                 {
-                    LOG_ERROR("{} 获取用户信息失败！", req.request_id());
-                    return Err_Response("获取用户信息失败！");
+                    LOG_ERROR("{} Failed to get the current client user information", req.request_id());
+                    return Err_Response("Failed to get the current client user information");
                 }
 
-                auto process_conn = _connections->Connection(*uid);
-                if (process_conn)
-                    LOG_DEBUG("找到处理人的长连接！");
-                else
-                    LOG_DEBUG("未找到处理人的长连接！");
+                auto process_conn = _connections->GetConnection(*uid);
+                auto apply_conn = _connections->GetConnection(req.apply_user_id());
 
-                auto apply_conn = _connections->Connection(req.apply_user_id());
-                if (apply_conn)
-                    LOG_DEBUG("找到申请人的长连接！");
-                else
-                    LOG_DEBUG("未找到申请人的长连接！");
-
+                // Notify the applicant
                 if (apply_conn)
                 {
                     NotifyMessage notify;
@@ -908,14 +892,15 @@ namespace SnowK
                     auto process_result = notify.mutable_friend_process_result();
                     process_result->mutable_user_info()->CopyFrom(process_user_rsp->user_info());
                     process_result->set_agree(req.agree());
+                    
                     apply_conn->send(notify.SerializeAsString(),
                                      websocketpp::frame::opcode::value::binary);
-                    LOG_DEBUG("对申请人进行申请处理结果通知！");
                 }
 
-                // 5. 若处理结果是同意 --- 会伴随着单聊会话的创建 -- 因此需要对双方进行会话创建的通知
+                // Notify both parties of the session creation
+                // Session information is processor information
                 if (req.agree() && apply_conn)
-                { // 对申请人的通知---会话信息就是处理人信息
+                {
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_SESSION_CREATE_NOTIFY);
                     auto chat_session = notify.mutable_new_chat_session_info();
@@ -923,11 +908,13 @@ namespace SnowK
                     chat_session->mutable_chat_session_info()->set_chat_session_id(rsp.new_session_id());
                     chat_session->mutable_chat_session_info()->set_chat_session_name(process_user_rsp->user_info().nickname());
                     chat_session->mutable_chat_session_info()->set_avatar(process_user_rsp->user_info().avatar());
+
                     apply_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
 
+                // Session information is applicant  information
                 if (req.agree() && process_conn)
-                { // 对处理人的通知 --- 会话信息就是申请人信息
+                {
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_SESSION_CREATE_NOTIFY);
                     auto chat_session = notify.mutable_new_chat_session_info();
@@ -935,9 +922,10 @@ namespace SnowK
                     chat_session->mutable_chat_session_info()->set_chat_session_id(rsp.new_session_id());
                     chat_session->mutable_chat_session_info()->set_chat_session_name(apply_user_rsp->user_info().nickname());
                     chat_session->mutable_chat_session_info()->set_avatar(apply_user_rsp->user_info().avatar());
+
                     process_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
-            }
+            } // end of if (rsp.success())
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
@@ -984,7 +972,7 @@ namespace SnowK
                 return Err_Response("No friend sub-service node found to provide business processing");
             }
 
-            auto conn = _connections->Connection(req.peer_id());
+            auto conn = _connections->GetConnection(req.peer_id());
             if (rsp.success() && conn)
             {
                 NotifyMessage notify;
@@ -1226,7 +1214,6 @@ namespace SnowK
                     auto conn = _connections->connection(req.member_id_list(i));
                     if (!conn)
                     {
-                        LOG_WARN("未找到群聊成员 {} 长连接", req.member_id_list(i));
                         continue;
                     }
 
@@ -1276,8 +1263,8 @@ namespace SnowK
                 return Err_Response("No message sub-service node found to provide business processing");
             }
 
-            SnowK::MsgStorageService_Stub stub(channel.get());
             brpc::Controller cntl;
+            SnowK::MsgStorageService_Stub stub(channel.get());
             stub.GetHistoryMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
@@ -1617,8 +1604,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("新消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the new message request");
+                return Err_Response("Failed to deserialize the body of the new message request");
             }
 
             std::string ssid = req.session_id();
@@ -1652,16 +1639,21 @@ namespace SnowK
                 {
                     std::string notify_uid = target_rsp.target_id_list(i);
                     if (notify_uid == *uid)
-                        continue; // 不通知自己
-                    auto conn = _connections->connection(notify_uid);
+                    {
+                        continue; // Do not inform yourself
+                    }
+
+                    auto conn = _connections->GetConnection(notify_uid);
                     if (!conn)
                     {
                         continue;
                     }
+
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_MESSAGE_NOTIFY);
                     auto msg_info = notify.mutable_new_message_info();
                     msg_info->mutable_message_info()->CopyFrom(target_rsp.message());
+                    
                     conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
             }
@@ -1669,6 +1661,7 @@ namespace SnowK
             rsp.set_request_id(req.request_id());
             rsp.set_success(target_rsp.success());
             rsp.set_errmsg(target_rsp.errmsg());
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
@@ -1728,8 +1721,10 @@ namespace SnowK
             _svrmgr_channels->Declare(user_service_name);
             _svrmgr_channels->Declare(transmite_service_name);
 
-            auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
-            auto del_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+            auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), 
+                                    std::placeholders::_1, std::placeholders::_2);
+            auto del_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), 
+                                    std::placeholders::_1, std::placeholders::_2);
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
