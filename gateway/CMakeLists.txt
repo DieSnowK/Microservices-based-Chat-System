@@ -39,7 +39,7 @@ add_executable(${TARGET} ${SRC_FILES} ${PROTO_SRCS} ${ODB_SRCS})
 target_link_libraries(${TARGET} 
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
     -lprotobuf -lleveldb -letcd-cpp-api -lodb-mysql 
-    -lodb -lodb-boost-lhiredis -lredis++
+    -lodb -lodb-boost -lhiredis -lredis++
     -lcpprest -lcurl -lpthread -lboost_system
 )
 

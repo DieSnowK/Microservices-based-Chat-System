@@ -4,6 +4,7 @@
 #include "logger.hpp"
 #include "channel.hpp"
 #include "connection.hpp"
+#include "redis.hpp"
 
 #include "user.pb.h"
 #include "base.pb.h"
@@ -219,7 +220,7 @@ namespace SnowK
         {
             auto conn = _ws_server.get_con_from_hdl(hdl);
             std::string uid, ssid;
-            if (_connections->Client(conn, uid, ssid) == false)
+            if (_connections->GetClientInfo(conn, uid, ssid) == false)
             {
                 LOG_WARN("The persistent connection is disconnected, and the client \
                          information corresponding to the persistent connection cannot be found");
@@ -1211,7 +1212,7 @@ namespace SnowK
             {
                 for (int i = 0; i < req.member_id_list_size(); i++)
                 {
-                    auto conn = _connections->connection(req.member_id_list(i));
+                    auto conn = _connections->GetConnection(req.member_id_list(i));
                     if (!conn)
                     {
                         continue;

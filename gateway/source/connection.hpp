@@ -54,7 +54,7 @@ namespace SnowK
         }
 
         // Obtained the persistent connection client information
-        bool Client(const server_t::connection_ptr &conn, std::string &uid, std::string &ssid)
+        bool GetClientInfo(const server_t::connection_ptr &conn, std::string &uid, std::string &ssid)
         {
             std::unique_lock<std::mutex> lock(_mutex);
 
@@ -95,5 +95,5 @@ namespace SnowK
         std::mutex _mutex;
         std::unordered_map<std::string, server_t::connection_ptr> _uid_connections;
         std::unordered_map<server_t::connection_ptr, Client> _conn_clients;
-    };
+    }; // end of class Connection
 }

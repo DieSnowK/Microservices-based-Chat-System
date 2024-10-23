@@ -14,8 +14,8 @@ DEFINE_int32(rpc_threads, 1, "The number of I/O threads of the rpc");
 
 DEFINE_string(instance_name, "/message_service/instance", "Name of the current instance");
 DEFINE_string(base_service, "/service", "The root directory of service monitoring");
-DEFINE_string(file_service, "/service/file_service", "The name of the user management subservice");
-DEFINE_string(user_service, "/service/user_service", "The name of the file management subservice");
+DEFINE_string(file_service, "/service/file_service", "The name of the file management subservice");
+DEFINE_string(user_service, "/service/user_service", "The name of the user management subservice");
 
 DEFINE_string(es_host, "http://127.0.0.1:9200/", "ES search engine server URL");
 
