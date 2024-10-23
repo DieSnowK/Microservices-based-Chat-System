@@ -643,7 +643,6 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
-        // TODO
         void SetUserPhoneNumber(const httplib::Request &request, httplib::Response &response)
         {
             SetUserPhoneNumberReq req;
@@ -657,8 +656,10 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户手机号设置请求正文反序列化失败！");
-                return Err_Response("用户手机号设置请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the request \
+                          for setting the user's mobile phone number");
+                return Err_Response("Failed to deserialize the body of the request \
+                          for setting the user's mobile phone number");
             }
 
             std::string ssid = req.session_id();
@@ -702,8 +703,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取好友列表请求正文反序列化失败！");
-                return Err_Response("获取好友列表请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get friends list request");
+                return Err_Response("Failed to deserialize the body of the get friends list request");
             }
 
             std::string ssid = req.session_id();
@@ -760,6 +761,7 @@ namespace SnowK
             return rsp;
         }
 
+        // TODO
         void FriendAdd(const httplib::Request &request, httplib::Response &response)
         {
             // 好友申请的业务处理中，好友子服务其实只是在数据库创建了申请事件
@@ -776,8 +778,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("申请好友请求正文反序列化失败！");
-                return Err_Response("申请好友请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the add friend request");
+                return Err_Response("Failed to deserialize the body of the add friend request");
             }
 
             std::string ssid = req.session_id();
@@ -838,8 +840,9 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("好友申请处理请求正文反序列化失败！");
-                return Err_Response("好友申请处理请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the friend application processing request");
+                return Err_Response("Failed to deserialize the body \
+                                    of the friend application processing request");
             }
 
             std::string ssid = req.session_id();
@@ -946,8 +949,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("删除好友请求正文反序列化失败！");
-                return Err_Response("删除好友请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the delete a friend request");
+                return Err_Response("Failed to deserialize the body of the delete a friend request");
             }
 
             std::string ssid = req.session_id();
@@ -1002,8 +1005,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("用户搜索请求正文反序列化失败！");
-                return Err_Response("用户搜索请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the user search request");
+                return Err_Response("Failed to deserialize the body of the user search request");
             }
 
             std::string ssid = req.session_id();
@@ -1047,8 +1050,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取待处理好友申请请求正文反序列化失败！");
-                return Err_Response("获取待处理好友申请请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get pending friend request");
+                return Err_Response("Failed to deserialize the body of the get pending friend request");
             }
 
             std::string ssid = req.session_id();
@@ -1092,8 +1095,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取聊天会话列表请求正文反序列化失败！");
-                return Err_Response("获取聊天会话列表请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get chat session list request");
+                return Err_Response("Failed to deserialize the body of the get chat session list request");
             }
 
             std::string ssid = req.session_id();
@@ -1137,8 +1140,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取聊天会话成员请求正文反序列化失败！");
-                return Err_Response("获取聊天会话成员请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get chat session member request");
+                return Err_Response("Failed to deserialize the body of the get chat session member request");
             }
 
             std::string ssid = req.session_id();
@@ -1182,8 +1185,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("创建聊天会话请求正文反序列化失败！");
-                return Err_Response("创建聊天会话请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the create chat session request");
+                return Err_Response("Failed to deserialize the body of the create chat session request");
             }
 
             std::string ssid = req.session_id();
@@ -1248,7 +1251,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取区间消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("获取区间消息请求正文反序列化失败！");
             }
 
@@ -1293,7 +1296,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("获取最近消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("获取最近消息请求正文反序列化失败！");
             }
 
@@ -1338,7 +1341,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("消息搜索请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("消息搜索请求正文反序列化失败！");
             }
 
@@ -1383,7 +1386,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("单文件下载请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("单文件下载请求正文反序列化失败！");
             }
 
@@ -1428,7 +1431,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("单文件下载请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("单文件下载请求正文反序列化失败！");
             }
 
@@ -1473,7 +1476,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("单文件上传请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("单文件上传请求正文反序列化失败！");
             }
 
@@ -1518,7 +1521,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("批量文件上传请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("批量文件上传请求正文反序列化失败！");
             }
 
@@ -1563,7 +1566,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("语音识别请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("语音识别请求正文反序列化失败！");
             }
 
@@ -1609,7 +1612,7 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("新消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the ");
                 return Err_Response("新消息请求正文反序列化失败！");
             }
 
