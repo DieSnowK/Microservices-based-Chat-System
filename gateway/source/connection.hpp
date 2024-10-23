@@ -38,7 +38,7 @@ namespace SnowK
                      (size_t)conn.get(), uid, ssid);
         }
 
-        server_t::connection_ptr Connection(const std::string &uid)
+        server_t::connection_ptr GetConnection(const std::string &uid)
         {
             std::unique_lock<std::mutex> lock(_mutex);
             

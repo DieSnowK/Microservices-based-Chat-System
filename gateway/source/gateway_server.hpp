@@ -761,11 +761,12 @@ namespace SnowK
             return rsp;
         }
 
-        // TODO
+        // 1.In the business processing of friend requests, the friend sub-service
+            // actually only creates a request event in the database
+        // 2.What the gateway needs to do: When the friend sub-service completes the business 
+            // processing, if the processing is successful, the applicant needs to be notified
         void FriendAdd(const httplib::Request &request, httplib::Response &response)
         {
-            // 好友申请的业务处理中，好友子服务其实只是在数据库创建了申请事件
-            // 网关需要做的事情：当好友子服务将业务处理完毕后，如果处理是成功的--需要通知被申请方
             FriendAddReq req;
             FriendAddRsp rsp;
             auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
@@ -806,14 +807,15 @@ namespace SnowK
                 return Err_Response("friend sub-service call failed!");
             }
 
-            auto conn = _connections->Connection(req.respondent_id());
+            // Notify the client
+            auto conn = _connections->GetConnection(req.respondent_id());
             if (rsp.success() && conn)
             {
                 auto user_rsp = _GetUserInfo(req.request_id(), *uid);
                 if (!user_rsp)
                 {
-                    LOG_ERROR("{} 获取当前客户端用户信息失败！", req.request_id());
-                    return Err_Response("获取当前客户端用户信息失败！");
+                    LOG_ERROR("{} Failed to get the current client user information", req.request_id());
+                    return Err_Response("Failed to get the current client user information");
                 }
 
                 NotifyMessage notify;
@@ -826,6 +828,7 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
+        // TODO
         void FriendAddProcess(const httplib::Request &request, httplib::Response &response)
         {
             FriendAddProcessReq req;
@@ -1253,8 +1256,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("获取区间消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get interval message request");
+                return Err_Response("Failed to deserialize the body of the get interval message request");
             }
 
             std::string ssid = req.session_id();
@@ -1298,8 +1301,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("获取最近消息请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the get recent message request");
+                return Err_Response("Failed to deserialize the body of the get recent message request");
             }
 
             std::string ssid = req.session_id();
@@ -1343,8 +1346,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("消息搜索请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the message search request");
+                return Err_Response("Failed to deserialize the body of the message search request");
             }
 
             std::string ssid = req.session_id();
@@ -1388,8 +1391,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("单文件下载请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the single-file download request");
+                return Err_Response("Failed to deserialize the body of the single-file download request");
             }
 
             std::string ssid = req.session_id();
@@ -1433,8 +1436,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("单文件下载请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the multi-file download request");
+                return Err_Response("Failed to deserialize the body of the multi-file download request");
             }
 
             std::string ssid = req.session_id();
@@ -1478,8 +1481,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("单文件上传请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the single-file upload request");
+                return Err_Response("Failed to deserialize the body of the single-file upload request");
             }
 
             std::string ssid = req.session_id();
@@ -1523,8 +1526,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("批量文件上传请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the multi-file upload request");
+                return Err_Response("Failed to deserialize the body of the multi-file upload request");
             }
 
             std::string ssid = req.session_id();
@@ -1568,8 +1571,8 @@ namespace SnowK
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the ");
-                return Err_Response("语音识别请求正文反序列化失败！");
+                LOG_ERROR("Failed to deserialize the body of the speech recognition request");
+                return Err_Response("Failed to deserialize the body of the speech recognition request");
             }
 
             std::string ssid = req.session_id();
@@ -1600,7 +1603,6 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
-        // TODO
         void NewMessage(const httplib::Request &request, httplib::Response &response)
         {
             NewMessageReq req;
