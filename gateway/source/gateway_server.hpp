@@ -766,7 +766,6 @@ namespace SnowK
         {
             // 好友申请的业务处理中，好友子服务其实只是在数据库创建了申请事件
             // 网关需要做的事情：当好友子服务将业务处理完毕后，如果处理是成功的--需要通知被申请方
-            // 1. 正文的反序列化，提取关键要素：登录会话ID
             FriendAddReq req;
             FriendAddRsp rsp;
             auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
@@ -807,23 +806,23 @@ namespace SnowK
                 return Err_Response("friend sub-service call failed!");
             }
 
-            // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
-            auto conn = _connections->connection(req.respondent_id());
+            auto conn = _connections->Connection(req.respondent_id());
             if (rsp.success() && conn)
             {
-                LOG_DEBUG("找到被申请人 {} 长连接，对其进行好友申请通知", req.respondent_id());
                 auto user_rsp = _GetUserInfo(req.request_id(), *uid);
                 if (!user_rsp)
                 {
                     LOG_ERROR("{} 获取当前客户端用户信息失败！", req.request_id());
                     return Err_Response("获取当前客户端用户信息失败！");
                 }
+
                 NotifyMessage notify;
                 notify.set_notify_type(NotifyType::FRIEND_ADD_APPLY_NOTIFY);
                 notify.mutable_friend_add_apply()->mutable_user_info()->CopyFrom(user_rsp->user_info());
+
                 conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
             }
-            // 5. 向客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
@@ -872,29 +871,33 @@ namespace SnowK
 
             if (rsp.success())
             {
+                // TODO
                 auto process_user_rsp = _GetUserInfo(req.request_id(), *uid);
                 if (!process_user_rsp)
                 {
                     LOG_ERROR("{} 获取用户信息失败！", req.request_id());
                     return Err_Response("获取用户信息失败！");
                 }
+
                 auto apply_user_rsp = _GetUserInfo(req.request_id(), req.apply_user_id());
                 if (!process_user_rsp)
                 {
                     LOG_ERROR("{} 获取用户信息失败！", req.request_id());
                     return Err_Response("获取用户信息失败！");
                 }
-                auto process_conn = _connections->connection(*uid);
+
+                auto process_conn = _connections->Connection(*uid);
                 if (process_conn)
                     LOG_DEBUG("找到处理人的长连接！");
                 else
                     LOG_DEBUG("未找到处理人的长连接！");
-                auto apply_conn = _connections->connection(req.apply_user_id());
+
+                auto apply_conn = _connections->Connection(req.apply_user_id());
                 if (apply_conn)
                     LOG_DEBUG("找到申请人的长连接！");
                 else
                     LOG_DEBUG("未找到申请人的长连接！");
-                // 4. 将处理结果给申请人进行通知
+
                 if (apply_conn)
                 {
                     NotifyMessage notify;
@@ -906,6 +909,7 @@ namespace SnowK
                                      websocketpp::frame::opcode::value::binary);
                     LOG_DEBUG("对申请人进行申请处理结果通知！");
                 }
+
                 // 5. 若处理结果是同意 --- 会伴随着单聊会话的创建 -- 因此需要对双方进行会话创建的通知
                 if (req.agree() && apply_conn)
                 { // 对申请人的通知---会话信息就是处理人信息
@@ -917,8 +921,8 @@ namespace SnowK
                     chat_session->mutable_chat_session_info()->set_chat_session_name(process_user_rsp->user_info().nickname());
                     chat_session->mutable_chat_session_info()->set_avatar(process_user_rsp->user_info().avatar());
                     apply_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
-                    LOG_DEBUG("对申请人进行会话创建通知！");
                 }
+
                 if (req.agree() && process_conn)
                 { // 对处理人的通知 --- 会话信息就是申请人信息
                     NotifyMessage notify;
@@ -929,10 +933,9 @@ namespace SnowK
                     chat_session->mutable_chat_session_info()->set_chat_session_name(apply_user_rsp->user_info().nickname());
                     chat_session->mutable_chat_session_info()->set_avatar(apply_user_rsp->user_info().avatar());
                     process_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
-                    LOG_DEBUG("对处理人进行会话创建通知！");
                 }
             }
-            // 6. 对客户端进行响应
+
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
@@ -978,14 +981,13 @@ namespace SnowK
                 return Err_Response("No friend sub-service node found to provide business processing");
             }
 
-            // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
-            auto conn = _connections->connection(req.peer_id());
+            auto conn = _connections->Connection(req.peer_id());
             if (rsp.success() && conn)
             {
-                LOG_ERROR("对被删除人 {} 进行好友删除通知！", req.peer_id());
                 NotifyMessage notify;
                 notify.set_notify_type(NotifyType::FRIEND_REMOVE_NOTIFY);
                 notify.mutable_friend_remove()->set_user_id(*uid);
+
                 conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
             }
 
@@ -1214,7 +1216,6 @@ namespace SnowK
                 return Err_Response("friend sub-service call failed!");
             }
 
-            // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             if (rsp.success())
             {
                 for (int i = 0; i < req.member_id_list_size(); i++)
@@ -1222,15 +1223,16 @@ namespace SnowK
                     auto conn = _connections->connection(req.member_id_list(i));
                     if (!conn)
                     {
-                        LOG_DEBUG("未找到群聊成员 {} 长连接", req.member_id_list(i));
+                        LOG_WARN("未找到群聊成员 {} 长连接", req.member_id_list(i));
                         continue;
                     }
+
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_SESSION_CREATE_NOTIFY);
                     auto chat_session = notify.mutable_new_chat_session_info();
                     chat_session->mutable_chat_session_info()->CopyFrom(rsp.chat_session_info());
+
                     conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
-                    LOG_DEBUG("对群聊成员 {} 进行会话创建通知", req.member_id_list(i));
                 }
             }
 
@@ -1598,6 +1600,7 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
+        // TODO
         void NewMessage(const httplib::Request &request, httplib::Response &response)
         {
             NewMessageReq req;
@@ -1641,7 +1644,6 @@ namespace SnowK
                 return Err_Response("file transmite-service call failed!");
             }
 
-            // 4. 若业务处理成功 --- 且获取被申请方长连接成功，则向被申请放进行好友申请事件通知
             if (target_rsp.success())
             {
                 for (int i = 0; i < target_rsp.target_id_list_size(); i++)
