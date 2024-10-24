@@ -38,14 +38,22 @@ namespace model
             switch(msgType)
             {
             case MessageType::TEXT_TYPE:
-                break;
+                return MakeTextMessage(chatSessionId, sender, content);
             case MessageType::IMAGE_TYPE:
-                break;
+                return MakeImageMessage(chatSessionId, sender, content);
             case MessageType::FILE_TYPE:
-                break;
+                return MakeFileMessage(chatSessionId, sender, content, extraInfo);
             case MessageType::SPECCH_TYPE:
-                break;
+                return MakeSpeechMessage(chatSessionId, sender, content);
+            default:
+                return Message();
             }
+        }
+
+    private:
+        static Message MakeTextMessage(const QString& chatSessionId, const UserInfo& sender, const QByteArray& content)
+        {
+
         }
     };
 }
