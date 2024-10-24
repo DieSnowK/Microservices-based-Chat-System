@@ -4,8 +4,9 @@
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWidget;
+namespace Ui 
+{
+    class MainWidget;
 }
 QT_END_NAMESPACE
 
@@ -13,9 +14,13 @@ class MainWidget : public QWidget
 {
     Q_OBJECT
 
-public:
+private:
+    static MainWidget* instance;
     MainWidget(QWidget *parent = nullptr);
+
+public:
     ~MainWidget();
+    static MainWidget* GetInstance();
 
 private:
     Ui::MainWidget *ui;
