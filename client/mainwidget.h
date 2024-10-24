@@ -35,10 +35,29 @@ private:
     QPushButton* friendTabBtn;
     QPushButton* applyTabBtn;
 
+    enum class ActiveTab
+    {
+        SESSION_LIST,
+        FRIEND_LIST,
+        APPLY_LIST
+    };
+
+    ActiveTab activeTab = ActiveTab::SESSION_LIST;
+
 public:
     void InitMainWindow();
     void InitLeftWindow();
     void InitMidWindow();
     void InitRightWindow();
+
+    void InitSignalSlot();
+
+    void SwitchTabToSession();
+    void SwitchTabToFriend();
+    void SwitchTabToApply();
+
+    void LoadSessionList();
+    void LoadFriendList();
+    void LoadApplyList();
 };
 #endif // MAINWIDGET_H

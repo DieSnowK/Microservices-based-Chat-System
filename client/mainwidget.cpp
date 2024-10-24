@@ -59,7 +59,6 @@ void MainWidget::InitMainWindow()
     layout->addWidget(windowRight);
 }
 
-
 void MainWidget::InitLeftWindow()
 {
     QVBoxLayout* layout = new QVBoxLayout();
@@ -108,3 +107,46 @@ void MainWidget::InitRightWindow()
     
 }
 
+void MainWidget::InitSignalSlot()
+{
+    connect(sessionTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToSession);     
+    connect(friendTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToFriend);     
+    connect(applyTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToApply);     
+}
+
+void MainWidget::SwitchTabToSession()
+{
+    activeTab = ActiveTab::SESSION_LIST;
+    
+    sessionTabBtn->setIcon(QIcon(":/resource/image/session_active.png"));
+    friendTabBtn->setIcon(QIcon(":/resource/image/friend_inactive.png"));
+    applyTabBtn->setIcon(QIcon(":/resource/image/apply_inactive.png"));
+
+    this->LoadSessionList();
+}
+
+void MainWidget::SwitchTabToFriend()
+{
+    activeTab = ActiveTab::FRIEND_LIST;
+    
+    friendTabBtn->setIcon(QIcon(":/resource/image/friend_active.png"));
+    sessionTabBtn->setIcon(QIcon(":/resource/image/session_inactive.png"));
+    applyTabBtn->setIcon(QIcon(":/resource/image/apply_inactive.png"));
+
+    this->LoadFriendList();
+}
+
+void MainWidget::SwitchTabToApply()
+{
+    activeTab = ActiveTab::APPLY_LIST;
+    
+    applyTabBtn->setIcon(QIcon(":/resource/image/apply_active.png"));
+    friendTabBtn->setIcon(QIcon(":/resource/image/friend_inactive.png"));
+    sessionTabBtn->setIcon(QIcon(":/resource/image/session_inactive.png"));
+
+    this->LoadApplyList();
+}
+
+void MainWidget::LoadSessionList();
+void MainWidget::LoadFriendList();
+void MainWidget::LoadApplyList();
