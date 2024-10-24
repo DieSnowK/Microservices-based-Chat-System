@@ -46,7 +46,7 @@ public:
                       const QString& name, const QString& text);
 
     void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent* event) override; // TODO
+    void mousePressEvent(QMouseEvent* event) override;
     void enterEvent(QEnterEvent* event) override;
     void leaveEvent(QEvent* event) override;
 

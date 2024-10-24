@@ -160,7 +160,7 @@ void SessionFriendItem::Select()
             continue;
         }
 
-        SessionFriendItem* item = dynamic_cast<SessionFriendItem*>(child); // TODO
+        SessionFriendItem* item = dynamic_cast<SessionFriendItem*>(child);
         {
             if(item->selected)
             {
