@@ -1,5 +1,6 @@
 #include <QString>
 #include <QIcon>
+#include <QUuid>
 
 namespace model
 {
@@ -51,6 +52,11 @@ namespace model
         }
 
     private:
+        static QString MakeId()
+        {
+            return "M" + QUuid::createUuid().toString().sliced(25, 12); 
+        }
+
         static Message MakeTextMessage(const QString& chatSessionId, 
                                        const UserInfo& sender, 
                                        const QByteArray& content)
@@ -78,4 +84,14 @@ namespace model
 
         }
     };
-}
+
+    class ChatSessionInfo
+    {
+    public:
+        QString chatSessionId = "";
+        QString chatSessionName = "";
+        Message lastMessage;
+        QIcon avatar;
+        QString userId = "";
+    };
+} // end of namespae model
