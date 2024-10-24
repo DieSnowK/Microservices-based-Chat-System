@@ -18,6 +18,9 @@ MainWidget::MainWidget(QWidget *parent)
     , ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
+
+    this->setWindowTitle("SnowK's Chat System");
+    this->setWindowIcon(QIcon(":/resource/image/logo.png"));
 }
 
 MainWidget::~MainWidget()

@@ -2,6 +2,7 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui 
@@ -24,5 +25,14 @@ public:
 
 private:
     Ui::MainWidget *ui;
+
+    QWidget* windowLeft;
+    QWidget* windowMid;
+    QWidget* windowRight;
+
+    QPushButton* userAvatar;
+    QPushButton* sessionTabBtn;
+    QPushButton* friendTabBtn;
+    QPushButton* applyTabBtn;
 };
 #endif // MAINWIDGET_H
