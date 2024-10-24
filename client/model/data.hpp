@@ -128,29 +128,74 @@ namespace model
                                        const UserInfo& sender, 
                                        const QByteArray& content)
         {
+            Message msg;
+            msg.messageId = MakeId();
+            msg.chatSessionId= chatSessionId;
+            msg.sender = sender;
+            msg.time = Util::FormatTime(Util::GetTime());
+            msg.content = content;
+            msg.msgType = MessageType::TEXT_TYPE;
 
+            msg.fileId = "";
+            msg.fileName = "";
+
+            return msg;
         }
 
         static Message MakeImageMessage(const QString& chatSessionId, 
                                         const UserInfo& sender, 
                                         const QByteArray& content)
         {
+            Message msg;
+            msg.messageId = MakeId();
+            msg.chatSessionId= chatSessionId;
+            msg.sender = sender;
+            msg.time = Util::FormatTime(Util::GetTime());
+            msg.content = content;
+            msg.msgType = MessageType::IMAGE_TYPE;
 
+            msg.fileId = "";
+            msg.fileName = "";
+
+            return msg;
         }
 
         static Message MakeFileMessage(const QString& chatSessionId, const UserInfo& sender, 
-                                       const QByteArray& content, const QString& filename)
+                                       const QByteArray& content, const QString& fileName)
         {
+            Message msg;
+            msg.messageId = MakeId();
+            msg.chatSessionId= chatSessionId;
+            msg.sender = sender;
+            msg.time = Util::FormatTime(Util::GetTime());
+            msg.content = content;
+            msg.msgType = MessageType::FILE_TYPE;
 
+            msg.fileId = "";
+            msg.fileName = fileName;
+
+            return msg;
         }
 
         static Message MakeSpeechMessage(const QString& chatSessionId, 
                                          const UserInfo& sender, 
                                          const QByteArray& content)
         {
+            Message msg;
+            msg.messageId = MakeId();
+            msg.chatSessionId= chatSessionId;
+            msg.sender = sender;
+            msg.time = Util::FormatTime(Util::GetTime());
+            msg.content = content;
+            msg.msgType = MessageType::SPECCH_TYPE;
+
+            msg.fileId = "";
+            msg.fileName = "";
+
+            return msg;
 
         }
-    };
+    }; // end of class Message
 
     class ChatSessionInfo
     {
