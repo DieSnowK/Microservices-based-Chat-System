@@ -51,7 +51,29 @@ namespace model
         }
 
     private:
-        static Message MakeTextMessage(const QString& chatSessionId, const UserInfo& sender, const QByteArray& content)
+        static Message MakeTextMessage(const QString& chatSessionId, 
+                                       const UserInfo& sender, 
+                                       const QByteArray& content)
+        {
+
+        }
+
+        static Message MakeImageMessage(const QString& chatSessionId, 
+                                        const UserInfo& sender, 
+                                        const QByteArray& content)
+        {
+
+        }
+
+        static Message MakeFileMessage(const QString& chatSessionId, const UserInfo& sender, 
+                                       const QByteArray& content, const QString& filename)
+        {
+
+        }
+
+        static Message MakeSpeechMessage(const QString& chatSessionId, 
+                                         const UserInfo& sender, 
+                                         const QByteArray& content)
         {
 
         }
