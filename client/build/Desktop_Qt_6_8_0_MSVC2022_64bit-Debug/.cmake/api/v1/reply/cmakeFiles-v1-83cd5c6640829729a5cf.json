@@ -1276,6 +1276,9 @@
 			"isCMake" : true,
 			"isExternal" : true,
 			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
+		},
+		{
+			"path" : "resource.qrc"
 		}
 	],
 	"kind" : "cmakeFiles",

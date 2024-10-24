@@ -22,7 +22,6 @@ namespace model
 
         static inline QString FormatTime(int64_t timestamp)
         {
-            // TODO Test
             return QDateTime(QDateTime::fromSecsSinceEpoch(timestamp)).toString("MM-dd HH:mm:ss");
         }
 
@@ -70,14 +69,23 @@ namespace model
         }
     } // end of namespace Util
 
+    //////////////////////////////////////////////////////
+    /// UserInfo
+    //////////////////////////////////////////////////////
+
     class UserInfo
     {
+    public:
         QString userId = "";
         QString nickname = "";
         QString description = "";
         QString phone = "";
         QIcon avatar;
     };
+
+    //////////////////////////////////////////////////////
+    /// Message
+    //////////////////////////////////////////////////////
 
     enum class MessageType
     {
@@ -90,15 +98,6 @@ namespace model
     class Message
     {
     public:
-        QString messageId = "";
-        QString chatSessionId = "";
-        QString time = "";
-        MessageType msgType = MessageType::TEXT_TYPE;
-        UserInfo sender;
-        QByteArray content;
-        QString fileId = "";
-        QString fileName = "";
-
         // Factory Pattern
         static Message MakeMessage(MessageType msgType, const QString& chatSessionId, const UserInfo& sender,
                                    const QByteArray& content, const QString& extraInfo)
@@ -193,9 +192,22 @@ namespace model
             msg.fileName = "";
 
             return msg;
-
         }
+
+    public:
+        QString messageId = "";
+        QString chatSessionId = "";
+        QString time = "";
+        MessageType msgType = MessageType::TEXT_TYPE;
+        UserInfo sender;
+        QByteArray content;
+        QString fileId = "";
+        QString fileName = "";
     }; // end of class Message
+
+    //////////////////////////////////////////////////////
+    /// ChatSessionInfo
+    //////////////////////////////////////////////////////
 
     class ChatSessionInfo
     {

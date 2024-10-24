@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QLineEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui 
@@ -15,36 +16,10 @@ class MainWidget : public QWidget
 {
     Q_OBJECT
 
-private:
-    static MainWidget* instance;
-    MainWidget(QWidget *parent = nullptr);
-
 public:
     ~MainWidget();
     static MainWidget* GetInstance();
 
-private:
-    Ui::MainWidget *ui;
-
-    QWidget* windowLeft;
-    QWidget* windowMid;
-    QWidget* windowRight;
-
-    QPushButton* userAvatar;
-    QPushButton* sessionTabBtn;
-    QPushButton* friendTabBtn;
-    QPushButton* applyTabBtn;
-
-    enum class ActiveTab
-    {
-        SESSION_LIST,
-        FRIEND_LIST,
-        APPLY_LIST
-    };
-
-    ActiveTab activeTab = ActiveTab::SESSION_LIST;
-
-public:
     void InitMainWindow();
     void InitLeftWindow();
     void InitMidWindow();
@@ -59,5 +34,33 @@ public:
     void LoadSessionList();
     void LoadFriendList();
     void LoadApplyList();
+
+private:
+    MainWidget(QWidget *parent = nullptr);
+
+private:
+    Ui::MainWidget *ui;
+    static MainWidget *instance;
+
+    QWidget *windowLeft;
+    QWidget *windowMid;
+    QWidget *windowRight;
+
+    QPushButton *userAvatar;
+    QPushButton *sessionTabBtn;
+    QPushButton *friendTabBtn;
+    QPushButton *applyTabBtn;
+
+    QLineEdit* searchEdit;
+    QPushButton* addFriendBtn;
+
+    enum class ActiveTab
+    {
+        SESSION_LIST,
+        FRIEND_LIST,
+        APPLY_LIST
+    };
+
+    ActiveTab activeTab = ActiveTab::SESSION_LIST;
 };
 #endif // MAINWIDGET_H

@@ -308,7 +308,8 @@
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6QModernWindowsStylePluginAdditionalTargetInfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake",
-		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake",
+		"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/resource.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client",
 	"CROSS_CONFIG" : false,
@@ -316,6 +317,12 @@
 	"DEP_FILE_RULE_NAME" : "client_autogen/timestamp",
 	"HEADERS" : 
 	[
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/debug.hpp",
+			"MU",
+			"EWIEGA46WW/moc_debug.cpp",
+			null
+		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/mainwidget.h",
 			"MU",
@@ -326,6 +333,12 @@
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp",
 			"MU",
 			"NLOY5YBGEN/moc_data.cpp",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.h",
+			"MU",
+			"EWIEGA46WW/moc_sessionfriendarea.cpp",
 			null
 		]
 	],
@@ -391,6 +404,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/mainwidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.cpp",
 			"MU",
 			null
 		]
