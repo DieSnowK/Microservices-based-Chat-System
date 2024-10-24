@@ -34,5 +34,11 @@ private:
     QPushButton* sessionTabBtn;
     QPushButton* friendTabBtn;
     QPushButton* applyTabBtn;
+
+public:
+    void InitMainWindow();
+    void InitLeftWindow();
+    void InitMidWindow();
+    void InitRightWindow();
 };
 #endif // MAINWIDGET_H
