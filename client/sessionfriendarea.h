@@ -64,6 +64,7 @@ public:
     void leaveEvent(QEvent* event) override;
 
     void Select();
+    virtual void Active();
 
 private:
     // owner points to the SessionFriendArea above
@@ -88,6 +89,8 @@ public:
     SessionItem(QWidget* owner, const QString& chatSessionId,
                 const QIcon& avatar, const QString& name, const QString& lastMessage);
 
+    void Active() override;
+
 private:
     QString chatSessionId;
     QString text; // Text preview of the last message
@@ -105,6 +108,8 @@ public:
     FriendItem(QWidget* owner, const QString& userId, const QIcon& avatar,
                const QString& name, const QString& description);
 
+    void Active() override;
+
 private:
     QString userId;
 };
@@ -120,6 +125,8 @@ class ApplyItem : public SessionFriendItem
 public:
     ApplyItem(QWidget* owner, const QString& userId,
               const QIcon& avatar, const QString& name);
+
+    void Active() override;
     
 private:
     QString userId;
