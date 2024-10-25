@@ -64,7 +64,7 @@ void SessionFriendArea::AddItem(ItemType itemtype, const QString& id, const QIco
         item = new ApplyItem(this, id, avatar, name);
         break;
     default:
-        LOG() << "Error ItemType, itemtype = " << itemtype;
+        // LOG() << "Error ItemType, itemtype = " << itemtype; // TODO
         break;
     }
     container->layout()->addWidget(item);
@@ -209,7 +209,7 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
 //////////////////////////////////////////////////////////
 
 FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avatar,
-                       const QString& name, const QString& description);
+                       const QString& name, const QString& description)
     : SessionFriendItem(owner, avatar, name, description)
     , userId(userId)
 {
@@ -221,7 +221,7 @@ FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avata
 //////////////////////////////////////////////////////////
 
 ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
-                     const QIcon& avatar, const QString& name);
+                     const QIcon& avatar, const QString& name)
     : SessionFriendItem(owner, avatar, name, "")
     , userId(userId)
 {
