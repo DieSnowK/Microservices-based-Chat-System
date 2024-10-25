@@ -189,6 +189,8 @@ void SessionFriendItem::Select()
 
     this->selected = true;
     this->setStyleSheet("QWidget { background-color: rgb(210, 210, 210); }");
+
+    this->Active();
 }
 
 void SessionFriendItem::Active()
@@ -209,7 +211,7 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
 
 void SessionItem::Active()
 {
-
+    LOG() << "Active SessionItem, chatSessionId = " << chatSessionId;
 }
 
 //////////////////////////////////////////////////////////
@@ -226,6 +228,7 @@ FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avata
 
 void FriendItem::Active()
 {
+    LOG() << "Active FriendItem, chatSessionId = " << chatSessionId;
 
 }
 
@@ -253,5 +256,6 @@ ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
 
 void ApplyItem::Active()
 {
+    LOG() << "Active ApplyItem, chatSessionId = " << chatSessionId;
 
 }
