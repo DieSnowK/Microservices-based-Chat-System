@@ -7,8 +7,17 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QPainter>
+#include <QPainterPath>
 
-// using model::Message;
+#include "model/data.hpp"
+
+using model::Message;
+using model::MessageType;
+
+////////////////////////////////////////////////////////
+/// MessageShowArea
+////////////////////////////////////////////////////////
 
 class MessageShowArea : public QScrollArea
 {
@@ -22,6 +31,10 @@ public:
 private:
     QWidget *container;
 };
+
+////////////////////////////////////////////////////////
+/// MessageItem
+////////////////////////////////////////////////////////
 
 class MessageItem : public QWidget
 {
@@ -40,6 +53,33 @@ public:
 
 private:
     bool isLeft;
+};
+
+////////////////////////////////////////////////////////
+/// MessageContentLabel
+/// -> MessageType::TEXT_TYPE && MessageType::FILE_TYPE
+////////////////////////////////////////////////////////
+
+class MessageContentLabel : public QWidget
+{
+    Q_OBJECT
+
+public:
+    MessageContentLabel(const QString& text, bool isLeft, MessageType msgType,
+                        const QString& fileId, const QByteArray& content);
+
+    void paintEvent(QPaintEvent* event) override;
+    // void mousePressEvent(QMouseEvent* event) override;
+
+private:
+    bool isLeft;
+    QLabel* label;
+
+    model::MessageType msgType;
+    QString fileId;
+    QByteArray content;
+
+    bool loadContentDone = false;
 };
 
 #endif // MESSAGESHOWAREA_H

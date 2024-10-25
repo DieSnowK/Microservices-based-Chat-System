@@ -92,7 +92,7 @@ namespace model
         TEXT_TYPE,
         IMAGE_TYPE,
         FILE_TYPE,
-        SPECCH_TYPE
+        SPEECH_TYPE
     };
 
     class Message
@@ -110,7 +110,7 @@ namespace model
                 return MakeImageMessage(chatSessionId, sender, content);
             case MessageType::FILE_TYPE:
                 return MakeFileMessage(chatSessionId, sender, content, extraInfo);
-            case MessageType::SPECCH_TYPE:
+            case MessageType::SPEECH_TYPE:
                 return MakeSpeechMessage(chatSessionId, sender, content);
             default:
                 return Message();
@@ -186,7 +186,7 @@ namespace model
             msg.sender = sender;
             msg.time = Util::FormatTime(Util::GetTime());
             msg.content = content;
-            msg.msgType = MessageType::SPECCH_TYPE;
+            msg.msgType = MessageType::SPEECH_TYPE;
 
             msg.fileId = "";
             msg.fileName = "";

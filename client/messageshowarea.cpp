@@ -1,5 +1,9 @@
 #include "messageshowarea.h"
 
+////////////////////////////////////////////////////////
+/// MessageShowArea
+////////////////////////////////////////////////////////
+
 MessageShowArea::MessageShowArea() 
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -83,22 +87,22 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
     }
 
     QWidget* contentWidget = nullptr;
-    switch (message.messageType)
+    switch (message.msgType)
     {
-    case TEXT_TYPE:
+    case MessageType::TEXT_TYPE:
         contentWidget = MakeTextMessageItem(isLeft, message.content);
         break;
-    case IMAGE_TYPE:
+    case MessageType::IMAGE_TYPE:
         contentWidget = MakeImageMessageItem(isLeft, message.fileId, message.content);
         break;
-    case FILE_TYPE:
+    case MessageType::FILE_TYPE:
         contentWidget = MakeFileMessageItem(isLeft, message);
         break;
-    case SPEECH_TYPE:
+    case MessageType::SPEECH_TYPE:
         contentWidget = MakeSpeechMessageItem(isLeft, message);
         break;
     default:
-        LOG() << "Error MessageType, messageType = " << (int)message.messageType;
+        LOG() << "Error MessageType, messageType = " << (int)message.msgType;
     }
     if (isLeft)
     {
@@ -110,4 +114,147 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
     }
 
     return messageItem;
+}
+
+QWidget *MessageItem::MakeTextMessageItem(bool isLeft, const QString &text)
+{
+    return nullptr;
+}
+
+QWidget *MessageItem::MakeImageMessageItem(bool isLeft, const QString &fileId, const QByteArray &content)
+{
+    return nullptr;
+}
+
+QWidget *MessageItem::MakeFileMessageItem(bool isLeft, const Message &message)
+{
+    return nullptr;
+}
+
+QWidget *MessageItem::MakeSpeechMessageItem(bool isLeft, const Message &message)
+{
+    return nullptr;
+}
+
+////////////////////////////////////////////////////////
+/// MessageContentLabel
+////////////////////////////////////////////////////////
+
+MessageContentLabel::MessageContentLabel(const QString &text, bool isLeft, MessageType msgType,
+                                         const QString &fileId, const QByteArray &content)
+    : isLeft(isLeft)
+    , msgType(msgType)
+    , fileId(fileId)
+    , content(content)
+{
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QFont font;
+    font.setFamily("微软雅黑");
+    font.setPixelSize(16);
+
+    this->label = new QLabel(this);
+    this->label->setText(text);
+    this->label->setFont(font);
+    this->label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    this->label->setWordWrap(true);
+    this->label->setStyleSheet("QLabel { padding: 0 10px; line-height: 1.2; background-color: transparent; }");
+
+    // if (msgType == MessageType::TEXT_TYPE)
+    // {
+    //     return;
+    // }
+
+    // if (this->content.isEmpty())
+    // {
+    //     DataCenter* dataCenter = DataCenter::getInstance();
+    //     connect(dataCenter, &DataCenter::getSingleFileDone, this, &MessageContentLabel::updateUI);
+    //     dataCenter->getSingleFileAsync(this->fileId);
+    // }
+    // else
+    // {
+    //     // content 不为空, 说明当前的这个数据就是已经现成. 直接就把 表示加载状态的变量设为 true
+    //     this->loadContentDone = true;
+    // }
+}
+
+// TODO
+void MessageContentLabel::paintEvent(QPaintEvent *event)
+{
+    (void) event;
+
+    // 1.Gets the width of the parent element
+    QObject* object = this->parent();
+    if (!object->isWidgetType())
+    {
+        return;
+    }
+    QWidget* parent = dynamic_cast<QWidget*>(object);
+    int width = parent->width() * 0.6;
+
+    // 2. Calculate how wide the current text needs to be if it is placed on a single line
+    QFontMetrics metrics(this->label->font());
+    int totalWidth = metrics.horizontalAdvance(this->label->text());
+
+    // 3. Calculate what the number of rows is here
+        // 40 means there are 20px margins on the left and right
+    int rows = (totalWidth / (width - 40)) + 1;
+    if (rows == 1)
+    {
+        width = totalWidth + 40;
+    }
+
+    // 4. Based on the number of rows, the height is calculated
+        // 20 means there are 10px margins on top and bottom
+    int height = rows * (this->label->font().pixelSize() * 1.2 ) + 20;
+
+    // 5. Draw rounded rectangles and arrows
+    QPainter painter(this);
+    QPainterPath path;
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    if (isLeft)
+    {
+        painter.setPen(QPen(QColor(255, 255, 255)));
+        painter.setBrush(QColor(255, 255, 255));
+
+        painter.drawRoundedRect(10, 0, width, height, 10, 10);
+
+        path.moveTo(10, 15);
+        path.lineTo(0, 20);
+        path.lineTo(10, 25);
+
+        // Drawn lines form closed polygons before they
+            // can be filled with color using a brush
+        path.closeSubpath();
+        painter.drawPath(path); // Real drawing operations
+
+        this->label->setGeometry(10, 0, width, height);
+    }
+    else
+    {
+        painter.setPen(QPen(QColor(137, 217, 97)));
+        painter.setBrush(QColor(137, 217, 97));
+
+        // 10 is the width used to accommodate the arrow
+        int leftPos = this->width() - width - 10;
+        int rightPos = this->width() - 10;
+
+        painter.drawRoundedRect(leftPos, 0, width, height, 10, 10);
+
+        path.moveTo(rightPos, 15);
+        path.lineTo(rightPos + 10, 20);
+        path.lineTo(rightPos, 25);
+        path.closeSubpath();
+        painter.drawPath(path);
+
+        this->label->setGeometry(leftPos, 0, width, height);
+    }
+
+    // 6.Re-set the height of the parent element to make sure that
+        // the parent element is tall enough to accommodate the area
+        // where the message is displayed as drawn above
+    // Attention: The height should cover the height of the label before
+        // the name and time, as well as leave some space for redundancy
+    parent->setFixedHeight(height + 50);
 }
