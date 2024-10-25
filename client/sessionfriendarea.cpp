@@ -29,7 +29,7 @@ SessionFriendArea::SessionFriendArea(QWidget *parent)
     for(int i = 0; i < 30; ++i)
     {
         QIcon icon(":/resource/image/defaultAvatar.png");
-        this->AddItem(ItemType::SESSION_ITEM_TYPE, QString::number(i), icon,
+        this->AddItem(ItemType::APPLY_ITEM_TYPE, QString::number(i), icon,
                       "SnowK " + QString::number(i), "Last Msg " + QString::number(i));
     }
 #endif
