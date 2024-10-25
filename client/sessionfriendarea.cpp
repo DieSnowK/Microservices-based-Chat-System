@@ -119,7 +119,7 @@ SessionFriendItem::SessionFriendItem(QWidget *owner, const QIcon &avatar,
     nameLabel->setFixedHeight(35);
     nameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    QLabel* messageLabel = new QLabel();
+    messageLabel = new QLabel();
     messageLabel->setText(text);
     messageLabel->setFixedHeight(35);
     messageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -225,5 +225,15 @@ ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
     : SessionFriendItem(owner, avatar, name, "")
     , userId(userId)
 {
-    
+    QGridLayout* layout = dynamic_cast<QGridLayout*>(this->layout());
+    layout->removeWidget(messageLabel);
+    delete messageLabel;
+
+    QPushButton* acceptBtn = new QPushButton();
+    acceptBtn->setText("Accept");
+    QPushButton* rejectBtn = new QPushButton();
+    rejectBtn->setText("Reject");
+
+    layout->addWidget(acceptBtn, 1, 2, 1, 1);
+    layout->addWidget(rejectBtn, 1, 3, 1, 1);
 }

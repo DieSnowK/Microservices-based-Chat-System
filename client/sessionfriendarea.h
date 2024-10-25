@@ -71,6 +71,9 @@ private:
 
     // This variable is used to indicate whether the current item is "selected" or not
     bool selected = false;
+
+protected:
+    QLabel* messageLabel;
 };
 
 //////////////////////////////////////////////////////////
