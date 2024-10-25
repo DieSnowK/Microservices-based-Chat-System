@@ -10,6 +10,18 @@
 #include <QStyleOption>
 #include <QPainter>
 
+
+//////////////////////////////////////////////////////////
+/// SessionFriendArea
+//////////////////////////////////////////////////////////
+
+enum class ItemType
+{
+    SESSION_ITEM_TYPE,
+    FRIEND_ITEM_TYPE,
+    APPLY_ITEM_TYPE
+};
+
 //////////////////////////////////////////////////////////
 /// SessionFriendArea
 //////////////////////////////////////////////////////////
@@ -21,7 +33,8 @@ public:
     explicit SessionFriendArea(QWidget *parent = nullptr);
 
     void Clear();
-    void AddItem(const QIcon& avatar, const QString& name, const QString& text);
+    void AddItem(ItemType itemtype, const QString& id, const QIcon& avatar,
+                 const QString& name, const QString& text);
 
     // Select a specific item and select it by the index subscript
     void ClickItem(int index);
@@ -58,6 +71,55 @@ private:
 
     // This variable is used to indicate whether the current item is "selected" or not
     bool selected = false;
+};
+
+//////////////////////////////////////////////////////////
+/// SessionItem
+//////////////////////////////////////////////////////////
+
+class SessionItem : public SessionFriendItem
+{
+    Q_OBJECT
+
+public:
+    SessionItem(QWidget* owner, const QString& chatSessionId,
+                const QIcon& avatar, const QString& name, const QString& lastMessage);
+
+private:
+    QString chatSessionId;
+    QString text; // Text preview of the last message
+};
+
+//////////////////////////////////////////////////////////
+/// FriendItem
+//////////////////////////////////////////////////////////
+
+class FriendItem : public SessionFriendItem
+{
+    Q_OBJECT
+
+public:
+    FriendItem(QWidget* owner, const QString& userId, const QIcon& avatar,
+               const QString& name, const QString& description);
+
+private:
+    QString userId;
+};
+
+//////////////////////////////////////////////////////////
+/// ApplyItem
+//////////////////////////////////////////////////////////
+
+class ApplyItem : public SessionFriendItem
+{
+    Q_OBJECT
+
+public:
+    ApplyItem(QWidget* owner, const QString& userId,
+              const QIcon& avatar, const QString& name);
+    
+private:
+    QString userId;
 };
 
 #endif // SESSIONFRIENDAREA_H

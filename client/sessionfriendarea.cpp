@@ -29,7 +29,8 @@ SessionFriendArea::SessionFriendArea(QWidget *parent)
     for(int i = 0; i < 30; ++i)
     {
         QIcon icon(":/resource/image/defaultAvatar.png");
-        this->AddItem(icon, "SnowK " + QString::number(i), "Last Msg " + QString::number(i));
+        this->AddItem(ItemType::SESSION_ITEM_TYPE, QString::number(i), icon,
+                      "SnowK " + QString::number(i), "Last Msg " + QString::number(i));
     }
 #endif
 }
@@ -47,9 +48,25 @@ void SessionFriendArea::Clear()
     }
 }
 
-void SessionFriendArea::AddItem(const QIcon &avatar, const QString &name, const QString &text)
+void SessionFriendArea::AddItem(ItemType itemtype, const QString& id, const QIcon &avatar,
+                                const QString &name, const QString &text)
 {
-    SessionFriendItem* item = new SessionFriendItem(this, avatar, name, text);
+    SessionFriendItem* item = nullptr;
+    switch(itemtype)
+    {
+    case ItemType::SESSION_ITEM_TYPE:
+        item = new SessionItem(this, id, avatar, name, text);
+        break;
+    case ItemType::FRIEND_ITEM_TYPE:
+        item = new FriendItem(this, id, avatar, name, text);
+        break;
+    case ItemType::APPLY_ITEM_TYPE:
+        item = new ApplyItem(this, id, avatar, name);
+        break;
+    default:
+        LOG() << "Error ItemType, itemtype = " << itemtype;
+        break;
+    }
     container->layout()->addWidget(item);
 }
 
@@ -172,4 +189,41 @@ void SessionFriendItem::Select()
 
     this->selected = true;
     this->setStyleSheet("QWidget { background-color: rgb(210, 210, 210); }");
+}
+
+//////////////////////////////////////////////////////////
+/// SessionItem
+//////////////////////////////////////////////////////////
+
+SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
+                         const QIcon& avatar, const QString& name, const QString& lastMessage)
+    : SessionFriendItem(owner, avatar, name, lastMessage)
+    , chatSessionId(chatSessionId)
+    , text(lastMessage)
+{
+
+}
+
+//////////////////////////////////////////////////////////
+/// FriendItem
+//////////////////////////////////////////////////////////
+
+FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avatar,
+                       const QString& name, const QString& description);
+    : SessionFriendItem(owner, avatar, name, description)
+    , userId(userId)
+{
+    
+}
+
+//////////////////////////////////////////////////////////
+/// ApplyItem
+//////////////////////////////////////////////////////////
+
+ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
+                     const QIcon& avatar, const QString& name);
+    : SessionFriendItem(owner, avatar, name, "")
+    , userId(userId)
+{
+    
 }
