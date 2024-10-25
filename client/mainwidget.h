@@ -4,6 +4,12 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QHBoxLayout>
+#include <QGridLayout>
+
+#include "sessionfriendarea.h"
+#include "messageshowarea.h"
+#include "messageeditarea.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui 
@@ -53,6 +59,14 @@ private:
 
     QLineEdit* searchEdit;
     QPushButton* addFriendBtn;
+
+    SessionFriendArea *sessionFriendArea;
+
+    QLabel *sessionTitleLabel;
+    QPushButton *extraBtn;
+
+    MessageShowArea *messageShowArea;
+    MessageEditArea *messageEditArea;
 
     enum class ActiveTab
     {

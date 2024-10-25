@@ -75,13 +75,13 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 66,
+				"line" : 67,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 49,
+				"line" : 50,
 				"parent" : 0
 			},
 			{
@@ -370,7 +370,8 @@
 				1,
 				2,
 				8,
-				12
+				11,
+				14
 			]
 		}
 	],
@@ -490,7 +491,8 @@
 				1,
 				2,
 				8,
-				12
+				11,
+				14
 			]
 		},
 		{
@@ -501,7 +503,8 @@
 				5,
 				7,
 				9,
-				10
+				10,
+				12
 			]
 		},
 		{
@@ -510,15 +513,15 @@
 			[
 				4,
 				6,
-				11
+				13
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				13,
-				14
+				15,
+				16
 			]
 		}
 	],
@@ -578,6 +581,17 @@
 			"backtrace" : 4,
 			"path" : "debug.hpp",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"path" : "messageshowarea.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "messageshowarea.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,

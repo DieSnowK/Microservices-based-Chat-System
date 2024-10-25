@@ -1,10 +1,6 @@
 #include "mainwidget.h"
 #include "./ui_mainwidget.h"
-
-#include <QHBoxLayout>
-#include <QGridLayout>
-
-#include "sessionfriendarea.h"
+#include "debug.hpp"
 
 MainWidget* MainWidget::instance = nullptr;
 
@@ -122,7 +118,7 @@ void MainWidget::InitMidWindow()
     style += " QPushButton:pressed { background-color: rgb(240, 240, 240); }";
     addFriendBtn->setStyleSheet(style);
 
-    SessionFriendArea* sessionFriendArea = new SessionFriendArea();
+    sessionFriendArea = new SessionFriendArea();
 
     // For more flexible control of margins, only the row of the
         // search box button is affected, not the row of the list below
@@ -144,7 +140,45 @@ void MainWidget::InitMidWindow()
 
 void MainWidget::InitRightWindow()
 {
-    
+    QVBoxLayout* vlayout = new QVBoxLayout();
+    vlayout->setSpacing(0);
+    vlayout->setContentsMargins(0, 0, 0, 0);
+    vlayout->setAlignment(Qt::AlignTop);
+    windowRight->setLayout(vlayout);
+
+    QWidget* titleWidget = new QWidget();
+    titleWidget->setFixedHeight(62);
+    titleWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    titleWidget->setObjectName("titleWidget");
+    titleWidget->setStyleSheet("#titleWidget { border-bottom: 1px solid rgb(230, 230, 230); \
+                                border-left: 1px solid rgb(230, 230, 230); }");
+    vlayout->addWidget(titleWidget);
+
+    QHBoxLayout* hlayout = new QHBoxLayout();
+    hlayout->setSpacing(0);
+    hlayout->setContentsMargins(10, 0, 10, 0);
+    titleWidget->setLayout(hlayout);
+
+    sessionTitleLabel = new QLabel();
+    sessionTitleLabel->setStyleSheet("QLabel { font-size: 22px; border-bottom: 1px solid rgb(230, 230, 230);}");
+#if TEST_UI
+    sessionTitleLabel->setText("DieSnowK");
+#endif
+    hlayout->addWidget(sessionTitleLabel);
+
+    extraBtn = new QPushButton();
+    extraBtn->setFixedSize(30, 30);
+    extraBtn->setIconSize(QSize(30, 30));
+    extraBtn->setIcon(QIcon(":/resource/image/more.png"));
+    extraBtn->setStyleSheet("QPushButton { border:none; background-color: rgb(245, 245, 245); } \
+                             QPushButton:pressed { background-color: rgb(220, 220, 220); }");
+    hlayout->addWidget(extraBtn);
+
+    messageShowArea = new MessageShowArea();
+    vlayout->addWidget(messageShowArea);
+
+    messageEditArea = new MessageEditArea();
+    vlayout->addWidget(messageEditArea, 0, Qt::AlignBottom);
 }
 
 void MainWidget::InitSignalSlot()

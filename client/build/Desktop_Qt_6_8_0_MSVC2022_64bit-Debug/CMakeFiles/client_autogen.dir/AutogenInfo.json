@@ -330,6 +330,18 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageeditarea.h",
+			"MU",
+			"EWIEGA46WW/moc_messageeditarea.cpp",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.h",
+			"MU",
+			"EWIEGA46WW/moc_messageshowarea.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp",
 			"MU",
 			"NLOY5YBGEN/moc_data.cpp",
@@ -404,6 +416,16 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/mainwidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageeditarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.cpp",
 			"MU",
 			null
 		],
