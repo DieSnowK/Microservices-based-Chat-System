@@ -228,7 +228,7 @@ FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avata
 
 void FriendItem::Active()
 {
-    LOG() << "Active FriendItem, chatSessionId = " << chatSessionId;
+    LOG() << "Active FriendItem, chatSessionId = " << userId;
 
 }
 
@@ -256,6 +256,6 @@ ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
 
 void ApplyItem::Active()
 {
-    LOG() << "Active ApplyItem, chatSessionId = " << chatSessionId;
+    LOG() << "Active ApplyItem, chatSessionId = " << userId;
 
 }
