@@ -64,7 +64,7 @@ void SessionFriendArea::AddItem(ItemType itemtype, const QString& id, const QIco
         item = new ApplyItem(this, id, avatar, name);
         break;
     default:
-        // LOG() << "Error ItemType, itemtype = " << itemtype; // TODO
+        LOG() << "Error ItemType, itemtype = " << (int)itemtype;
         break;
     }
     container->layout()->addWidget(item);
