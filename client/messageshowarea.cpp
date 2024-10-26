@@ -1,5 +1,6 @@
 #include "messageshowarea.h"
 #include "debug.hpp"
+#include "mainwidget.h"
 
 ////////////////////////////////////////////////////////
 /// MessageShowArea
@@ -146,6 +147,13 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
     {
         layout->addWidget(contentWidget, 1, 0);
     }
+
+    connect(avatarBtn, &QPushButton::clicked, messageItem, [=]()
+    {
+        MainWidget* mainWidget = MainWidget::GetInstance();
+        UserInfoWidget* userInfoWidget = new UserInfoWidget(message.sender, mainWidget);
+        userInfoWidget->exec();
+    });
 
     return messageItem;
 }

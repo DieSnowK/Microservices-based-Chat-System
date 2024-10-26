@@ -16,8 +16,12 @@ client_autogen/timestamp: \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/resource.qrc \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/selfinfowidget.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/selfinfowidget.h \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessiondetailwidget.cpp \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessiondetailwidget.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.h \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.cpp \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDateTime \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDebug \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \

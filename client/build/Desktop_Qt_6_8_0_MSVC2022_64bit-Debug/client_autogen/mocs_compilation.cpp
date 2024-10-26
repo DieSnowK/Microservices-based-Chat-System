@@ -3,4 +3,6 @@
 #include "EWIEGA46WW/moc_messageeditarea.cpp"
 #include "EWIEGA46WW/moc_messageshowarea.cpp"
 #include "EWIEGA46WW/moc_selfinfowidget.cpp"
+#include "EWIEGA46WW/moc_sessiondetailwidget.cpp"
 #include "EWIEGA46WW/moc_sessionfriendarea.cpp"
+#include "EWIEGA46WW/moc_userinfowidget.cpp"

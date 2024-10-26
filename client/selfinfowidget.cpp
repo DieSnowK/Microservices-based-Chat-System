@@ -1,4 +1,5 @@
 #include "selfinfowidget.h"
+#include "debug.hpp"
 
 SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     : QDialog(parent)
@@ -29,10 +30,11 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     btnStyle += "QPushButton:pressed { background-color: rgb(210, 210, 210); }";
     QString editStyle = "QLineEdit { border: none; border-radius:5px; padding-left:2px; }";
 
+    int width = 70;
     int height = 30;
 
     idTag = new QLabel();
-    idTag->setFixedSize(50, height);
+    idTag->setFixedSize(width, height);
     idTag->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     idTag->setText("Ordinal");
     idTag->setStyleSheet(labelStyle);
@@ -42,7 +44,7 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     idLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     nameTag = new QLabel();
-    nameTag->setFixedSize(50, height);
+    nameTag->setFixedSize(width, height);
     nameTag->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     nameTag->setText("Nickname");
     nameTag->setStyleSheet(labelStyle);
@@ -71,7 +73,7 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     nameSubmitBtn->hide();
 
     descTag = new QLabel();
-    descTag->setFixedSize(50, height);
+    descTag->setFixedSize(width, height);
     descTag->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     descTag->setText("Desc");
     descTag->setStyleSheet(labelStyle);
@@ -100,7 +102,7 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     descSubmitBtn->hide();
 
     phoneTag = new QLabel();
-    phoneTag->setFixedSize(50, height);
+    phoneTag->setFixedSize(width, height);
     phoneTag->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     phoneTag->setText("Phone");
     phoneTag->setStyleSheet(labelStyle);
@@ -129,7 +131,7 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     phoneSubmitBtn->hide();
 
     verifyCodeTag = new QLabel();
-    verifyCodeTag->setFixedSize(50, height);
+    verifyCodeTag->setFixedSize(width, height);
     verifyCodeTag->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     verifyCodeTag->setText("Captcha");
     verifyCodeTag->setStyleSheet(labelStyle);
@@ -148,7 +150,6 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     getVerifyCodeBtn->setFixedSize(70, height);
     getVerifyCodeBtn->hide();
 
-    // 9. 添加到布局管理器. 第 0 列被头像占用了. 下列内容都是从第一列开始往后排
     layout->addWidget(idTag, 0, 1);
     layout->addWidget(idLabel, 0, 2);
 
@@ -172,13 +173,13 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     avatarBtn->setIcon(QIcon(":/resource/image/defaultAvatar.png"));
 #endif
 
-    // // 10. 连接信号槽
-    // initSingalSlot();
+    InitSignalSlot();
 
     // // 11. 加载数据到界面上
     // DataCenter* dataCenter = DataCenter::getInstance();
     // UserInfo* myself = dataCenter->getMyself();
-    // if (myself != nullptr) {
+    // if (myself != nullptr)
+    // {
     //     // 就把个人信息, 显示到界面上
     //     avatarBtn->setIcon(myself->avatar);
     //     idLabel->setText(myself->userId);
@@ -186,4 +187,110 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     //     descLabel->setText(myself->description);
     //     phoneLabel->setText(myself->phone);
     // }
+}
+
+void SelfInfoWidget::InitSignalSlot()
+{
+    connect(nameModifyBtn, &QPushButton::clicked, this, [=]()
+    {
+        nameLabel->hide();
+        nameModifyBtn->hide();
+        layout->removeWidget(nameLabel);
+        layout->removeWidget(nameModifyBtn);
+
+        nameEdit->show();
+        nameSubmitBtn->show();
+        layout->addWidget(nameEdit, 1, 2);
+        layout->addWidget(nameSubmitBtn, 1, 3);
+
+        nameEdit->setText(nameLabel->text());
+    });
+
+    connect(descModifyBtn, &QPushButton::clicked, this, [=]()
+    {
+        descLabel->hide();
+        descModifyBtn->hide();
+        layout->removeWidget(descLabel);
+        layout->removeWidget(descModifyBtn);
+
+        descEdit->show();
+        descSubmitBtn->show();
+        layout->addWidget(descEdit, 2, 2);
+        layout->addWidget(descSubmitBtn, 2, 3);
+
+        descEdit->setText(descLabel->text());
+    });
+
+    connect(phoneModifyBtn, &QPushButton::clicked, this, [=]()
+    {
+        phoneLabel->hide();
+        phoneModifyBtn->hide();
+        layout->removeWidget(phoneLabel);
+        layout->removeWidget(phoneModifyBtn);
+
+        phoneEdit->show();
+        phoneSubmitBtn->show();
+        layout->addWidget(phoneEdit, 3, 2);
+        layout->addWidget(phoneSubmitBtn, 3, 3);
+
+        verifyCodeTag->show();
+        verifyCodeEdit->show();
+        getVerifyCodeBtn->show();
+        layout->addWidget(verifyCodeTag, 4, 1);
+        layout->addWidget(verifyCodeEdit, 4, 2);
+        layout->addWidget(getVerifyCodeBtn, 4, 3);
+
+        phoneEdit->setText(phoneLabel->text());
+    });
+
+    connect(avatarBtn, &QPushButton::clicked, this, &SelfInfoWidget::ClickAvatarBtn);
+    connect(nameSubmitBtn, &QPushButton::clicked, this, &SelfInfoWidget::ClickNameSubmitBtn);
+    connect(descSubmitBtn, &QPushButton::clicked, this, &SelfInfoWidget::ClickDescSubmitBtn);
+    connect(phoneSubmitBtn, &QPushButton::clicked, this, &SelfInfoWidget::ClickPhoneSubmitBtn);
+    connect(getVerifyCodeBtn, &QPushButton::clicked, this, &SelfInfoWidget::ClickGetVerifyCodeBtn);
+}
+
+void SelfInfoWidget::ClickNameSubmitBtn()
+{
+
+}
+
+void SelfInfoWidget::ClickNameSubmitBtnDone()
+{
+
+}
+
+void SelfInfoWidget::ClickDescSubmitBtn()
+{
+
+}
+
+void SelfInfoWidget::ChickDescSubmitBtnDone()
+{
+
+}
+
+void SelfInfoWidget::ClickGetVerifyCodeBtn()
+{
+
+}
+
+void SelfInfoWidget::ClickPhoneSubmitBtn()
+{
+
+}
+
+void SelfInfoWidget::ClickPhoneSubmitBtnDone()
+{
+
+}
+
+void SelfInfoWidget::ClickAvatarBtn()
+{
+
+}
+
+void SelfInfoWidget::ClickAvatarBtnDone()
+{
+
 }

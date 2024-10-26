@@ -14,6 +14,17 @@ class SelfInfoWidget : public QDialog
 public:
     SelfInfoWidget(QWidget* parent);
 
+    void InitSignalSlot();
+    void ClickNameSubmitBtn();
+    void ClickNameSubmitBtnDone();
+    void ClickDescSubmitBtn();
+    void ChickDescSubmitBtnDone();
+    void ClickGetVerifyCodeBtn();
+    void ClickPhoneSubmitBtn();
+    void ClickPhoneSubmitBtnDone();
+    void ClickAvatarBtn();
+    void ClickAvatarBtnDone();
+
 private:
     QGridLayout* layout;
 

@@ -1,5 +1,6 @@
 C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/EWIEGA46WW/moc_messageshowarea.cpp: C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDateTime \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDebug \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \
@@ -170,6 +171,8 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtransform.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDialog \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QGridLayout \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QLabel \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QPushButton \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QScrollArea \
@@ -180,6 +183,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractscrollarea.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractslider.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qboxlayout.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdialog.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qframe.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qgridlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlabel.h \

@@ -11,6 +11,7 @@
 #include <QPainterPath>
 
 #include "model/data.hpp"
+#include "userinfowidget.h"
 
 using model::Message;
 using model::MessageType;
