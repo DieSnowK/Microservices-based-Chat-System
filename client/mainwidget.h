@@ -10,6 +10,7 @@
 #include "sessionfriendarea.h"
 #include "messageshowarea.h"
 #include "messageeditarea.h"
+#include "selfinfowidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui 

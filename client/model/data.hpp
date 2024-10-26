@@ -99,6 +99,8 @@ namespace model
     {
     public:
         // Factory Pattern
+        // The extraInfo here is currently only supplemented as a "filename"
+            // when the message type is a file message
         static Message MakeMessage(MessageType msgType, const QString& chatSessionId, const UserInfo& sender,
                                    const QByteArray& content, const QString& extraInfo)
         {

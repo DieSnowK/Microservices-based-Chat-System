@@ -14,6 +14,7 @@
 
 using model::Message;
 using model::MessageType;
+using model::UserInfo;
 
 ////////////////////////////////////////////////////////
 /// MessageShowArea
@@ -27,6 +28,7 @@ public:
     
     void AddMessage(bool isLeft, const Message& message);
     void AddFrontMessage(bool isLeft, const Message& message);
+    void Clear();
 
 private:
     QWidget *container;

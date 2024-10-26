@@ -348,6 +348,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/selfinfowidget.h",
+			"MU",
+			"EWIEGA46WW/moc_selfinfowidget.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.h",
 			"MU",
 			"EWIEGA46WW/moc_sessionfriendarea.cpp",
@@ -426,6 +432,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/selfinfowidget.cpp",
 			"MU",
 			null
 		],

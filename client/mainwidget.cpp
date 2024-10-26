@@ -183,9 +183,16 @@ void MainWidget::InitRightWindow()
 
 void MainWidget::InitSignalSlot()
 {
-    connect(sessionTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToSession);     
-    connect(friendTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToFriend);     
-    connect(applyTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToApply);     
+    connect(sessionTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToSession);
+    connect(friendTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToFriend);
+    connect(applyTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToApply);
+
+    connect(userAvatar, &QPushButton::clicked, this, [=]()
+    {
+        SelfInfoWidget* selfInfoWidget = new SelfInfoWidget(this);
+        selfInfoWidget->exec();         // A modal dialog box pops up
+        // selfInfoWidget->show();      // Pop up non-modal
+    });
 }
 
 void MainWidget::SwitchTabToSession()

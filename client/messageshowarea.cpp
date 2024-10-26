@@ -1,4 +1,5 @@
 #include "messageshowarea.h"
+#include "debug.hpp"
 
 ////////////////////////////////////////////////////////
 /// MessageShowArea
@@ -28,8 +29,10 @@ MessageShowArea::MessageShowArea()
     userInfo.description = "Cool Boy~";
     userInfo.avatar = QIcon(":/resource/image/defaultAvatar.png");
     userInfo.phone = "18351958129";
-    Message message = Message::MakeMessage(TEXT_TYPE, "", userInfo, QString("This is a test message").toUtf8(), "");
-    this->addMessage(false, message);
+    Message message = Message::MakeMessage(MessageType::TEXT_TYPE, "", userInfo,
+                        QString("This is a test message This is a test message This is a test message This is a test message This is \
+                                a test message This is a test message This is a test message This is a test message").toUtf8(), "");
+    this->AddMessage(false, message);
 
     for (int i = 1; i <= 30; ++i)
     {
@@ -39,11 +42,42 @@ MessageShowArea::MessageShowArea()
         userInfo.description = "Cool Boy~";
         userInfo.avatar = QIcon(":/resource/image/defaultAvatar.png");
         userInfo.phone = "18351958129";
-        Message message = Message::MakeMessage(TEXT_TYPE, "", userInfo, (QString("This is a test message") + QString::number(i)).toUtf8(), "");
-        this->addMessage(true, message);
+        Message message = Message::MakeMessage(MessageType::TEXT_TYPE, "", userInfo,
+                            (QString("This is a test message") + QString::number(i)).toUtf8(), "");
+        this->AddMessage(true, message);
     }
 #endif
 }
+
+void MessageShowArea::AddMessage(bool isLeft, const Message &message)
+{
+    MessageItem* msgItem = MessageItem::MakeMessageItem(isLeft, message);
+    container->layout()->addWidget(msgItem);
+}
+
+void MessageShowArea::AddFrontMessage(bool isLeft, const Message &message)
+{
+    MessageItem* msgItem = MessageItem::MakeMessageItem(isLeft, message);
+    QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(container->layout());
+    layout->insertWidget(0, msgItem);
+}
+
+void MessageShowArea::Clear()
+{
+    QLayout* layout = container->layout();
+    for (int i = layout->count() - 1; i >= 0; --i)
+    {
+        QLayoutItem* item = layout->takeAt(i);
+        if (item && item->widget())
+        {
+            delete item->widget();
+        }
+    }
+}
+
+////////////////////////////////////////////////////////
+/// MessageItem
+////////////////////////////////////////////////////////
 
 MessageItem::MessageItem(bool isLeft) 
     : isLeft(isLeft)
@@ -118,7 +152,8 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
 
 QWidget *MessageItem::MakeTextMessageItem(bool isLeft, const QString &text)
 {
-    return nullptr;
+    MessageContentLabel* msgContentLabel = new MessageContentLabel(text, isLeft, MessageType::TEXT_TYPE, "", QByteArray());
+    return msgContentLabel;
 }
 
 QWidget *MessageItem::MakeImageMessageItem(bool isLeft, const QString &fileId, const QByteArray &content)
