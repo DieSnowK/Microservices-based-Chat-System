@@ -75,13 +75,13 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 71,
+				"line" : 74,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 54,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
@@ -375,7 +375,10 @@
 				15,
 				17,
 				19,
-				22
+				21,
+				23,
+				25,
+				28
 			]
 		}
 	],
@@ -500,7 +503,10 @@
 				15,
 				17,
 				19,
-				22
+				21,
+				23,
+				25,
+				28
 			]
 		},
 		{
@@ -516,7 +522,10 @@
 				14,
 				16,
 				18,
-				20
+				20,
+				22,
+				24,
+				26
 			]
 		},
 		{
@@ -525,15 +534,15 @@
 			[
 				4,
 				6,
-				21
+				27
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				23,
-				24
+				29,
+				30
 			]
 		}
 	],
@@ -647,6 +656,39 @@
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
 			"path" : "sessiondetailwidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "choosefrienddialog.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "choosefrienddialog.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "groupsessiondetailwidget.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "groupsessiondetailwidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "addfrienddialog.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "addfrienddialog.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

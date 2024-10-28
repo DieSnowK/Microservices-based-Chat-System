@@ -40,8 +40,7 @@ class SessionDetailWidget : public QDialog
     Q_OBJECT
 
 public:
-    // SessionDetailWidget(QWidget* parent, const UserInfo& userInfo);
-    SessionDetailWidget(QWidget* parent);
+    SessionDetailWidget(QWidget* parent, const UserInfo& userInfo);
 
     void ClickDeleteFriendBtn();
 

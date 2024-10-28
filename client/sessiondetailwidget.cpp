@@ -53,11 +53,9 @@ QPushButton *AvatarItem::GetAvatar()
 /// SessionDetailWidget -> Single
 /////////////////////////////////////////////
 
-// SessionDetailWidget::SessionDetailWidget(QWidget* parent, const UserInfo& userInfo)
-//     : QDialog(parent)
-//     , userInfo(userInfo)
-SessionDetailWidget::SessionDetailWidget(QWidget* parent)
+SessionDetailWidget::SessionDetailWidget(QWidget* parent, const UserInfo& userInfo)
     : QDialog(parent)
+    , userInfo(userInfo)
 {
     this->setWindowTitle("Session Details");
     this->setWindowIcon(QIcon(":/resource/image/logo.png"));

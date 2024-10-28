@@ -12,8 +12,7 @@
 #include "messageeditarea.h"
 #include "selfinfowidget.h"
 #include "sessiondetailwidget.h"
-
-
+#include "groupsessiondetailwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui 

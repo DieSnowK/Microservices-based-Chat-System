@@ -248,10 +248,15 @@ void ChooseFriendDialog::DeleteSelectedFriend(const QString &userId)
         }
         vlayout->removeWidget(chooseFriendItem);
 
-        // 此处直接使用 delete 可能导致程序直接崩溃. 因为 delete 该对象的时候, 该对象内部的 QCheckBox 还在使用中 (触发着信号槽呢)
-    //     // 改成 deleteLater, 就相当于把 delete 操作委托给 Qt 自身来完成了. 告诉 Qt 框架说, 你要删除这个对象. 至于啥时候删除 Qt
-    //     // 会确保在 Qt 自身用完了之后, 去真正删除.
-    //     // delete chooseFriendItem;
+        // Using delete directly here may cause the program to crash directly.
+            // Because when you delete the object, the QCheckBox
+            // inside the object is still in use (triggering the signal slot)
+        // delete chooseFriendItem;
+
+
+        // Changing to deleteLater is delegating the delete operation to Qt itself. Tell
+            // the Qt framework that you want to delete the object. When to delete Qt will
+            // make sure that it is actually deleted after Qt itself has run out
         chooseFriendItem->deleteLater();
     }
 

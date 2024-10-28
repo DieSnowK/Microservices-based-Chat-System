@@ -318,6 +318,12 @@
 	"HEADERS" : 
 	[
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/addfrienddialog.h",
+			"MU",
+			"EWIEGA46WW/moc_addfrienddialog.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/choosefrienddialog.h",
 			"MU",
 			"EWIEGA46WW/moc_choosefrienddialog.cpp",
@@ -327,6 +333,12 @@
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/debug.hpp",
 			"MU",
 			"EWIEGA46WW/moc_debug.cpp",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/groupsessiondetailwidget.h",
+			"MU",
+			"EWIEGA46WW/moc_groupsessiondetailwidget.cpp",
 			null
 		],
 		[
@@ -434,7 +446,17 @@
 	"SOURCES" : 
 	[
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/addfrienddialog.cpp",
+			"MU",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/choosefrienddialog.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/groupsessiondetailwidget.cpp",
 			"MU",
 			null
 		],

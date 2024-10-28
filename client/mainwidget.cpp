@@ -213,13 +213,13 @@ void MainWidget::InitSignalSlot()
 
         if (isSingleChat)
         {
-            UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
-            if (userInfo == nullptr) {
-                LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
-                return;
-            }
-            SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
-            sessionDetailWidget->exec();
+            // UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
+            // if (userInfo == nullptr) {
+            //     LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
+            //     return;
+            // }
+            // SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
+            // sessionDetailWidget->exec();
         }
         else
         {
