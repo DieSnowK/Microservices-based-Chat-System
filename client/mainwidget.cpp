@@ -197,15 +197,11 @@ void MainWidget::InitSignalSlot()
 
     connect(extraBtn, &QPushButton::clicked, this, [=]()
     {
-        // For Test
-        SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this);
-        sessionDetailWidget->exec();
-
-        // #if TEST_GROUP_SESSION_DETAIL
-        //         bool isSingleChat = false;
-        // #else
-        //         bool isSingleChat = true;
-        // #endif
+#if TEST_GROUP_SESSION_DETAIL
+        bool isSingleChat = false;
+#else
+        bool isSingleChat = true;
+#endif
 
         // ChatSessionInfo* chatSessionInfo = dataCenter->findChatSessionById(dataCenter->getCurrentChatSessionId());
         // if (chatSessionInfo == nullptr) {
@@ -215,21 +211,21 @@ void MainWidget::InitSignalSlot()
 
         // bool isSingleChat = chatSessionInfo->userId != "";
 
-        // if (isSingleChat)
-        // {
-        //     UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
-        //     if (userInfo == nullptr) {
-        //         LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
-        //         return;
-        //     }
-        //     SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
-        //     sessionDetailWidget->exec();
-        // }
-        // else
-        // {
-        //     GroupSessionDetailWidget* groupSessionDetailWidget = new GroupSessionDetailWidget(this);
-        //     groupSessionDetailWidget->exec();
-        // }
+        if (isSingleChat)
+        {
+            UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
+            if (userInfo == nullptr) {
+                LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
+                return;
+            }
+            SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
+            sessionDetailWidget->exec();
+        }
+        else
+        {
+            GroupSessionDetailWidget* groupSessionDetailWidget = new GroupSessionDetailWidget(this);
+            groupSessionDetailWidget->exec();
+        }
     });
 }
 
