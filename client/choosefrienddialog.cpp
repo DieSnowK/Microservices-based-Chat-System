@@ -13,8 +13,8 @@ ChooseFriendDialog::ChooseFriendDialog(QWidget *parent)
     layout->setSpacing(0);
     this->setLayout(layout);
 
-    // InitLeft(layout);
-    // InitRight(layout);
+    InitLeft(layout);
+    InitRight(layout);
 
     // InitData();
 }
@@ -24,9 +24,9 @@ void ChooseFriendDialog::InitLeft(QHBoxLayout *layout)
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidgetResizable(true);
-    scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal { height: 0px;}");
+    scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal { height: 0px; }");
     scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 2px; "
-                                                   "background-color: rgb(255, 255, 255) }");
+                                                   "background-color: rgb(255, 255, 255); }");
     scrollArea->setStyleSheet("QScrollArea { border:none; }");
     layout->addWidget(scrollArea, 1);
 
@@ -44,7 +44,7 @@ void ChooseFriendDialog::InitLeft(QHBoxLayout *layout)
 #if TEST_UI
     QIcon defaultAvatar(":/resource/image/defaultAvatar.png");
     for (int i = 0; i < 30; ++i) {
-        this->addFriend(QString::number(1000 + i), defaultAvatar, "张三" + QString::number(i), false);
+        this->AddFriend(QString::number(1000 + i), defaultAvatar, "SnowK" + QString::number(i), false);
     }
 #endif
 }
@@ -61,14 +61,14 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
     tipLabel->setFixedHeight(30);
     tipLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     tipLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    tipLabel->setStyleSheet("QLabel { font-size: 16px; font-weight: 700}");
+    tipLabel->setStyleSheet("QLabel { font-size: 16px; font-weight: 700 }");
 
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 2px; "
-                                                   "background-color: rgb(255, 255, 255);}");
-    scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {height: 0px;}");
-    scrollArea->setStyleSheet("QScrollArea {border: none;}");
+                                                   "background-color: rgb(255, 255, 255); }");
+    scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal { height: 0px; }");
+    scrollArea->setStyleSheet("QScrollArea { border: none; }");
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     selectedContainer = new QWidget();
@@ -84,7 +84,7 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
 
     QString style = "QPushButton { color: rgb(7, 191, 96); "
                     "background-color: rgb(240, 240, 240); "
-                    "border: none; border-radius: 5px;}";
+                    "border: none; border-radius: 5px; }";
     style += "QPushButton:hover { background-color: rgb(220, 220, 220); }"
              "QPushButton:pressed { background-color: rgb(200, 200, 200); }";
 
@@ -105,10 +105,11 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
     gridLayout->addWidget(okBtn, 2, 1, 1, 3);
     gridLayout->addWidget(cancelBtn, 2, 5, 1, 3);
 
-#if 0
+#if TEST_UI
     QIcon defaultAvatar(":/resource/image/defaultAvatar.png");
-    for (int i = 0; i < 10; ++i) {
-        this->addSelectedFriend(QString::number(1000 + i), defaultAvatar, "张三" + QString::number(i));
+    for (int i = 0; i < 10; ++i)
+    {
+        this->AddSelectedFriend(QString::number(1000 + i), defaultAvatar, "SnowK" + QString::number(i));
     }
 #endif
 
