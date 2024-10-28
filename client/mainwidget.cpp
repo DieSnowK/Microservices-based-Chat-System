@@ -2,6 +2,8 @@
 #include "./ui_mainwidget.h"
 #include "debug.hpp"
 
+using model::ChatSessionInfo;
+
 MainWidget* MainWidget::instance = nullptr;
 
 MainWidget* MainWidget::GetInstance()
@@ -27,6 +29,7 @@ MainWidget::MainWidget(QWidget *parent)
     InitLeftWindow();
     InitMidWindow();
     InitRightWindow();
+    InitSignalSlot();
 }
 
 MainWidget::~MainWidget()
@@ -94,8 +97,6 @@ void MainWidget::InitLeftWindow()
     layout->addWidget(applyTabBtn, 1, Qt::AlignTop | Qt::AlignHCenter);
 
     layout->addStretch(20);
-
-    InitSignalSlot();
 }
 
 void MainWidget::InitMidWindow()
@@ -192,6 +193,43 @@ void MainWidget::InitSignalSlot()
         SelfInfoWidget* selfInfoWidget = new SelfInfoWidget(this);
         selfInfoWidget->exec();         // A modal dialog box pops up
         // selfInfoWidget->show();      // Pop up non-modal
+    });
+
+    connect(extraBtn, &QPushButton::clicked, this, [=]()
+    {
+        // For Test
+        SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this);
+        sessionDetailWidget->exec();
+
+        // #if TEST_GROUP_SESSION_DETAIL
+        //         bool isSingleChat = false;
+        // #else
+        //         bool isSingleChat = true;
+        // #endif
+
+        // ChatSessionInfo* chatSessionInfo = dataCenter->findChatSessionById(dataCenter->getCurrentChatSessionId());
+        // if (chatSessionInfo == nullptr) {
+        //     LOG() << "The current session does not exist, the Session Details dialog box cannot be displayed";
+        //     return;
+        // }
+
+        // bool isSingleChat = chatSessionInfo->userId != "";
+
+        // if (isSingleChat)
+        // {
+        //     UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
+        //     if (userInfo == nullptr) {
+        //         LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
+        //         return;
+        //     }
+        //     SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
+        //     sessionDetailWidget->exec();
+        // }
+        // else
+        // {
+        //     GroupSessionDetailWidget* groupSessionDetailWidget = new GroupSessionDetailWidget(this);
+        //     groupSessionDetailWidget->exec();
+        // }
     });
 }
 

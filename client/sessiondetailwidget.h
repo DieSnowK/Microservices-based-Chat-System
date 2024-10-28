@@ -9,6 +9,7 @@
 
 
 #include "model/data.hpp"
+#include "choosefrienddialog.h"
 
 using model::UserInfo;
 
@@ -39,7 +40,8 @@ class SessionDetailWidget : public QDialog
     Q_OBJECT
 
 public:
-    SessionDetailWidget(QWidget* parent, const UserInfo& userInfo);
+    // SessionDetailWidget(QWidget* parent, const UserInfo& userInfo);
+    SessionDetailWidget(QWidget* parent);
 
     void ClickDeleteFriendBtn();
 

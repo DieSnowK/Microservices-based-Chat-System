@@ -75,13 +75,13 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 70,
+				"line" : 71,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 53,
+				"line" : 54,
 				"parent" : 0
 			},
 			{
@@ -374,7 +374,8 @@
 				13,
 				15,
 				17,
-				20
+				19,
+				22
 			]
 		}
 	],
@@ -498,7 +499,8 @@
 				13,
 				15,
 				17,
-				20
+				19,
+				22
 			]
 		},
 		{
@@ -513,7 +515,8 @@
 				12,
 				14,
 				16,
-				18
+				18,
+				20
 			]
 		},
 		{
@@ -522,15 +525,15 @@
 			[
 				4,
 				6,
-				19
+				21
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				21,
-				22
+				23,
+				24
 			]
 		}
 	],
@@ -633,6 +636,17 @@
 			"backtrace" : 4,
 			"compileGroupIndex" : 0,
 			"path" : "userinfowidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "sessiondetailwidget.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"path" : "sessiondetailwidget.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

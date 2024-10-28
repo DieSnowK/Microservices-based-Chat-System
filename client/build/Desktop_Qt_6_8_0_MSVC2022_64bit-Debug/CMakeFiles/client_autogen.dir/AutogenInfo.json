@@ -318,6 +318,12 @@
 	"HEADERS" : 
 	[
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/choosefrienddialog.h",
+			"MU",
+			"EWIEGA46WW/moc_choosefrienddialog.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/debug.hpp",
 			"MU",
 			"EWIEGA46WW/moc_debug.cpp",
@@ -427,6 +433,11 @@
 	"SETTINGS_FILE" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/CMakeFiles/client_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/choosefrienddialog.cpp",
+			"MU",
+			null
+		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/main.cpp",
 			"MU",
