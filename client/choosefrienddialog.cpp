@@ -140,7 +140,8 @@ void ChooseFriendDialog::InitLeft(QHBoxLayout *layout)
 
 #if TEST_UI
     QIcon defaultAvatar(":/resource/image/defaultAvatar.png");
-    for (int i = 0; i < 30; ++i) {
+    for (int i = 0; i < 30; ++i)
+    {
         this->AddFriend(QString::number(1000 + i), defaultAvatar, "SnowK" + QString::number(i), false);
     }
 #endif
@@ -231,45 +232,45 @@ void ChooseFriendDialog::AddSelectedFriend(const QString &userId, const QIcon &a
 
 void ChooseFriendDialog::DeleteSelectedFriend(const QString &userId)
 {
-    // // 遍历 selectedContainer 中的每个 Item, 对比每个 Item 里的 userId , 是否是要删除的 userId.
-    // QVBoxLayout* vlayout = dynamic_cast<QVBoxLayout*>(selectedContainer->layout());
-    // // 由于是要 "遍历" + "删除" 需要从后往前进行
-    // for (int i = vlayout->count() - 1; i >= 0; --i)
-    // {
-    //     auto* item = vlayout->itemAt(i);
-    //     if (item == nullptr || item->widget() == nullptr)
-    //     {
-    //         continue;
-    //     }
-    //     ChooseFriendItem* chooseFriendItem = dynamic_cast<ChooseFriendItem*>(item->widget());
-    //     // 判定当前的 Item 的 userId 是否是要删除的 userId
-    //     if (chooseFriendItem->GetUserId() != userId)
-    //     {
-    //         continue;
-    //     }
-    //     vlayout->removeWidget(chooseFriendItem);
-    //     // 此处直接使用 delete 可能导致程序直接崩溃. 因为 delete 该对象的时候, 该对象内部的 QCheckBox 还在使用中 (触发着信号槽呢)
+    QVBoxLayout* vlayout = dynamic_cast<QVBoxLayout*>(selectedContainer->layout());
+    for (int i = vlayout->count() - 1; i >= 0; --i)
+    {
+        auto* item = vlayout->itemAt(i);
+        if (item == nullptr || item->widget() == nullptr)
+        {
+            continue;
+        }
+
+        ChooseFriendItem* chooseFriendItem = dynamic_cast<ChooseFriendItem*>(item->widget());
+        if (chooseFriendItem->GetUserId() != userId)
+        {
+            continue;
+        }
+        vlayout->removeWidget(chooseFriendItem);
+
+        // 此处直接使用 delete 可能导致程序直接崩溃. 因为 delete 该对象的时候, 该对象内部的 QCheckBox 还在使用中 (触发着信号槽呢)
     //     // 改成 deleteLater, 就相当于把 delete 操作委托给 Qt 自身来完成了. 告诉 Qt 框架说, 你要删除这个对象. 至于啥时候删除 Qt
     //     // 会确保在 Qt 自身用完了之后, 去真正删除.
     //     // delete chooseFriendItem;
-    //     chooseFriendItem->deleteLater();
-    // }
+        chooseFriendItem->deleteLater();
+    }
 
-    // // 再遍历一下左侧列表, 把左侧列表中对应 item 的 checkBox 勾选状态取消掉.
-    // QVBoxLayout* vlayoutLeft = dynamic_cast<QVBoxLayout*>(totalContainer->layout());
-    // for (int i = 0; i < vlayoutLeft->count(); ++i) {
-    //     auto* item = vlayoutLeft->itemAt(i);
-    //     if (item == nullptr || item->widget() == nullptr)
-    //     {
-    //         continue;
-    //     }
-    //     ChooseFriendItem* chooseFriendItem = dynamic_cast<ChooseFriendItem*>(item->widget());
-    //     if (chooseFriendItem->GetUserId() != userId)
-    //     {
-    //         continue;
-    //     }
-    //     // 取消 checkBox 选中状态
-    //     chooseFriendItem->GetCheckBox()->setChecked(false);
-    // }
+    QVBoxLayout* vlayoutLeft = dynamic_cast<QVBoxLayout*>(totalContainer->layout());
+    for (int i = 0; i < vlayoutLeft->count(); ++i)
+    {
+        auto* item = vlayoutLeft->itemAt(i);
+        if (item == nullptr || item->widget() == nullptr)
+        {
+            continue;
+        }
+
+        ChooseFriendItem* chooseFriendItem = dynamic_cast<ChooseFriendItem*>(item->widget());
+        if (chooseFriendItem->GetUserId() != userId)
+        {
+            continue;
+        }
+
+        chooseFriendItem->GetCheckBox()->setChecked(false);
+    }
 }
 
