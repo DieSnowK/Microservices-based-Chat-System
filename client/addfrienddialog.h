@@ -6,10 +6,31 @@
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QLabel>
+#include <QScrollArea>
+#include <QScrollBar>
 
 #include "model/data.hpp"
 
 using model::UserInfo;
+
+//////////////////////////////////////
+/// FriendResultItem
+//////////////////////////////////////
+
+class FriendResultItem : public QWidget
+{
+    Q_OBJECT
+
+public:
+    FriendResultItem(const UserInfo& userInfo);
+    void ClickAddBtn();
+
+private:
+    const UserInfo& userInfo;
+    QPushButton* addBtn;
+};
+
 
 //////////////////////////////////////
 /// AddFriendDialog
@@ -22,7 +43,15 @@ class AddFriendDialog : public QDialog
 public:
     AddFriendDialog(QWidget* parent);
 
+    void InitResultArea();
+
     void AddResult(const UserInfo& userInfo);
+    void Clear();
+
+    void SetSearchKey(const QString& searchKey);
+
+    // void ClickSearchBtn();
+    // void ClickSearchBtnDone();
 
 private:
     QLineEdit* searchEdit;

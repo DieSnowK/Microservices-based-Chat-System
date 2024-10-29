@@ -1,7 +1,65 @@
 #include "addfrienddialog.h"
 #include "debug.hpp"
 
+//////////////////////////////////////
+/// FriendResultItem
+//////////////////////////////////////
 
+FriendResultItem::FriendResultItem(const UserInfo &userInfo)
+    : userInfo(userInfo)
+{
+    this->setFixedHeight(70);
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    QGridLayout* layout = new QGridLayout();
+    layout->setVerticalSpacing(0);
+    layout->setHorizontalSpacing(10);
+    layout->setContentsMargins(0, 0, 20, 0);
+    this->setLayout(layout);
+
+    QPushButton* avatarBtn = new QPushButton();
+    avatarBtn->setFixedSize(50, 50);
+    avatarBtn->setIconSize(QSize(50, 50));
+    avatarBtn->setIcon(userInfo.avatar);
+
+    QLabel* nameLabel = new QLabel();
+    nameLabel->setFixedHeight(35);
+    nameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    nameLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    nameLabel->setStyleSheet("QLabel { font-size: 16px; font-weight: 700;}");
+    nameLabel->setText(userInfo.nickname);
+
+    QLabel* descLabel = new QLabel();
+    descLabel->setFixedHeight(35);
+    descLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    descLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    descLabel->setStyleSheet("QLabel { font-size: 14px; }");
+    descLabel->setText(userInfo.description);
+
+    addBtn = new QPushButton();
+    addBtn->setFixedSize(100, 40);
+    addBtn->setText("Add Friend");
+    QString btnStyle = "QPushButton { border: none; background-color: rgb(137, 217, 97); "
+                       "color: rgb(255, 255, 255); border-radius: 10px;} ";
+    btnStyle += "QPushButton:pressed { background-color: rgb(200, 200, 200); }";
+    addBtn->setStyleSheet(btnStyle);
+
+    layout->addWidget(avatarBtn, 0, 0, 2, 1);
+    layout->addWidget(nameLabel, 0, 1);
+    layout->addWidget(descLabel, 1, 1);
+    layout->addWidget(addBtn, 0, 2, 2, 1);
+
+    connect(addBtn, &QPushButton::clicked, this, &FriendResultItem::ClickAddBtn);
+}
+
+void FriendResultItem::ClickAddBtn()
+{
+
+}
+
+//////////////////////////////////////
+/// AddFriendDialog
+//////////////////////////////////////
 
 AddFriendDialog::AddFriendDialog(QWidget* parent)
     : QDialog(parent)
@@ -38,22 +96,70 @@ AddFriendDialog::AddFriendDialog(QWidget* parent)
     searchBtn->setStyleSheet(btnStyle);
     layout->addWidget(searchBtn, 0, 8, 1, 1);
 
-    // 5. 添加滚动区域
-    // InitResultArea();
+    InitResultArea();
 
 #if TEST_UI
     QIcon avatar(":/resource/image/defaultAvatar.png");
     for (int i = 0; i < 20; ++i)
     {
-        // new 出来这个对象, 再往 addResult 中添加. FriendResultItem 中持有了 UserInfo 的 const 引用. 需要确保引用是有效的引用
         UserInfo* userInfo = new UserInfo();
         userInfo->userId = QString::number(1000 + i);
-        userInfo->nickname = "张三" + QString::number(i);
-        userInfo->description = "这是一段个性签名";
+        userInfo->nickname = "SnowK" + QString::number(i);
+        userInfo->description = "Cool Boy~";
         userInfo->avatar = avatar;
         this->AddResult(*userInfo);
     }
 #endif
 
-    // connect(searchBtn, &QPushButton::clicked, this, &AddFriendDialog::clickSearchBtn);
+    // connect(searchBtn, &QPushButton::clicked, this, &AddFriendDialog::ClickSearchBtn);
 }
+
+void AddFriendDialog::InitResultArea()
+{
+    QScrollArea* scrollArea = new QScrollArea();
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {height: 0;} ");
+    scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {width: 2px; "
+                                                   "background-color: rgb(255, 255, 255);}");
+    scrollArea->setStyleSheet("QScrollArea { border: none; }");
+    layout->addWidget(scrollArea, 1, 0, 1, 9);
+
+    resultContainer = new QWidget();
+    resultContainer->setObjectName("resultContainer");
+    resultContainer->setStyleSheet("#resultContainer { background-color: rgb(255, 255, 255); } ");
+    scrollArea->setWidget(resultContainer);
+
+    QVBoxLayout* vlayout = new QVBoxLayout();
+    vlayout->setSpacing(0);
+    vlayout->setContentsMargins(0, 0, 0, 0);
+    resultContainer->setLayout(vlayout);
+}
+
+void AddFriendDialog::AddResult(const UserInfo &userInfo)
+{
+    FriendResultItem* item = new FriendResultItem(userInfo);
+    resultContainer->layout()->addWidget(item);
+}
+
+void AddFriendDialog::Clear()
+{
+    QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(resultContainer->layout());
+    for (int i = layout->count() - 1; i >= 0; --i)
+    {
+        QLayoutItem* layoutItem = layout->takeAt(i);
+        if (layoutItem == nullptr || layoutItem->widget() == nullptr)
+        {
+            continue;
+        }
+
+        delete layoutItem->widget();
+    }
+}
+
+void AddFriendDialog::SetSearchKey(const QString &searchKey)
+{
+    searchEdit->setText(searchKey);
+}
+
+

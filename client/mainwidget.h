@@ -13,6 +13,7 @@
 #include "selfinfowidget.h"
 #include "sessiondetailwidget.h"
 #include "groupsessiondetailwidget.h"
+#include "addfrienddialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui 

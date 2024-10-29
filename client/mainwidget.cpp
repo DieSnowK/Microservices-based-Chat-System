@@ -110,7 +110,8 @@ void MainWidget::InitMidWindow()
     searchEdit = new QLineEdit();
     searchEdit->setFixedHeight(30);
     searchEdit->setPlaceholderText("Search");
-    searchEdit->setStyleSheet("QLineEdit { border-radius: 5px; background-color: rgb(226, 226, 226); padding-left: 5px; }");
+    searchEdit->setStyleSheet("QLineEdit { border-radius: 5px; "
+                              "background-color: rgb(226, 226, 226); padding-left: 5px; }");
 
     addFriendBtn = new QPushButton();
     addFriendBtn->setFixedSize(30, 30);
@@ -226,6 +227,22 @@ void MainWidget::InitSignalSlot()
             GroupSessionDetailWidget* groupSessionDetailWidget = new GroupSessionDetailWidget(this);
             groupSessionDetailWidget->exec();
         }
+    });
+
+    connect(addFriendBtn, &QPushButton::clicked, this, [=]()
+    {
+        AddFriendDialog* addFriendDialog = new AddFriendDialog(this);
+        addFriendDialog->exec();
+    });
+
+    // TODO 考虑优化
+    connect(searchEdit, &QLineEdit::textEdited, this, [=]()
+    {
+        const QString& searchKey = searchEdit->text();
+        AddFriendDialog* addFriendDialog = new AddFriendDialog(this);
+        addFriendDialog->SetSearchKey(searchKey);
+        searchEdit->setText("");
+        addFriendDialog->exec();
     });
 }
 
