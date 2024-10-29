@@ -81,6 +81,7 @@ LoginWidget::LoginWidget(QWidget *parent)
 
     connect(switchModeBtn, &QPushButton::clicked, this, &LoginWidget::SwitchMode);
 
+    // TODO
     connect(phoneModeBtn, &QPushButton::clicked, this, [=]()
     {
         PhoneLoginWidget* phoneLoginWidget = new PhoneLoginWidget(nullptr);
