@@ -1,9 +1,17 @@
 C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/EWIEGA46WW/moc_messageeditarea.cpp: C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageeditarea.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/historymessagewidget.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDateTime \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDebug \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFileInfo \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QList \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QObject \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QRect \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSize \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSizeF \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QString \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUuid \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20functional.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20iterator.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20memory.h \
@@ -23,6 +31,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbytearrayalgorithms.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbytearraylist.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbytearrayview.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcalendar.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qchar.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcompare.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcompare_impl.h \
@@ -39,12 +48,16 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcoreevent.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdarwinhelpers.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdatastream.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdatetime.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdeadlinetimer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdebug.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qelapsedtimer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qendian.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qeventloop.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qexceptionhandling.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfile.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfiledevice.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfileinfo.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qflags.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfloat16.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qforeach.h \
@@ -84,6 +97,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qprocessordetection.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrect.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrefcount.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qregularexpression.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qscopedpointer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qscopeguard.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qset.h \
@@ -117,6 +131,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtdeprecationmarkers.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtenvironmentvariables.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtextstream.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtimezone.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtmetamacros.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtnoop.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtpreprocessorsupport.h \
@@ -129,11 +144,13 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtypes.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qurl.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qutf8stringview.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/quuid.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qvariant.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qvarlengtharray.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qversiontagging.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qxptype_traits.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qyieldcpu.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/QIcon \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/QTransform \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qabstracttextdocumentlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qaction.h \
@@ -178,28 +195,41 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtguiexports.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtguiglobal.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtransform.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qvalidator.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qvector2d.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qvectornd.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDateTimeEdit \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDialog \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QGridLayout \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QHBoxLayout \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QLabel \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QLineEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QPlainTextEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QPushButton \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QRadioButton \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QScrollArea \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QScrollBar \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QVBoxLayout \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QWidget \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractbutton.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractscrollarea.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractslider.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractspinbox.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qboxlayout.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdatetimeedit.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdialog.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qframe.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qgridlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlabel.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlayoutitem.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlineedit.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qplaintextedit.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qpushbutton.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qradiobutton.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qscrollarea.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qscrollbar.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qsizepolicy.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qtextedit.h \

@@ -9,6 +9,8 @@
 #include <QHBoxLayout>
 #include <QScrollBar>
 
+#include "historymessagewidget.h"
+
 class MessageEditArea : public QWidget
 {
     Q_OBJECT

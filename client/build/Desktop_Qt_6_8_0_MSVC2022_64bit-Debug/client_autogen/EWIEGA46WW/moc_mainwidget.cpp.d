@@ -2,6 +2,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/addfrienddialog.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/choosefrienddialog.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/groupsessiondetailwidget.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/historymessagewidget.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageeditarea.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp \
@@ -214,6 +215,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QCheckBox \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDateTimeEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDialog \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QGridLayout \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QHBoxLayout \
@@ -221,6 +223,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QLineEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QPlainTextEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QPushButton \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QRadioButton \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QScrollArea \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QScrollBar \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QStyleOption \
@@ -232,6 +235,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractspinbox.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qboxlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qcheckbox.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdatetimeedit.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdialog.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qframe.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qgridlayout.h \
@@ -241,6 +245,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qlineedit.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qplaintextedit.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qpushbutton.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qradiobutton.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qrubberband.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qscrollarea.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qscrollbar.h \

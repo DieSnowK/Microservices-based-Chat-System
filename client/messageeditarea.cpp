@@ -81,5 +81,14 @@ MessageEditArea::MessageEditArea(QWidget *parent)
 
 void MessageEditArea::InitSignalSlot()
 {
+    connect(showHistoryBtn, &QPushButton::clicked, this, [=]()
+    {
+        // if (dataCenter->getCurrentChatSessionId().isEmpty())
+        // {
+        //     return;
+        // }
 
+        HistoryMessageWidget* historyMessageWidget = new HistoryMessageWidget(this);
+        historyMessageWidget->exec();
+    });
 }
