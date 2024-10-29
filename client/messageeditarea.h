@@ -12,8 +12,11 @@
 class MessageEditArea : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit MessageEditArea(QWidget *parent = nullptr);
+
+    void InitSignalSlot();
 
 private:
     QPushButton* sendImageBtn;

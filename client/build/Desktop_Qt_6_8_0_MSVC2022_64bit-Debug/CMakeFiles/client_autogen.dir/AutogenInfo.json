@@ -342,6 +342,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/historymessagewidget.h",
+			"MU",
+			"EWIEGA46WW/moc_historymessagewidget.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/mainwidget.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwidget.cpp",
@@ -457,6 +463,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/groupsessiondetailwidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/historymessagewidget.cpp",
 			"MU",
 			null
 		],

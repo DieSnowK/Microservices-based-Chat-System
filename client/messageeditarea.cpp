@@ -76,6 +76,10 @@ MessageEditArea::MessageEditArea(QWidget *parent)
     sendTextBtn->setStyleSheet(style);
     vlayout->addWidget(sendTextBtn, 0, Qt::AlignRight | Qt::AlignVCenter);
 
-    // // 8. 统一初始化信号槽
-    // initSignalSlot();
+    InitSignalSlot();
+}
+
+void MessageEditArea::InitSignalSlot()
+{
+
 }
