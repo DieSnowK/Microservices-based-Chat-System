@@ -348,6 +348,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/loginwidget.h",
+			"MU",
+			"EWIEGA46WW/moc_loginwidget.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/mainwidget.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwidget.cpp",
@@ -369,6 +375,12 @@
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp",
 			"MU",
 			"NLOY5YBGEN/moc_data.cpp",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/phoneloginwidget.h",
+			"MU",
+			"EWIEGA46WW/moc_phoneloginwidget.cpp",
 			null
 		],
 		[
@@ -472,6 +484,11 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/loginwidget.cpp",
+			"MU",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/main.cpp",
 			"MU",
 			null
@@ -488,6 +505,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/phoneloginwidget.cpp",
 			"MU",
 			null
 		],
