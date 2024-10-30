@@ -1,5 +1,6 @@
 #include "mainwidget.h"
 #include "loginwidget.h"
+#include "debug.hpp"
 
 #include <QApplication>
 
