@@ -402,6 +402,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.h",
+			"MU",
+			"EWIEGA46WW/moc_toast.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.h",
 			"MU",
 			"EWIEGA46WW/moc_userinfowidget.cpp",
@@ -525,6 +531,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.cpp",
 			"MU",
 			null
 		],

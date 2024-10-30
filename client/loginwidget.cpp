@@ -1,5 +1,10 @@
 #include "loginwidget.h"
 #include "phoneloginwidget.h"
+#include "debug.hpp"
+
+#if TEST_TOAST
+#include "toast.h"
+#endif
 
 LoginWidget::LoginWidget(QWidget *parent)
     : QWidget{parent}
@@ -90,7 +95,14 @@ LoginWidget::LoginWidget(QWidget *parent)
         this->close();
     });
 
+#if TEST_TOAST
+    connect(submitBtn, &QPushButton::clicked, this, [=]()
+    {
+        Toast::ShowMessage("Welcome to SnowK's home~");
+    });
+#else
     connect(submitBtn, &QPushButton::clicked, this, &LoginWidget::ClickSubmitBtn);
+#endif
 }
 
 void LoginWidget::SwitchMode()
