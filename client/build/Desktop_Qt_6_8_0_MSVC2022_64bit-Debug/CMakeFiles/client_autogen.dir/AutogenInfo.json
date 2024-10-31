@@ -357,6 +357,51 @@
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufAdditionalTargetInfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufVersionlessAliasTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersionImpl.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkDependencies.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkPlugins.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QNLMNIPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QSchannelBackendPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendCertOnlyPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6QTlsBackendOpenSSLPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkVersionlessAliasTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsConfigVersion.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsConfigVersionImpl.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsDependencies.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsVersionlessAliasTargets.cmake",
 		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake",
 		"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/resource.qrc"
 	],
@@ -487,6 +532,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/network/netclient.h",
+			"MU",
+			"5SSUPNRDSB/moc_netclient.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/phoneloginwidget.h",
 			"MU",
 			"EWIEGA46WW/moc_phoneloginwidget.cpp",
@@ -530,7 +581,9 @@
 	[
 		"QT_CORE_LIB",
 		"QT_GUI_LIB",
+		"QT_NETWORK_LIB",
 		"QT_PROTOBUF_LIB",
+		"QT_WEBSOCKETS_LIB",
 		"QT_WIDGETS_LIB",
 		"UNICODE",
 		"WIN32",
@@ -554,7 +607,9 @@
 		"E:/Qt/6.8.0/msvc2022_64/mkspecs/win32-msvc",
 		"E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf",
 		"E:/Qt/6.8.0/msvc2022_64/include/QtWidgets",
-		"E:/Qt/6.8.0/msvc2022_64/include/QtGui"
+		"E:/Qt/6.8.0/msvc2022_64/include/QtGui",
+		"E:/Qt/6.8.0/msvc2022_64/include/QtNetwork",
+		"E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets"
 	],
 	"MOC_MACRO_NAMES" : 
 	[
@@ -685,6 +740,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/datacenter.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/network/netclient.cpp",
 			"MU",
 			null
 		],
