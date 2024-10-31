@@ -159,7 +159,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 CMAKE_MT:FILEPATH=C:/Program Files (x86)/Windows Kits/10/bin/10.0.22621.0/x64/mt.exe
 
 //No help, variable specified on the command line.
-CMAKE_PREFIX_PATH:PATH=E:/Qt/6.8.0/msvc2022_64
+CMAKE_PREFIX_PATH:PATH=E:/Qt/6.8.0/msvc2022_64;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows
 
 //Value Computed by CMake
 CMAKE_PROJECT_DESCRIPTION:STATIC=
@@ -259,6 +259,9 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//The directory containing a CMake configuration file for Protobuf.
+Protobuf_DIR:PATH=C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf
+
 //Additional directories where find(Qt6 ...) host Qt components
 // are searched
 QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH:STRING=
@@ -290,6 +293,12 @@ Qt6GuiTools_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6GuiTools
 //The directory containing a CMake configuration file for Qt6Gui.
 Qt6Gui_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Gui
 
+//The directory containing a CMake configuration file for Qt6ProtobufTools.
+Qt6ProtobufTools_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools
+
+//The directory containing a CMake configuration file for Qt6Protobuf.
+Qt6Protobuf_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf
+
 //The directory containing a CMake configuration file for Qt6WidgetsTools.
 Qt6WidgetsTools_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WidgetsTools
 
@@ -301,6 +310,9 @@ Qt6ZlibPrivate_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ZlibPrivate
 
 //The directory containing a CMake configuration file for Qt6.
 Qt6_DIR:PATH=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6
+
+//The directory containing a CMake configuration file for Threads.
+Threads_DIR:PATH=Threads_DIR-NOTFOUND
 
 //Path to a program.
 Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND
@@ -317,6 +329,9 @@ Vulkan_LIBRARY:FILEPATH=Vulkan_LIBRARY-NOTFOUND
 //Path to a program.
 WINDEPLOYQT_EXECUTABLE:FILEPATH=E:/Qt/6.8.0/msvc2022_64/bin/windeployqt.exe
 
+//The directory containing a CMake configuration file for absl.
+absl_DIR:PATH=C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl
+
 //Value Computed by CMake
 client_BINARY_DIR:STATIC=C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug
 
@@ -325,6 +340,15 @@ client_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 client_SOURCE_DIR:STATIC=C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client
+
+//CMake built-in FindProtobuf.cmake module compatible
+protobuf_MODULE_COMPATIBLE:BOOL=OFF
+
+//Enable for verbose output
+protobuf_VERBOSE:BOOL=OFF
+
+//The directory containing a CMake configuration file for utf8_range.
+utf8_range_DIR:PATH=C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range
 
 
 ########################
@@ -487,6 +511,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Protobuf
+FIND_PACKAGE_MESSAGE_DETAILS_Protobuf:INTERNAL=[C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe][optimized;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/bin/libprotobuf.dll;debug;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/debug/bin/libprotobufd.dll][C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/include][v25.1.0()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding WrapAtomic
@@ -957,6 +983,14 @@ QT_FEATURE_processenvironment:INTERNAL=ON
 QT_FEATURE_progressbar:INTERNAL=ON
 //Qt feature: progressdialog (from target Qt6::Widgets)
 QT_FEATURE_progressdialog:INTERNAL=ON
+//Qt feature: protobuf_qtcoretypes (from target Qt6::Protobuf)
+QT_FEATURE_protobuf_qtcoretypes:INTERNAL=ON
+//Qt feature: protobuf_qtguitypes (from target Qt6::Protobuf)
+QT_FEATURE_protobuf_qtguitypes:INTERNAL=ON
+//Qt feature: protobuf_wellknowntypes (from target Qt6::Protobuf)
+QT_FEATURE_protobuf_wellknowntypes:INTERNAL=ON
+//Qt feature: protobufquick (from target Qt6::Protobuf)
+QT_FEATURE_protobufquick:INTERNAL=ON
 //Qt feature: proxymodel (from target Qt6::Core)
 QT_FEATURE_proxymodel:INTERNAL=ON
 //Qt feature: pushbutton (from target Qt6::Widgets)
@@ -965,6 +999,8 @@ QT_FEATURE_pushbutton:INTERNAL=ON
 QT_FEATURE_qqnx_imf:INTERNAL=OFF
 //Qt feature: qqnx_pps (from target Qt6::Core)
 QT_FEATURE_qqnx_pps:INTERNAL=OFF
+//Qt feature: qtprotobufgen (from target Qt6::Protobuf)
+QT_FEATURE_qtprotobufgen:INTERNAL=ON
 //Qt feature: radiobutton (from target Qt6::Widgets)
 QT_FEATURE_radiobutton:INTERNAL=ON
 //Qt feature: raster_64bit (from target Qt6::Gui)
@@ -1259,4 +1295,9 @@ Vulkan_INCLUDE_DIR-ADVANCED:INTERNAL=1
 Vulkan_LIBRARY-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/client
+__qt_protobuf_macros_module_base_dir:INTERNAL=E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools
+//ADVANCED property for variable: protobuf_MODULE_COMPATIBLE
+protobuf_MODULE_COMPATIBLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: protobuf_VERBOSE
+protobuf_VERBOSE-ADVANCED:INTERNAL=1
 

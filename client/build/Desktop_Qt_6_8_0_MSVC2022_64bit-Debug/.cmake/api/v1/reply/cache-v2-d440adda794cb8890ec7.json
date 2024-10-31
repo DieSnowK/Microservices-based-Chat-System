@@ -943,7 +943,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "E:/Qt/6.8.0/msvc2022_64"
+			"value" : "E:/Qt/6.8.0/msvc2022_64;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows"
 		},
 		{
 			"name" : "CMAKE_PROJECT_DESCRIPTION",
@@ -1394,6 +1394,18 @@
 			"value" : "FALSE"
 		},
 		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Protobuf",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding Protobuf"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/tools/protobuf/protoc.exe][optimized;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/bin/libprotobuf.dll;debug;C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/debug/bin/libprotobufd.dll][C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/include][v25.1.0()]"
+		},
+		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Threads",
 			"properties" : 
 			[
@@ -1428,6 +1440,18 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "1"
+		},
+		{
+			"name" : "Protobuf_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Protobuf."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf"
 		},
 		{
 			"name" : "QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH",
@@ -4262,6 +4286,54 @@
 			"value" : "ON"
 		},
 		{
+			"name" : "QT_FEATURE_protobuf_qtcoretypes",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: protobuf_qtcoretypes (from target Qt6::Protobuf)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_protobuf_qtguitypes",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: protobuf_qtguitypes (from target Qt6::Protobuf)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_protobuf_wellknowntypes",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: protobuf_wellknowntypes (from target Qt6::Protobuf)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
+			"name" : "QT_FEATURE_protobufquick",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: protobufquick (from target Qt6::Protobuf)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
+		},
+		{
 			"name" : "QT_FEATURE_proxymodel",
 			"properties" : 
 			[
@@ -4308,6 +4380,18 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "OFF"
+		},
+		{
+			"name" : "QT_FEATURE_qtprotobufgen",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Qt feature: qtprotobufgen (from target Qt6::Protobuf)"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "ON"
 		},
 		{
 			"name" : "QT_FEATURE_radiobutton",
@@ -6086,6 +6170,30 @@
 			"value" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Gui"
 		},
 		{
+			"name" : "Qt6ProtobufTools_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Qt6ProtobufTools."
+				}
+			],
+			"type" : "PATH",
+			"value" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools"
+		},
+		{
+			"name" : "Qt6Protobuf_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Qt6Protobuf."
+				}
+			],
+			"type" : "PATH",
+			"value" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf"
+		},
+		{
 			"name" : "Qt6WidgetsTools_DIR",
 			"properties" : 
 			[
@@ -6132,6 +6240,18 @@
 			],
 			"type" : "PATH",
 			"value" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6"
+		},
+		{
+			"name" : "Threads_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Threads."
+				}
+			],
+			"type" : "PATH",
+			"value" : "Threads_DIR-NOTFOUND"
 		},
 		{
 			"name" : "Vulkan_GLSLANG_VALIDATOR_EXECUTABLE",
@@ -6222,6 +6342,30 @@
 			"value" : "C:/Program Files (x86)/client"
 		},
 		{
+			"name" : "__qt_protobuf_macros_module_base_dir",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools"
+		},
+		{
+			"name" : "absl_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for absl."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl"
+		},
+		{
 			"name" : "client_BINARY_DIR",
 			"properties" : 
 			[
@@ -6256,6 +6400,50 @@
 			],
 			"type" : "STATIC",
 			"value" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client"
+		},
+		{
+			"name" : "protobuf_MODULE_COMPATIBLE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "CMake built-in FindProtobuf.cmake module compatible"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "protobuf_VERBOSE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Enable for verbose output"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "utf8_range_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for utf8_range."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range"
 		}
 	],
 	"kind" : "cache",

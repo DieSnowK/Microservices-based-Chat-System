@@ -1273,6 +1273,214 @@
 			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsVersionlessAliasTargets.cmake"
 		},
 		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufConfigVersionImpl.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufDependencies.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsConfigVersionImpl.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsDependencies.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6/FindWrapProtoc.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-config-version.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-options.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfigVersion.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfig.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/FindThreads.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CheckLibraryExists.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CheckIncludeFileCXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CheckCXXSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslTargets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslTargets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-config.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/utf8_range/utf8_range-targets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-targets-release.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-generate.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/protobuf/protobuf-module.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/SelectLibraryConfigurations.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsTargets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsTargets-relwithdebinfo.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsAdditionalTargetInfo.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsVersionlessTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6ProtobufTools/Qt6ProtobufToolsMacros.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufTargets.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufTargets-debug.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufTargets-relwithdebinfo.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufAdditionalTargetInfo.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Protobuf/Qt6ProtobufVersionlessAliasTargets.cmake"
+		},
+		{
 			"isCMake" : true,
 			"isExternal" : true,
 			"path" : "E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
