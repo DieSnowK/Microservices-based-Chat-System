@@ -105,3 +105,5 @@
 291	3824	7520716751588484	CMakeFiles/client.dir/model/datacenter.cpp.obj	8347c0941eff3c73
 287	4081	7520716754139262	CMakeFiles/client.dir/mainwidget.cpp.obj	3f36bc43270b8689
 4081	5584	7520716767850021	client.exe	e015b28bf7c14622
+7	60	0	CMakeFiles/clean.additional	26ab82f82478fbc9
+61	105	0	clean	e82bfea11328ce35
