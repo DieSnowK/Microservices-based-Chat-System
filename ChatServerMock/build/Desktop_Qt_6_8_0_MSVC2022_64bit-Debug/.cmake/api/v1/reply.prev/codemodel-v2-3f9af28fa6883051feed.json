@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-977f484446245a3df093.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ChatServerMock",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ChatServerMock::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ChatServerMock-Debug-5050f2ba14cc751fff4e.json",
+					"name" : "ChatServerMock",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ChatServerMock_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ChatServerMock_autogen-Debug-26078eaf84f2104ed952.json",
+					"name" : "ChatServerMock_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ChatServerMock_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ChatServerMock_autogen_timestamp_deps-Debug-76ea31aef34472dd2f07.json",
+					"name" : "ChatServerMock_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ChatServerMock_qtprotobufgen_deps_0::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ChatServerMock_qtprotobufgen_deps_0-Debug-a682e10355c8c5a2cd98.json",
+					"name" : "ChatServerMock_qtprotobufgen_deps_0",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug",
+		"source" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

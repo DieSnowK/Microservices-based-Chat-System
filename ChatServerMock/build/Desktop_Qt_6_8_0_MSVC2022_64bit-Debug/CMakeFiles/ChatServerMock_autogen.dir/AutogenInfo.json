@@ -479,6 +479,12 @@
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
 			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/server.h",
+			"MU",
+			"EWIEGA46WW/moc_server.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -609,6 +615,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/mainwindow.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/server.cpp",
 			"MU",
 			null
 		]
