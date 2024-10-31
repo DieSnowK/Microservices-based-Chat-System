@@ -1,0 +1,3 @@
+set(__QT_DEPLOY_TARGET_ChatServerMock_FILE C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/ChatServerMock.exe)
+set(__QT_DEPLOY_TARGET_ChatServerMock_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_ChatServerMock_RUNTIME_DLLS E:/Qt/6.8.0/msvc2022_64/bin/Qt6Widgetsd.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6Protobufd.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6HttpServerd.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6WebSocketsd.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6Guid.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6Networkd.dll;E:/Qt/6.8.0/msvc2022_64/bin/Qt6Cored.dll)
