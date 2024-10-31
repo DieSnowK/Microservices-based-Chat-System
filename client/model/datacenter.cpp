@@ -5,6 +5,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
+#include "../debug.hpp"
+
 namespace model
 {
     DataCenter* DataCenter::instance = nullptr;
@@ -83,7 +85,7 @@ namespace model
         jsonObj["loginSessionId"] = loginSessionId;
 
         QJsonObject jsonUnread;
-        for(auto it = unreadMessageCount->begin(); it != unreadMessageCount.end(); ++it)
+        for(auto it = unreadMessageCount->begin(); it != unreadMessageCount->end(); ++it)
         {
             jsonUnread[it.key()] = it.value();
         }
@@ -117,7 +119,7 @@ namespace model
         QJsonDocument jsonDoc = QJsonDocument::fromJson(file.readAll());
         if(jsonDoc.isNull())
         {
-            LOG << "Failed to parse ChatClient.json";
+            LOG() << "Failed to parse ChatClient.json";
             file.close();
             return;
         }
@@ -127,7 +129,7 @@ namespace model
 
         this->unreadMessageCount->clear();
         QJsonObject jsonUnread = jsonObj["unread"].toObject();
-        for(auto it = unreadMessageCount->begin(); it != unreadMessageCount.end(); ++it)
+        for(auto it = jsonUnread.begin(); it != jsonUnread.end(); ++it)
         {
             this->unreadMessageCount->insert(it.key(), it.value().toInt());
         }
