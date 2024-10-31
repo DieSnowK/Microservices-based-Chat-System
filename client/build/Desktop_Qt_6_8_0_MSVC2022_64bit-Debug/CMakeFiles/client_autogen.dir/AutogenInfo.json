@@ -481,6 +481,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/datacenter.h",
+			"MU",
+			"NLOY5YBGEN/moc_datacenter.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/phoneloginwidget.h",
 			"MU",
 			"EWIEGA46WW/moc_phoneloginwidget.cpp",
@@ -674,6 +680,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/datacenter.cpp",
 			"MU",
 			null
 		],
