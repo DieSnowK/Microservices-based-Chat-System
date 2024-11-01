@@ -136,4 +136,14 @@ namespace model
 
         file.close();
     }
+
+    void DataCenter::Ping()
+    {
+        netClient.Ping();
+    }
+
+    const QString &DataCenter::GetLoginSessionId() const
+    {
+        return loginSessionId;
+    }
 }

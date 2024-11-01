@@ -19,11 +19,11 @@ int main(int argc, char *argv[])
 #endif
 
 #if TEST_NETWORK
-    network::NetClient netClient(nullptr);
-    netClient.Ping();
+    // network::NetClient netClient(nullptr);
+    // netClient.Ping();
 
-    // model::DataCenter* dataCenter = model::DataCenter::getInstance();
-    // dataCenter->Ping();
+    model::DataCenter* dataCenter = model::DataCenter::GetInstance();
+    dataCenter->Ping();
 #endif
 
     return a.exec();

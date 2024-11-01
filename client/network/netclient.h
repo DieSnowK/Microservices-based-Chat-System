@@ -28,6 +28,8 @@ namespace network
 
         void InitWebsocket();
 
+        static QString MakeRequestId();
+
         void Ping();
         void SendAuth();
 

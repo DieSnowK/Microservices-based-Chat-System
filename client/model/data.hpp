@@ -9,14 +9,14 @@
 #include <QDebug>
 
 #include "base.qpb.h"
-// #include "gateway.qpb.h"
-// #include "user.qpb.h"
-// #include "friend.qpb.h"
-// #include "file.qpb.h"
-// #include "notify.qpb.h"
-// #include "speech_recognition.qpb.h"
-// #include "message_storage.qpb.h"
-// #include "message_transmit.qpb.h"
+#include "gateway.qpb.h"
+#include "user.qpb.h"
+#include "friend.qpb.h"
+#include "file.qpb.h"
+#include "notify.qpb.h"
+#include "speech.qpb.h"
+#include "message.qpb.h"
+#include "transmite.qpb.h"
 
 namespace model
 {

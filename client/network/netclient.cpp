@@ -1,5 +1,6 @@
 #include "netclient.h"
 #include "../model/data.hpp"
+#include "../model/datacenter.h"
 
 namespace network
 {
@@ -43,6 +44,11 @@ namespace network
         websocketClient.open(WEBSOCKET_URL);
     }
 
+    QString NetClient::MakeRequestId()
+    {
+        return "R" + QUuid::createUuid().toString().sliced(25, 12);
+    }
+
     void NetClient::Ping()
     {
         QNetworkRequest httpReq;
@@ -69,6 +75,14 @@ namespace network
 
     void NetClient::SendAuth()
     {
+        SnowK::ClientAuthenticationReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(dataCenter->GetLoginSessionId());
+        QByteArray body = req.serialize(&serializer);
 
+        LOG() << "[WS Authentication] requestId = " << req.requestId()
+              << ", loginSessionId = " << req.sessionId();
+
+        websocketClient.sendBinaryMessage(body);
     }
 } // end of namespace network

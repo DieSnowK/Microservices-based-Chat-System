@@ -20,6 +20,10 @@ namespace model
         void SaveDataFile();
         void LoadDataFile();
 
+        void Ping();
+
+        const QString& GetLoginSessionId() const;
+
     private:
         DataCenter();
         static DataCenter* instance;
@@ -30,7 +34,8 @@ namespace model
         QList<ChatSessionInfo>* chatSessionList = nullptr;
         QString currentChatSessionId = "";
         
-        // 记录每个会话中, 都有哪些成员(主要针对群聊). key 为 chatSessionId, value 为成员列表
+        // Record which members are in each session (mainly for group chats)
+            // key is chatSessionId, and value is the list of members
         QHash<QString, QList<UserInfo>>* memberList = nullptr;
 
         QList<UserInfo>* applyList = nullptr;
