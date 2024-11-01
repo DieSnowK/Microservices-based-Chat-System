@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
     Widgets Protobuf
-    HttpServer WebSockets
+    HttpServer WebSockets Network
 )
 
 file(GLOB PB_FILES "../client/proto/*.proto")
@@ -53,7 +53,7 @@ endif()
 target_link_libraries(ChatServerMock PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt6::Protobuf
-    Qt6::HttpServer Qt6::WebSockets
+    Qt6::HttpServer Qt6::WebSockets Qt6::Network
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

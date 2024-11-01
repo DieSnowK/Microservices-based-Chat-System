@@ -47,8 +47,6 @@
 			"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6/QtPublicDependencyHelpers.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsDependencies.cmake",
-			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerTargets.cmake",
-			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerConfig.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets.cmake",
@@ -56,7 +54,8 @@
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkTargets.cmake",
 			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake",
-			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerDependencies.cmake"
+			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerDependencies.cmake",
+			"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerConfig.cmake"
 		],
 		"nodes" : 
 		[
@@ -202,32 +201,6 @@
 				"parent" : 24
 			},
 			{
-				"command" : 10,
-				"file" : 5,
-				"line" : 181,
-				"parent" : 11
-			},
-			{
-				"file" : 12,
-				"parent" : 26
-			},
-			{
-				"command" : 9,
-				"file" : 12,
-				"line" : 55,
-				"parent" : 27
-			},
-			{
-				"file" : 11,
-				"parent" : 28
-			},
-			{
-				"command" : 8,
-				"file" : 11,
-				"line" : 61,
-				"parent" : 29
-			},
-			{
 				"command" : 5,
 				"file" : 0,
 				"line" : 645,
@@ -243,129 +216,139 @@
 				"command" : 10,
 				"file" : 8,
 				"line" : 76,
-				"parent" : 32
+				"parent" : 27
 			},
 			{
-				"file" : 14,
-				"parent" : 33
-			},
-			{
-				"command" : 9,
-				"file" : 14,
-				"line" : 57,
-				"parent" : 34
-			},
-			{
-				"file" : 13,
-				"parent" : 35
-			},
-			{
-				"command" : 8,
-				"file" : 13,
-				"line" : 61,
-				"parent" : 36
-			},
-			{
-				"command" : 9,
-				"file" : 14,
-				"line" : 45,
-				"parent" : 34
-			},
-			{
-				"file" : 17,
-				"parent" : 38
-			},
-			{
-				"command" : 12,
-				"file" : 17,
-				"line" : 44,
-				"parent" : 39
-			},
-			{
-				"command" : 11,
-				"file" : 9,
-				"line" : 143,
-				"parent" : 40
-			},
-			{
-				"command" : 10,
-				"file" : 8,
-				"line" : 76,
-				"parent" : 41
-			},
-			{
-				"file" : 16,
-				"parent" : 42
-			},
-			{
-				"command" : 9,
-				"file" : 16,
-				"line" : 55,
-				"parent" : 43
-			},
-			{
-				"file" : 15,
-				"parent" : 44
-			},
-			{
-				"command" : 8,
-				"file" : 15,
-				"line" : 61,
-				"parent" : 45
-			},
-			{
-				"command" : 8,
-				"file" : 15,
-				"line" : 83,
-				"parent" : 45
+				"file" : 12,
+				"parent" : 28
 			},
 			{
 				"command" : 9,
 				"file" : 12,
-				"line" : 43,
-				"parent" : 27
+				"line" : 57,
+				"parent" : 29
 			},
 			{
-				"file" : 20,
-				"parent" : 48
+				"file" : 11,
+				"parent" : 30
+			},
+			{
+				"command" : 8,
+				"file" : 11,
+				"line" : 61,
+				"parent" : 31
+			},
+			{
+				"command" : 9,
+				"file" : 12,
+				"line" : 45,
+				"parent" : 29
+			},
+			{
+				"file" : 15,
+				"parent" : 33
 			},
 			{
 				"command" : 12,
-				"file" : 20,
-				"line" : 43,
-				"parent" : 49
+				"file" : 15,
+				"line" : 44,
+				"parent" : 34
 			},
 			{
 				"command" : 11,
 				"file" : 9,
 				"line" : 143,
-				"parent" : 50
+				"parent" : 35
 			},
 			{
 				"command" : 10,
 				"file" : 8,
 				"line" : 76,
-				"parent" : 51
+				"parent" : 36
+			},
+			{
+				"file" : 14,
+				"parent" : 37
+			},
+			{
+				"command" : 9,
+				"file" : 14,
+				"line" : 55,
+				"parent" : 38
+			},
+			{
+				"file" : 13,
+				"parent" : 39
+			},
+			{
+				"command" : 8,
+				"file" : 13,
+				"line" : 61,
+				"parent" : 40
+			},
+			{
+				"command" : 8,
+				"file" : 13,
+				"line" : 83,
+				"parent" : 40
+			},
+			{
+				"command" : 10,
+				"file" : 5,
+				"line" : 181,
+				"parent" : 11
 			},
 			{
 				"file" : 19,
-				"parent" : 52
+				"parent" : 43
 			},
 			{
 				"command" : 9,
 				"file" : 19,
-				"line" : 55,
-				"parent" : 53
+				"line" : 43,
+				"parent" : 44
 			},
 			{
 				"file" : 18,
-				"parent" : 54
+				"parent" : 45
+			},
+			{
+				"command" : 12,
+				"file" : 18,
+				"line" : 43,
+				"parent" : 46
+			},
+			{
+				"command" : 11,
+				"file" : 9,
+				"line" : 143,
+				"parent" : 47
+			},
+			{
+				"command" : 10,
+				"file" : 8,
+				"line" : 76,
+				"parent" : 48
+			},
+			{
+				"file" : 17,
+				"parent" : 49
+			},
+			{
+				"command" : 9,
+				"file" : 17,
+				"line" : 55,
+				"parent" : 50
+			},
+			{
+				"file" : 16,
+				"parent" : 51
 			},
 			{
 				"command" : 8,
-				"file" : 18,
+				"file" : 16,
 				"line" : 61,
-				"parent" : 55
+				"parent" : 52
 			},
 			{
 				"command" : 13,
@@ -383,7 +366,7 @@
 				"command" : 14,
 				"file" : 2,
 				"line" : 198,
-				"parent" : 58
+				"parent" : 55
 			},
 			{
 				"command" : 16,
@@ -407,19 +390,19 @@
 				"command" : 18,
 				"file" : 0,
 				"line" : 965,
-				"parent" : 62
+				"parent" : 59
 			},
 			{
 				"command" : 17,
 				"file" : 0,
 				"line" : 845,
-				"parent" : 63
+				"parent" : 60
 			},
 			{
 				"command" : 16,
 				"file" : 0,
 				"line" : 2223,
-				"parent" : 64
+				"parent" : 61
 			}
 		]
 	},
@@ -432,34 +415,34 @@
 					"fragment" : "-DQT_QML_DEBUG /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
 				},
 				{
-					"backtrace" : 57,
+					"backtrace" : 54,
 					"fragment" : "/Zc:__cplusplus"
 				},
 				{
-					"backtrace" : 57,
+					"backtrace" : 54,
 					"fragment" : "/permissive-"
 				},
 				{
-					"backtrace" : 57,
+					"backtrace" : 54,
 					"fragment" : "/bigobj"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"fragment" : "-Zc:__cplusplus"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"fragment" : "-permissive-"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"fragment" : "-utf-8"
 				}
 			],
 			"defines" : 
 			[
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "QT_CORE_LIB"
 				},
 				{
@@ -487,27 +470,27 @@
 					"define" : "QT_WIDGETS_LIB"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "UNICODE"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "WIN32"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "WIN64"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "_ENABLE_EXTENDED_ALIGNED_STORAGE"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "_UNICODE"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"define" : "_WIN64"
 				}
 			],
@@ -518,21 +501,21 @@
 					"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/ChatServerMock_autogen/include"
 				},
 				{
-					"backtrace" : 59,
+					"backtrace" : 56,
 					"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"isSystem" : true,
 					"path" : "E:/Qt/6.8.0/msvc2022_64/include/QtCore"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"isSystem" : true,
 					"path" : "E:/Qt/6.8.0/msvc2022_64/include"
 				},
 				{
-					"backtrace" : 31,
+					"backtrace" : 26,
 					"isSystem" : true,
 					"path" : "E:/Qt/6.8.0/msvc2022_64/mkspecs/win32-msvc"
 				},
@@ -572,8 +555,8 @@
 			{
 				"backtraces" : 
 				[
-					31,
-					31
+					26,
+					26
 				],
 				"standard" : "17"
 			},
@@ -607,11 +590,11 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "ChatServerMock_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
-		},
-		{
 			"backtrace" : 0,
 			"id" : "ChatServerMock_autogen::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "ChatServerMock_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "ChatServerMock::@6890427a1f51a3e7e1df",
@@ -662,6 +645,11 @@
 				"role" : "libraries"
 			},
 			{
+				"backtrace" : 6,
+				"fragment" : "E:\\Qt\\6.8.0\\msvc2022_64\\lib\\Qt6Networkd.lib",
+				"role" : "libraries"
+			},
+			{
 				"backtrace" : 16,
 				"fragment" : "E:\\Qt\\6.8.0\\msvc2022_64\\lib\\Qt6Guid.lib",
 				"role" : "libraries"
@@ -687,37 +675,32 @@
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 30,
-				"fragment" : "E:\\Qt\\6.8.0\\msvc2022_64\\lib\\Qt6Networkd.lib",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 31,
+				"backtrace" : 26,
 				"fragment" : "E:\\Qt\\6.8.0\\msvc2022_64\\lib\\Qt6Cored.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 37,
+				"backtrace" : 32,
 				"fragment" : "mpr.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 37,
+				"backtrace" : 32,
 				"fragment" : "userenv.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 46,
+				"backtrace" : 41,
 				"fragment" : "E:\\Qt\\6.8.0\\msvc2022_64\\lib\\Qt6EntryPointd.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 47,
+				"backtrace" : 42,
 				"fragment" : "shell32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 56,
+				"backtrace" : 53,
 				"fragment" : "ws2_32.lib",
 				"role" : "libraries"
 			},
@@ -845,227 +828,227 @@
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/base.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/base.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/file.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/file.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/friend.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/friend.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/gateway.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/gateway.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/message.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/message.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/notify.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/notify.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/speech.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/speech.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/transmite.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/transmite.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user.qpb.h",
 			"sourceGroupIndex" : 1
 		},
 		{
-			"backtrace" : 60,
+			"backtrace" : 57,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user.qpb.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/base_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/file_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/friend_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/gateway_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/message_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/notify_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/speech_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/transmite_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 61,
+			"backtrace" : 58,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
 			"path" : "build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user_protobuftyperegistrations.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/base.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/file.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/friend.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/gateway.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/message.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/notify.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/speech.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/transmite.proto",
 			"sourceGroupIndex" : 2
 		},
 		{
-			"backtrace" : 65,
+			"backtrace" : 62,
 			"path" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/proto/user.proto",
 			"sourceGroupIndex" : 2
 		},

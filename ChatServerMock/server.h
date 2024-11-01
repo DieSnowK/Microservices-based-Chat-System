@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include <QObject>
+#include <QTcpServer>
 #include <QHttpServer>
 #include <QProtobufSerializer>
 #include <QWebSocketServer>
@@ -26,6 +27,7 @@ private:
     HttpServer() {}
     static HttpServer* instance;
 
+    QTcpServer tcpServer;
     QHttpServer httpServer;
     QProtobufSerializer serializer;
 };

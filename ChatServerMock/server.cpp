@@ -19,17 +19,17 @@ HttpServer *HttpServer::GetInstance()
 bool HttpServer::Init()
 {
     // TODO
-    int ret = httpServer.listen(QHostAddress::Any, 8000);
+    // int ret = httpServer.listen(QHostAddress::Any, 8000);
 
     // 配置路由
     httpServer.route("/ping", [](const QHttpServerRequest& req)
     {
         (void) req;
         qDebug() << "[http] A ping request is received";
-        return "pong";
+        return "Pong";
     });
 
-    return ret == 8000;
+    return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
 
 //////////////////////////////////////////////////////////////////
