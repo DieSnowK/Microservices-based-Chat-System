@@ -26,7 +26,10 @@ namespace network
     public:
         NetClient(model::DataCenter* dataCenter);
 
+        void InitWebsocket();
+
         void Ping();
+        void SendAuth();
 
     private:
         model::DataCenter* dataCenter;

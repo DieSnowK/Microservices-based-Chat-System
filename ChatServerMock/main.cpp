@@ -15,7 +15,13 @@ int main(int argc, char *argv[])
     }
     qDebug() << "The HTTP server started successfully";
 
-
+    WebsocketServer* websocketServer = WebsocketServer::GetInstance();
+    if (!websocketServer->Init())
+    {
+        qDebug() << "The WebSocket server failed to start";
+        return 1;
+    }
+    qDebug() << "The WebSocket server started successfully";
 
     MainWindow w;
     w.show();
