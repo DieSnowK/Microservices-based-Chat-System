@@ -310,8 +310,10 @@ void MainWidget::LoadFriendList()
     }
     else
     {
+        // Qt::UniqueConnection: Make sure that the signal slot does not duplicate binding
         connect(dataCenter, &DataCenter::GetFriendListDone, this,
                 &MainWidget::UpdateFriendList, Qt::UniqueConnection);
+
         dataCenter->GetFriendListAsync();
     }
 }

@@ -180,6 +180,19 @@ namespace model
 
     void DataCenter::ResetFriendList(std::shared_ptr<SnowK::GetFriendListRsp> resp)
     {
+        if (friendList == nullptr)
+        {
+            friendList = new QList<UserInfo>();
+        }
 
+        friendList->clear();
+
+        auto& friendListPB = resp->friendList();
+        for (auto& f : friendListPB)
+        {
+            UserInfo userInfo;
+            userInfo.Load(f);
+            friendList->push_back(userInfo);
+        }
     }
 }

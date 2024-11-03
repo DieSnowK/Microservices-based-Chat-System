@@ -1,7 +1,5 @@
 #include "server.h"
 
-
-
 namespace Util
 {
     static inline QString GetFileName(const QString& path)

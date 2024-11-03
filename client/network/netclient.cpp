@@ -126,7 +126,6 @@ namespace network
         });
     }
 
-    // TODO
     void NetClient::GetFriendList(const QString &loginSessionId)
     {
         SnowK::GetFriendListReq req;

@@ -40,11 +40,9 @@ public:
     void SwitchTabToSession();
     void SwitchTabToFriend();
     void SwitchTabToApply();
-
     void LoadSessionList();
     void LoadFriendList();
     void LoadApplyList();
-
     void UpdateFriendList();
     void UpdateChatSessionList();
     void UpdateApplyList();
