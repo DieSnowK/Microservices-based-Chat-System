@@ -35,6 +35,7 @@ public:
     bool Init();
 
     QHttpServerResponse GetUserInfo(const QHttpServerRequest& req);
+    QHttpServerResponse GetFriendList(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

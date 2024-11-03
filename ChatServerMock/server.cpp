@@ -60,6 +60,22 @@ namespace Util
 } // end of namespace Util
 
 //////////////////////////////////////////////////////////////////
+/// Helper functions
+//////////////////////////////////////////////////////////////////
+
+SnowK::UserInfo MakeUserInfo(int index, const QByteArray& avatar)
+{
+    SnowK::UserInfo userInfo;
+    userInfo.setUserId(QString::number(1000 + index));
+    userInfo.setNickname("DieSnowK" + QString::number(index));
+    userInfo.setDescription("Handsome Boy~" + QString::number(index));
+    userInfo.setPhone("18312345678");
+    userInfo.setAvatar(avatar);
+
+    return userInfo;
+}
+
+//////////////////////////////////////////////////////////////////
 /// HttpServer
 //////////////////////////////////////////////////////////////////
 
@@ -90,6 +106,11 @@ bool HttpServer::Init()
         return this->GetUserInfo(req);
     });
 
+    httpServer.route("/service/friend/get_friend_list", [=](const QHttpServerRequest& req)
+    {
+        return this->GetFriendList(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
 
@@ -114,7 +135,37 @@ QHttpServerResponse HttpServer::GetUserInfo(const QHttpServerRequest &req)
     pbResp.setUserInfo(userInfo);
 
     QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
 
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::GetFriendList(const QHttpServerRequest &req)
+{
+    SnowK::GetFriendListReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetFriendList] requestId = "<< pbReq.requestId()
+          << ", loginSessionId = " << pbReq.sessionId();
+
+    SnowK::GetFriendListRsp pbRsp;
+    pbRsp.setRequestId(pbReq.requestId());
+    pbRsp.setSuccess(true);
+    pbRsp.setErrmsg("");
+
+    // TODO
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    for (int i = 0; i < 20; ++i)
+    {
+        SnowK::UserInfo userInfo = MakeUserInfo(i, avatar);
+        auto& userList = pbRsp.friendList();
+        pbRsp.friendList().push_back(userInfo);
+    }
+
+    QByteArray body = pbRsp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
 
     QHttpHeaders httpHeader;
