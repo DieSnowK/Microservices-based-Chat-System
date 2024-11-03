@@ -15,6 +15,7 @@ namespace model
 
 namespace network
 {
+    // Inside this class, the specific network communication is done
     class NetClient : public QObject
     {
         Q_OBJECT
@@ -25,13 +26,49 @@ namespace network
 
     public:
         NetClient(model::DataCenter* dataCenter);
+        void Ping();
 
         void InitWebsocket();
 
         static QString MakeRequestId();
 
-        void Ping();
+        QNetworkReply* SendHttpRequest(const QString& apiPath, const QByteArray& body);
+
+        // Since different APIs have different structures for the returned PB objects
+            // templates are needed in order for a function to handle many different types
+        // The output parameter indicates whether the operation
+            // succeeded or failed, and the reason for the failure
+        template <typename T>
+        std::shared_ptr<T> HandleHttpResponse(QNetworkReply* httpResp, bool* ok, QString* reason)
+        {
+            if (httpResp->error() != QNetworkReply::NoError)
+            {
+                *ok = false;
+                *reason = httpResp->errorString();
+                httpResp->deleteLater();
+                return std::shared_ptr<T>();
+            }
+
+            QByteArray respBody = httpResp->readAll();
+
+            std::shared_ptr<T> respObj = std::make_shared<T>();
+            respObj->deserialize(&serializer, respBody);
+
+            if (!respObj->success())
+            {
+                *ok = false;
+                *reason = respObj->errmsg();
+                httpResp->deleteLater();
+                return std::shared_ptr<T>();
+            }
+
+            httpResp->deleteLater();
+            *ok = true;
+            return respObj;
+        }
+
         void SendAuth();
+        void GetMyself(const QString& loginSessionId);
 
     private:
         model::DataCenter* dataCenter;

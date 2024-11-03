@@ -8,6 +8,8 @@
 
 namespace model
 {
+    // DataCenter is only responsible for "processing the data" and actually
+        // accessing the network for communication, which needs to go through NetClient
     class DataCenter : public QObject
     {
         Q_OBJECT
@@ -23,6 +25,13 @@ namespace model
         void Ping();
 
         const QString& GetLoginSessionId() const;
+        UserInfo* GetMyself();
+
+        void GetMyselfAsync();
+        void ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp);
+
+    signals:
+        void GetMyselfDone();
 
     private:
         DataCenter();

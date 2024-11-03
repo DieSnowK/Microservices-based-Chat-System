@@ -146,4 +146,25 @@ namespace model
     {
         return loginSessionId;
     }
+
+    UserInfo *DataCenter::GetMyself()
+    {
+        return myself;
+    }
+
+    void DataCenter::GetMyselfAsync()
+    {
+        netClient.GetMyself(loginSessionId);
+    }
+
+    void DataCenter::ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp)
+    {
+        if (myself == nullptr)
+        {
+            myself = new UserInfo();
+        }
+
+        const SnowK::UserInfo& userInfo = resp->userInfo();
+        myself->Load(userInfo);
+    }
 }

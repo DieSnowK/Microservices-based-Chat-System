@@ -49,6 +49,16 @@ namespace network
         return "R" + QUuid::createUuid().toString().sliced(25, 12);
     }
 
+    QNetworkReply *NetClient::SendHttpRequest(const QString &apiPath, const QByteArray &body)
+    {
+        QNetworkRequest httpReq;
+        httpReq.setUrl(QUrl(HTTP_URL + apiPath));
+        httpReq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-protobuf");
+
+        QNetworkReply* httpResp = httpClient.post(httpReq, body);
+        return httpResp;
+    }
+
     void NetClient::Ping()
     {
         QNetworkRequest httpReq;
@@ -84,5 +94,35 @@ namespace network
               << ", loginSessionId = " << req.sessionId();
 
         websocketClient.sendBinaryMessage(body);
+    }
+
+    void NetClient::GetMyself(const QString &loginSessionId)
+    {
+        SnowK::GetUserInfoReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(loginSessionId);
+        QByteArray body = req.serialize(&serializer);
+        LOG() << "[Acquisition of personal information] Send a request requestId = "
+              << req.requestId() << ", loginSessionId = " << loginSessionId;
+
+        QNetworkReply* httpResp = SendHttpRequest("/service/user/get_user_info", body);
+
+        connect(httpResp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto resp = HandleHttpResponse<SnowK::GetUserInfoRsp>(httpResp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetMyself] Error, requestId = " << req.requestId() << "reason = " << reason;
+                return;
+            }
+
+            dataCenter->ResetMyself(resp);
+            emit dataCenter->GetMyselfDone();
+
+            LOG() << "[GetMyself] Process the response, requestId = " << req.requestId();
+        });
     }
 } // end of namespace network

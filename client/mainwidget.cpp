@@ -1,8 +1,10 @@
 #include "mainwidget.h"
 #include "./ui_mainwidget.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
 
 using model::ChatSessionInfo;
+using model::DataCenter;
 
 MainWidget* MainWidget::instance = nullptr;
 
@@ -185,6 +187,8 @@ void MainWidget::InitRightWindow()
 
 void MainWidget::InitSignalSlot()
 {
+    model::DataCenter* dataCenter = model::DataCenter::GetInstance();
+
     connect(sessionTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToSession);
     connect(friendTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToFriend);
     connect(applyTabBtn, &QPushButton::clicked, this, &MainWidget::SwitchTabToApply);
@@ -244,6 +248,13 @@ void MainWidget::InitSignalSlot()
         searchEdit->setText("");
         addFriendDialog->exec();
     });
+
+    connect(dataCenter, &DataCenter::GetMyselfDone, this, [=]()
+    {
+        auto myself = dataCenter->GetMyself();
+        userAvatar->setIcon(myself->avatar);
+    });
+    dataCenter->GetMyselfAsync();
 }
 
 void MainWidget::SwitchTabToSession()
