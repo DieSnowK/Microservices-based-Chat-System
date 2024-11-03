@@ -73,7 +73,7 @@ void MainWidget::InitLeftWindow()
     userAvatar = new QPushButton();
     userAvatar->setFixedSize(45, 45);
     userAvatar->setIconSize(QSize(45, 45));
-#if TEST_CLIENT_WITHOUT_SERVER
+#if TEST_UI
     userAvatar->setIcon(QIcon(":/resource/image/defaultAvatar.png"));
 #endif
     userAvatar->setStyleSheet("QPushButton { background-color: transparent; }");
