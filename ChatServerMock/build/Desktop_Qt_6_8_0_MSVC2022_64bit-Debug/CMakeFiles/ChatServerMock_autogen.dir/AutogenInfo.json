@@ -412,7 +412,8 @@
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerAdditionalTargetInfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6HttpServer/Qt6HttpServerVersionlessAliasTargets.cmake",
-		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake",
+		"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/resource.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock",
 	"CROSS_CONFIG" : false,

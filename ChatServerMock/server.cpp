@@ -1,5 +1,66 @@
 #include "server.h"
 
+
+
+namespace Util
+{
+    static inline QString GetFileName(const QString& path)
+    {
+        return QFileInfo(path).fileName();
+    }
+
+    #define TAG QString("[%1:%2]").arg(Util::GetFileName(__FILE__), QString::number(__LINE__))
+    #define LOG() qDebug().noquote() << TAG
+
+    static inline QString FormatTime(int64_t timestamp)
+    {
+        return QDateTime(QDateTime::fromSecsSinceEpoch(timestamp)).toString("MM-dd HH:mm:ss");
+    }
+
+    static inline int64_t GetTime()
+    {
+        return QDateTime::currentSecsSinceEpoch();
+    }
+
+    static inline QIcon MakeIcon(const QByteArray& byteArray)
+    {
+        QPixmap pixmap;
+        pixmap.loadFromData(byteArray);
+
+        return QIcon(pixmap);
+    }
+
+    static inline QByteArray LoadFileToByteArray(const QString& path)
+    {
+        QFile file(path);
+        if(!file.open(QFile::ReadOnly))
+        {
+            LOG() << "Failed to open file";
+            return QByteArray();
+        }
+
+        QByteArray content = file.readAll();
+
+        file.close();
+        return content;
+    }
+
+    static inline void WriteByteArrayToFile(const QString& path, const QByteArray& content)
+    {
+        QFile file(path);
+        if(!file.open(QFile::WriteOnly))
+        {
+            LOG() << "Failed to open file";
+            return;
+        }
+
+        file.write(content);
+        file.flush();
+
+        file.close();
+    }
+} // end of namespace Util
+
 //////////////////////////////////////////////////////////////////
 /// HttpServer
 //////////////////////////////////////////////////////////////////
@@ -26,7 +87,43 @@ bool HttpServer::Init()
         return "Pong";
     });
 
+    httpServer.route("/service/user/get_user_info", [=](const QHttpServerRequest& req)
+    {
+        return this->GetUserInfo(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
+}
+
+QHttpServerResponse HttpServer::GetUserInfo(const QHttpServerRequest &req)
+{
+    SnowK::GetUserInfoReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetUserInfo] requestId=" << pbReq.requestId()
+          << ", loginSessionId=" << pbReq.sessionId();
+
+    SnowK::GetUserInfoRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    SnowK::UserInfo userInfo;
+    userInfo.setUserId("1024");
+    userInfo.setNickname("DieSnowK");
+    userInfo.setDescription("Handsome Boy~");
+    userInfo.setPhone("18312345678");
+    userInfo.setAvatar(Util::LoadFileToByteArray(":/resource/image/groupAvatar.png"));
+    pbResp.setUserInfo(userInfo);
+
+    QByteArray body = pbResp.serialize(&serializer);
+
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
 }
 
 //////////////////////////////////////////////////////////////////

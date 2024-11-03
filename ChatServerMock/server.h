@@ -10,6 +10,17 @@
 #include <QFile>
 #include <QPixmap>
 #include <QIcon>
+ #include <QHttpHeaders>
+
+#include "base.qpb.h"
+#include "gateway.qpb.h"
+#include "user.qpb.h"
+#include "friend.qpb.h"
+#include "file.qpb.h"
+#include "notify.qpb.h"
+#include "speech.qpb.h"
+#include "message.qpb.h"
+#include "transmite.qpb.h"
 
 //////////////////////////////////////////////////////////////////
 /// HttpServer
@@ -22,6 +33,8 @@ class HttpServer : public QObject
 public:
     static HttpServer* GetInstance();
     bool Init();
+
+    QHttpServerResponse GetUserInfo(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

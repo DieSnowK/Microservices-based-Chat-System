@@ -29,6 +29,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         server.h
         server.cpp
+        resource.qrc
     )
 
     qt_add_protobuf(ChatServerMock PROTO_FILES ${PB_FILES})
