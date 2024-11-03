@@ -69,6 +69,7 @@ namespace network
 
         void SendAuth();
         void GetMyself(const QString& loginSessionId);
+        void GetFriendList(const QString& loginSessionId);
 
     private:
         model::DataCenter* dataCenter;

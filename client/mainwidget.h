@@ -45,6 +45,10 @@ public:
     void LoadFriendList();
     void LoadApplyList();
 
+    void UpdateFriendList();
+    void UpdateChatSessionList();
+    void UpdateApplyList();
+
 private:
     MainWidget(QWidget *parent = nullptr);
 

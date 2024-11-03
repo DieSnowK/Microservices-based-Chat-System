@@ -152,6 +152,11 @@ namespace model
         return myself;
     }
 
+    QList<UserInfo> *DataCenter::GetFriendList()
+    {
+        return friendList;
+    }
+
     void DataCenter::GetMyselfAsync()
     {
         netClient.GetMyself(loginSessionId);
@@ -166,5 +171,15 @@ namespace model
 
         const SnowK::UserInfo& userInfo = resp->userInfo();
         myself->Load(userInfo);
+    }
+
+    void DataCenter::GetFriendListAsync()
+    {
+        netClient.GetFriendList(loginSessionId);
+    }
+
+    void DataCenter::ResetFriendList(std::shared_ptr<SnowK::GetFriendListRsp> resp)
+    {
+
     }
 }

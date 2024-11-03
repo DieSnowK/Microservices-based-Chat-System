@@ -102,7 +102,7 @@ namespace network
         req.setRequestId(MakeRequestId());
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[Acquisition of personal information] Send a request requestId = "
+        LOG() << "[GetMyself] Send a request requestId = "
               << req.requestId() << ", loginSessionId = " << loginSessionId;
 
         QNetworkReply* httpResp = SendHttpRequest("/service/user/get_user_info", body);
@@ -123,6 +123,37 @@ namespace network
             emit dataCenter->GetMyselfDone();
 
             LOG() << "[GetMyself] Process the response, requestId = " << req.requestId();
+        });
+    }
+
+    // TODO
+    void NetClient::GetFriendList(const QString &loginSessionId)
+    {
+        SnowK::GetFriendListReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(loginSessionId);
+        QByteArray body = req.serialize(&serializer);
+        LOG() << "[GetFriendList] Send a request requestId requestId = "
+              << req.requestId() << ", loginSessionId=" << loginSessionId;
+
+        QNetworkReply* httpResp = this->SendHttpRequest("/service/friend/get_friend_list", body);
+
+        connect(httpResp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto friendListResp = this->HandleHttpResponse<SnowK::GetFriendListRsp>(httpResp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetFriendList] Error, requestId = " << req.requestId() << ", reason = " << reason;
+                return;
+            }
+
+            dataCenter->ResetFriendList(friendListResp);
+            emit dataCenter->GetFriendListDone();
+
+            LOG() << "[GetFriendList] Process the response, requestId = " << req.requestId();
         });
     }
 } // end of namespace network

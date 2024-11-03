@@ -257,6 +257,10 @@ void MainWidget::InitSignalSlot()
         userAvatar->setIcon(myself->avatar);
     });
     dataCenter->GetMyselfAsync();
+
+    LoadFriendList();
+
+
 }
 
 void MainWidget::SwitchTabToSession()
@@ -299,10 +303,48 @@ void MainWidget::LoadSessionList()
 
 void MainWidget::LoadFriendList()
 {
-
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetFriendList() != nullptr)
+    {
+        UpdateFriendList();
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::GetFriendListDone, this,
+                &MainWidget::UpdateFriendList, Qt::UniqueConnection);
+        dataCenter->GetFriendListAsync();
+    }
 }
 
 void MainWidget::LoadApplyList()
+{
+
+}
+
+void MainWidget::UpdateFriendList()
+{
+    if (activeTab != ActiveTab::FRIEND_LIST)
+    {
+        return;
+    }
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<UserInfo>* friendList = dataCenter->GetFriendList();
+
+    sessionFriendArea->Clear();
+
+    for (const auto& f : *friendList)
+    {
+        sessionFriendArea->AddItem(ItemType::FRIEND_ITEM_TYPE, f.userId, f.avatar, f.nickname, f.description);
+    }
+}
+
+void MainWidget::UpdateChatSessionList()
+{
+
+}
+
+void MainWidget::UpdateApplyList()
 {
 
 }
