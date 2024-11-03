@@ -156,14 +156,14 @@ QHttpServerResponse HttpServer::GetFriendList(const QHttpServerRequest &req)
     pbRsp.setSuccess(true);
     pbRsp.setErrmsg("");
 
-    // TODO
     QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::UserInfo> friendList;
     for (int i = 0; i < 20; ++i)
     {
         SnowK::UserInfo userInfo = MakeUserInfo(i, avatar);
-        auto& userList = pbRsp.friendList();
-        pbRsp.friendList().push_back(userInfo);
+        friendList.push_back(userInfo);
     }
+    pbRsp.setFriendList(friendList);
 
     QByteArray body = pbRsp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
