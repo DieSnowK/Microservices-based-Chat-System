@@ -27,6 +27,7 @@ namespace model
         const QString& GetLoginSessionId() const;
         UserInfo* GetMyself();
         QList<UserInfo>* GetFriendList();
+        QList<ChatSessionInfo>* GetChatSessionList();
 
         void GetMyselfAsync();
         void ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp);
@@ -34,9 +35,13 @@ namespace model
         void GetFriendListAsync();
         void ResetFriendList(std::shared_ptr<SnowK::GetFriendListRsp> resp);
 
+        void GetChatSessionListAsync();
+        void ResetChatSessionList(std::shared_ptr<SnowK::GetChatSessionListRsp> resp);
+
     signals:
         void GetMyselfDone();
         void GetFriendListDone();
+        void GetChatSessionListDone();
 
     private:
         DataCenter();

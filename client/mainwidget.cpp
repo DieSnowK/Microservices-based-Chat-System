@@ -259,6 +259,7 @@ void MainWidget::InitSignalSlot()
     dataCenter->GetMyselfAsync();
 
     LoadFriendList();
+    LoadSessionList();
 
 
 }
@@ -298,7 +299,19 @@ void MainWidget::SwitchTabToApply()
 
 void MainWidget::LoadSessionList()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetChatSessionList() != nullptr)
+    {
+        UpdateChatSessionList();
+    }
+    else
+    {
+        // Qt::UniqueConnection: Make sure that the signal slot does not duplicate binding
+        connect(dataCenter, &DataCenter::GetChatSessionListDone, this,
+                &MainWidget::UpdateChatSessionList, Qt::UniqueConnection);
 
+        dataCenter->GetChatSessionListAsync();
+    }
 }
 
 void MainWidget::LoadFriendList()
@@ -310,7 +323,6 @@ void MainWidget::LoadFriendList()
     }
     else
     {
-        // Qt::UniqueConnection: Make sure that the signal slot does not duplicate binding
         connect(dataCenter, &DataCenter::GetFriendListDone, this,
                 &MainWidget::UpdateFriendList, Qt::UniqueConnection);
 
@@ -343,7 +355,43 @@ void MainWidget::UpdateFriendList()
 
 void MainWidget::UpdateChatSessionList()
 {
+    if (activeTab != ActiveTab::SESSION_LIST)
+    {
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<ChatSessionInfo>* chatSessionList = dataCenter->GetChatSessionList();
+
+    sessionFriendArea->Clear();
+
+    for (const auto& c : *chatSessionList)
+    {
+        if (c.lastMessage.msgType == MessageType::TEXT_TYPE)
+        {
+            sessionFriendArea->AddItem(ItemType::SESSION_ITEM_TYPE, c.chatSessionId,
+                                       c.avatar, c.chatSessionName, c.lastMessage.content);
+        }
+        else if (c.lastMessage.msgType == MessageType::IMAGE_TYPE)
+        {
+            sessionFriendArea->AddItem(ItemType::SESSION_ITEM_TYPE, c.chatSessionId,
+                                       c.avatar, c.chatSessionName, "[Image]");
+        }
+        else if (c.lastMessage.msgType == MessageType::FILE_TYPE)
+        {
+            sessionFriendArea->AddItem(ItemType::SESSION_ITEM_TYPE, c.chatSessionId,
+                                       c.avatar, c.chatSessionName, "[File]");
+        }
+        else if (c.lastMessage.msgType == MessageType::SPEECH_TYPE)
+        {
+            sessionFriendArea->AddItem(ItemType::SESSION_ITEM_TYPE, c.chatSessionId,
+                                       c.avatar, c.chatSessionName, "[Speech]");
+        }
+        else
+        {
+            LOG() << "Error MessageType, messageType = " << (int)c.lastMessage.msgType;
+        }
+    }
 }
 
 void MainWidget::UpdateApplyList()

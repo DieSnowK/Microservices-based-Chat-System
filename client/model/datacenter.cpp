@@ -157,6 +157,11 @@ namespace model
         return friendList;
     }
 
+    QList<ChatSessionInfo> *DataCenter::GetChatSessionList()
+    {
+        return chatSessionList;
+    }
+
     void DataCenter::GetMyselfAsync()
     {
         netClient.GetMyself(loginSessionId);
@@ -193,6 +198,29 @@ namespace model
             UserInfo userInfo;
             userInfo.Load(f);
             friendList->push_back(userInfo);
+        }
+    }
+
+    void DataCenter::GetChatSessionListAsync()
+    {
+        netClient.GetChatSessionList(loginSessionId);
+    }
+
+    void DataCenter::ResetChatSessionList(std::shared_ptr<SnowK::GetChatSessionListRsp> resp)
+    {
+        if (chatSessionList == nullptr)
+        {
+            chatSessionList = new QList<ChatSessionInfo>();
+        }
+
+        chatSessionList->clear();
+
+        auto& chatSessionListPB = resp->chatSessionInfoList();
+        for (auto& c : chatSessionListPB)
+        {
+            ChatSessionInfo chatSessionInfo;
+            chatSessionInfo.Load(c);
+            chatSessionList->push_back(chatSessionInfo);
         }
     }
 }

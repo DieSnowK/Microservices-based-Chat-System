@@ -31,7 +31,6 @@ namespace network
         void InitWebsocket();
 
         static QString MakeRequestId();
-
         QNetworkReply* SendHttpRequest(const QString& apiPath, const QByteArray& body);
 
         // Since different APIs have different structures for the returned PB objects
@@ -70,6 +69,7 @@ namespace network
         void SendAuth();
         void GetMyself(const QString& loginSessionId);
         void GetFriendList(const QString& loginSessionId);
+        void GetChatSessionList(const QString& loginSessionId);
 
     private:
         model::DataCenter* dataCenter;

@@ -122,7 +122,7 @@ namespace network
             dataCenter->ResetMyself(resp);
             emit dataCenter->GetMyselfDone();
 
-            LOG() << "[GetMyself] Process the response, requestId = " << req.requestId();
+            LOG() << "[GetMyself] Process the response done, requestId = " << req.requestId();
         });
     }
 
@@ -152,7 +152,37 @@ namespace network
             dataCenter->ResetFriendList(friendListResp);
             emit dataCenter->GetFriendListDone();
 
-            LOG() << "[GetFriendList] Process the response, requestId = " << req.requestId();
+            LOG() << "[GetFriendList] Process the response done, requestId = " << req.requestId();
+        });
+    }
+
+    void NetClient::GetChatSessionList(const QString &loginSessionId)
+    {
+        SnowK::GetChatSessionListReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(loginSessionId);
+        QByteArray body = req.serialize(&serializer);
+        LOG() << "[GetChatSessionList] Send a request requestId requestId = "
+              << req.requestId() << ", loginSessionId = " << loginSessionId;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/get_chat_session_list", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetChatSessionListRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetChatSessionList] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetChatSessionList(pbResp);
+            emit dataCenter->GetChatSessionListDone();
+
+            LOG() << "[GetChatSessionList] Process the response done, requestId=" << pbResp->requestId();
         });
     }
 } // end of namespace network
