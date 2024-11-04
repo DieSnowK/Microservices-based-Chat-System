@@ -135,6 +135,11 @@ bool HttpServer::Init()
         return this->GetChatSessionList(req);
     });
 
+    httpServer.route("/service/friend/get_pending_friend_events", [=](const QHttpServerRequest& req)
+    {
+        return this->GetApplyList(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
 
@@ -240,6 +245,40 @@ QHttpServerResponse HttpServer::GetChatSessionList(const QHttpServerRequest &req
     pbRsp.setChatSessionInfoList(chatSessionInfoList);
 
     QByteArray body = pbRsp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::GetApplyList(const QHttpServerRequest &req)
+{
+    SnowK::GetPendingFriendEventListReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetApplyList] requestId = " << pbReq.requestId()
+          << ", loginSessionId=" << pbReq.sessionId();
+
+    SnowK::GetPendingFriendEventListRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::FriendEvent> friendEventList;
+    for (int i = 0; i < 5; ++i)
+    {
+        SnowK::FriendEvent friendEvent;
+        friendEvent.setEventId("");
+        friendEvent.setSender(MakeUserInfo(i, avatar));
+
+        friendEventList.push_back(friendEvent);
+    }
+    pbResp.setEvent(friendEventList);
+
+    QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
 
     QHttpHeaders httpHeader;

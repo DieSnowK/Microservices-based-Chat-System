@@ -210,7 +210,7 @@ namespace network
                 return;
             }
 
-            // dataCenter->ResetApplyList(pbResp);
+            dataCenter->ResetApplyList(pbResp);
             emit dataCenter->GetApplyListDone();
 
             LOG() << "[GetApplyList] Process the response done, requestId=" << req.requestId();

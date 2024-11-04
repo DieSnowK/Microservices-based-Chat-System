@@ -332,18 +332,18 @@ void MainWidget::LoadFriendList()
 
 void MainWidget::LoadApplyList()
 {
-    // DataCenter* dataCenter = DataCenter::GetInstance();
-    // if (dataCenter->GetApplyList() != nullptr)
-    // {
-    //     UpdateApplyList();
-    // }
-    // else
-    // {
-    //     connect(dataCenter, &DataCenter::GetApplyListDone, this,
-    //             &MainWidget::UpdateApplyList, Qt::UniqueConnection);
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetApplyList() != nullptr)
+    {
+        UpdateApplyList();
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::GetApplyListDone, this,
+                &MainWidget::UpdateApplyList, Qt::UniqueConnection);
 
-    //     dataCenter->GetApplyListAsync();
-    // }
+        dataCenter->GetApplyListAsync();
+    }
 }
 
 void MainWidget::UpdateFriendList()
@@ -407,5 +407,18 @@ void MainWidget::UpdateChatSessionList()
 
 void MainWidget::UpdateApplyList()
 {
+    if (activeTab != ActiveTab::APPLY_LIST)
+    {
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<UserInfo>* applyList = dataCenter->GetApplyList();
+
+    sessionFriendArea->Clear();
+
+    for (const auto& u : *applyList)
+    {
+        sessionFriendArea->AddItem(ItemType::APPLY_ITEM_TYPE, u.userId, u.avatar, u.nickname, "");
+    }
 }

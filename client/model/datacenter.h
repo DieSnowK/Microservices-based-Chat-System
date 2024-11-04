@@ -28,6 +28,7 @@ namespace model
         UserInfo* GetMyself();
         QList<UserInfo>* GetFriendList();
         QList<ChatSessionInfo>* GetChatSessionList();
+        QList<UserInfo>* GetApplyList();
 
         void GetMyselfAsync();
         void ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp);
@@ -39,6 +40,7 @@ namespace model
         void ResetChatSessionList(std::shared_ptr<SnowK::GetChatSessionListRsp> resp);
 
         void GetApplyListAsync();
+        void ResetApplyList(std::shared_ptr<SnowK::GetPendingFriendEventListRsp> resp);
 
     signals:
         void GetMyselfDone();

@@ -37,6 +37,7 @@ public:
     QHttpServerResponse GetUserInfo(const QHttpServerRequest& req);
     QHttpServerResponse GetFriendList(const QHttpServerRequest& req);
     QHttpServerResponse GetChatSessionList(const QHttpServerRequest& req);
+    QHttpServerResponse GetApplyList(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

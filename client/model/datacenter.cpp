@@ -162,6 +162,11 @@ namespace model
         return chatSessionList;
     }
 
+    QList<UserInfo> *DataCenter::GetApplyList()
+    {
+        return applyList;
+    }
+
     void DataCenter::GetMyselfAsync()
     {
         netClient.GetMyself(loginSessionId);
@@ -227,5 +232,23 @@ namespace model
     void DataCenter::GetApplyListAsync()
     {
         netClient.GetApplyList(loginSessionId);
+    }
+
+    void DataCenter::ResetApplyList(std::shared_ptr<SnowK::GetPendingFriendEventListRsp> resp)
+    {
+        if (applyList == nullptr)
+        {
+            applyList = new QList<UserInfo>();
+        }
+
+        applyList->clear();
+
+        auto& eventList = resp->event();
+        for (auto& event : eventList)
+        {
+            UserInfo userInfo;
+            userInfo.Load(event.sender());
+            applyList->push_back(userInfo);
+        }
     }
 }
