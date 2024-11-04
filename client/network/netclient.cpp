@@ -185,4 +185,35 @@ namespace network
             LOG() << "[GetChatSessionList] Process the response done, requestId=" << pbResp->requestId();
         });
     }
+
+    // TODO
+    void NetClient::GetApplyList(const QString &loginSessionId)
+    {
+        SnowK::GetPendingFriendEventListReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(loginSessionId);
+        QByteArray body = req.serialize(&serializer);
+        LOG() << "[GetApplyList] Send a request requestId requestId = "
+              << req.requestId() << ", loginSessionId = " << loginSessionId;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/get_pending_friend_events", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetPendingFriendEventListRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetApplyList] Error, reason: " << reason;
+                return;
+            }
+
+            dataCenter->ResetApplyList(pbResp);
+            emit dataCenter->GetApplyListDone();
+
+            LOG() << "[GetApplyList] Process the response done, requestId=" << req.requestId();
+        });
+    }
 } // end of namespace network

@@ -223,4 +223,9 @@ namespace model
             chatSessionList->push_back(chatSessionInfo);
         }
     }
+
+    void DataCenter::GetApplyListAsync()
+    {
+        netClient.GetApplyList(loginSessionId);
+    }
 }

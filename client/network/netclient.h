@@ -70,6 +70,7 @@ namespace network
         void GetMyself(const QString& loginSessionId);
         void GetFriendList(const QString& loginSessionId);
         void GetChatSessionList(const QString& loginSessionId);
+        void GetApplyList(const QString& loginSessionId);
 
     private:
         model::DataCenter* dataCenter;

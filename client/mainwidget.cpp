@@ -260,7 +260,7 @@ void MainWidget::InitSignalSlot()
 
     LoadFriendList();
     LoadSessionList();
-
+    LoadApplyList();
 
 }
 
@@ -332,7 +332,18 @@ void MainWidget::LoadFriendList()
 
 void MainWidget::LoadApplyList()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetApplyList() != nullptr)
+    {
+        UpdateApplyList();
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::GetApplyListDone, this,
+                &MainWidget::UpdateApplyList, Qt::UniqueConnection);
 
+        dataCenter->GetApplyListAsync();
+    }
 }
 
 void MainWidget::UpdateFriendList()

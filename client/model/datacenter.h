@@ -38,10 +38,13 @@ namespace model
         void GetChatSessionListAsync();
         void ResetChatSessionList(std::shared_ptr<SnowK::GetChatSessionListRsp> resp);
 
+        void GetApplyListAsync();
+
     signals:
         void GetMyselfDone();
         void GetFriendListDone();
         void GetChatSessionListDone();
+        void GetApplyListDone();
 
     private:
         DataCenter();
