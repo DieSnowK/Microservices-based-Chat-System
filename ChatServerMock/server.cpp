@@ -75,6 +75,25 @@ SnowK::UserInfo MakeUserInfo(int index, const QByteArray& avatar)
     return userInfo;
 }
 
+SnowK::MessageInfo MakeTextMessageInfo(int index, const QString& chatSessionId, const QByteArray& avatar)
+{
+    SnowK::MessageInfo messageInfo;
+    messageInfo.setMessageId(QString::number(3000 + index));
+    messageInfo.setChatSessionId(chatSessionId);
+    messageInfo.setTimestamp(Util::GetTime());
+    messageInfo.setSender(MakeUserInfo(index, avatar));
+
+    SnowK::StringMessageInfo stringMessageInfo;
+    stringMessageInfo.setContent("This is a test message" + QString::number(index));
+
+    SnowK::MessageContent messageContent;
+    messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::STRING);
+    messageContent.setStringMessage(stringMessageInfo);
+    messageInfo.setMessage(messageContent);
+
+    return messageInfo;
+}
+
 //////////////////////////////////////////////////////////////////
 /// HttpServer
 //////////////////////////////////////////////////////////////////
@@ -109,6 +128,11 @@ bool HttpServer::Init()
     httpServer.route("/service/friend/get_friend_list", [=](const QHttpServerRequest& req)
     {
         return this->GetFriendList(req);
+    });
+
+    httpServer.route("/service/friend/get_chat_session_list", [=](const QHttpServerRequest& req)
+    {
+        return this->GetChatSessionList(req);
     });
 
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
@@ -164,6 +188,56 @@ QHttpServerResponse HttpServer::GetFriendList(const QHttpServerRequest &req)
         friendList.push_back(userInfo);
     }
     pbRsp.setFriendList(friendList);
+
+    QByteArray body = pbRsp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::GetChatSessionList(const QHttpServerRequest &req)
+{
+    SnowK::GetChatSessionListReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetChatSessionList] requestId = "
+          << pbReq.requestId() << ", loginSessionId = " << pbReq.sessionId();
+
+    SnowK::GetChatSessionListRsp pbRsp;
+    pbRsp.setRequestId(pbReq.requestId());
+    pbRsp.setSuccess(true);
+    pbRsp.setErrmsg("");
+
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::ChatSessionInfo> chatSessionInfoList;
+    for (int i = 0; i < 30; ++i)
+    {
+        SnowK::ChatSessionInfo chatSessionInfo;
+        chatSessionInfo.setChatSessionId(QString::number(2000 + i));
+        chatSessionInfo.setChatSessionName("ChatSession" + QString::number(i));
+        chatSessionInfo.setSingleChatFriendId(QString::number(1000 + i));
+        chatSessionInfo.setAvatar(avatar);
+
+        SnowK::MessageInfo messageInfo = MakeTextMessageInfo(i, chatSessionInfo.chatSessionId(), avatar);
+        chatSessionInfo.setPrevMessage(messageInfo);
+
+        chatSessionInfoList.push_back(chatSessionInfo);
+    }
+
+    QByteArray groupAvatar = Util::LoadFileToByteArray(":/resource/image/groupAvatar.png");
+    SnowK::ChatSessionInfo chatSessionInfo;
+    chatSessionInfo.setChatSessionId(QString::number(2100));
+    chatSessionInfo.setChatSessionName("ChatSession" + QString::number(2100));
+    chatSessionInfo.setSingleChatFriendId("");
+    chatSessionInfo.setAvatar(groupAvatar);
+    SnowK::MessageInfo messageInfo = MakeTextMessageInfo(0, chatSessionInfo.chatSessionId(), avatar);
+    chatSessionInfo.setPrevMessage(messageInfo);
+    chatSessionInfoList.push_back(chatSessionInfo);
+
+    pbRsp.setChatSessionInfoList(chatSessionInfoList);
 
     QByteArray body = pbRsp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
