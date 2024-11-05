@@ -38,6 +38,7 @@ public:
     QHttpServerResponse GetFriendList(const QHttpServerRequest& req);
     QHttpServerResponse GetChatSessionList(const QHttpServerRequest& req);
     QHttpServerResponse GetApplyList(const QHttpServerRequest& req);
+    QHttpServerResponse GetRecent(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}
