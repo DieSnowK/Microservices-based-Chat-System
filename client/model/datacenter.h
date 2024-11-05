@@ -50,6 +50,9 @@ namespace model
         /// Helper functions
         //////////////////////////////////////////////////////////////////
         ChatSessionInfo* FindChatSessionById(const QString& chatSessionId);
+        ChatSessionInfo* FindChatSessionByUserId(const QString& userId);
+
+        void TopChatSessionInfo(const ChatSessionInfo& chatSessionInfo);
 
         void SetCurrentChatSessionId(const QString& chatSessionId);
         const QString& GetCurrentChatSessionId();

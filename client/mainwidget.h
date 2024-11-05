@@ -50,6 +50,8 @@ public:
     void LoadRecentMessage(const QString& chatSessionId);
     void UpdateRecentMessage(const QString& chatSessionId);
 
+    void SwitchToSession(const QString& userId);
+
 private:
     MainWidget(QWidget *parent = nullptr);
 

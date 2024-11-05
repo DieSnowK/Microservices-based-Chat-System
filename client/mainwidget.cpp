@@ -467,3 +467,18 @@ void MainWidget::UpdateRecentMessage(const QString &chatSessionId)
     // Automatically scroll the scrollbar to the end
     messageShowArea->ScrollToEnd();
 }
+
+void MainWidget::SwitchToSession(const QString &userId)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    ChatSessionInfo* chatSessionInfo = dataCenter->FindChatSessionByUserId(userId);
+    if (chatSessionInfo == nullptr)
+    {
+        LOG() << "[Error] The current selected friend, the corresponding session does not exist";
+        return;
+    }
+
+    dataCenter->TopChatSessionInfo(*chatSessionInfo); // Pin the selected session to the top
+    SwitchTabToSession();
+    sessionFriendArea->ClickItem(0);
+}

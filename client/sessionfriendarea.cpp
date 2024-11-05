@@ -247,6 +247,8 @@ void FriendItem::Active()
 {
     LOG() << "Active FriendItem, chatSessionId = " << userId;
 
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    mainWidget->SwitchToSession(userId);
 }
 
 //////////////////////////////////////////////////////////

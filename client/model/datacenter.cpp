@@ -298,6 +298,52 @@ namespace model
         return nullptr;
     }
 
+    ChatSessionInfo *DataCenter::FindChatSessionByUserId(const QString &userId)
+    {
+        if (chatSessionList == nullptr)
+        {
+            return nullptr;
+        }
+
+        for (auto& info : *chatSessionList)
+        {
+            if (info.userId == userId)
+            {
+                return &info;
+            }
+        }
+
+        return nullptr;
+    }
+
+    void DataCenter::TopChatSessionInfo(const ChatSessionInfo &chatSessionInfo)
+    {
+        if (chatSessionList == nullptr)
+        {
+            return;
+        }
+
+        // Find
+        auto it = chatSessionList->begin();
+        for (; it != chatSessionList->end(); ++it)
+        {
+            if (it->chatSessionId == chatSessionInfo.chatSessionId)
+            {
+                break;
+            }
+        }
+
+        if (it == chatSessionList->end())
+        {
+            return;
+        }
+
+        // Pin
+        ChatSessionInfo backup = chatSessionInfo;
+        chatSessionList->erase(it);
+        chatSessionList->push_front(backup);
+    }
+
     void DataCenter::SetCurrentChatSessionId(const QString &chatSessionId)
     {
         this->currentChatSessionId = chatSessionId;
