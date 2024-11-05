@@ -92,3 +92,5 @@ void MessageEditArea::InitSignalSlot()
         historyMessageWidget->exec();
     });
 }
+
+
