@@ -15,6 +15,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFileInfo \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QString \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QTimer \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUuid \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20functional.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20iterator.h \
@@ -30,6 +31,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qatomic.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qatomic_cxx11.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbasicatomic.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbasictimer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbindingstorage.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbytearray.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qbytearrayalgorithms.h \
@@ -128,6 +130,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtdeprecationmarkers.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtenvironmentvariables.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtextstream.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtimer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtimezone.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtmetamacros.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtnoop.h \

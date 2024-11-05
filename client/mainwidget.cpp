@@ -440,7 +440,6 @@ void MainWidget::LoadRecentMessage(const QString &chatSessionId)
     }
 }
 
-// TODO
 void MainWidget::UpdateRecentMessage(const QString &chatSessionId)
 {
     DataCenter* dataCenter = DataCenter::GetInstance();
