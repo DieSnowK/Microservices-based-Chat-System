@@ -29,6 +29,7 @@ namespace model
         QList<UserInfo>* GetFriendList();
         QList<ChatSessionInfo>* GetChatSessionList();
         QList<UserInfo>* GetApplyList();
+        QList<Message>* GetRecentMessageList(const QString& chatSessionId);
 
         void GetMyselfAsync();
         void ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp);
@@ -42,11 +43,24 @@ namespace model
         void GetApplyListAsync();
         void ResetApplyList(std::shared_ptr<SnowK::GetPendingFriendEventListRsp> resp);
 
+        void GetRecentMessageListAsync(const QString& chatSessionId, bool updateUI);
+        void ResetRecentMessageList(const QString& chatSessionId, std::shared_ptr<SnowK::GetRecentMsgRsp> resp);
+
+        //////////////////////////////////////////////////////////////////
+        /// Helper functions
+        //////////////////////////////////////////////////////////////////
+        ChatSessionInfo* FindChatSessionById(const QString& chatSessionId);
+
+        void SetCurrentChatSessionId(const QString& chatSessionId);
+        const QString& GetCurrentChatSessionId();
+
     signals:
         void GetMyselfDone();
         void GetFriendListDone();
         void GetChatSessionListDone();
         void GetApplyListDone();
+        void GetRecentMessageListDone(const QString& chatSessionId);
+        void GetRecentMessageListDoneNoUI(const QString& chatSessionId);
 
     private:
         DataCenter();

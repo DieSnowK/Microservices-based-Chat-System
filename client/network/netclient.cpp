@@ -216,4 +216,43 @@ namespace network
             LOG() << "[GetApplyList] Process the response done, requestId=" << req.requestId();
         });
     }
+
+    void NetClient::GetRecentMessageList(const QString &loginSessionId,
+                                         const QString &chatSessionId, bool updateUI)
+    {
+        SnowK::GetRecentMsgReq req;
+        req.setRequestId(MakeRequestId());
+        req.setChatSessionId(chatSessionId);
+        req.setMsgCount(50);    // Get the last 50 records here in a pin
+        req.setSessionId(loginSessionId);
+        QByteArray body = req.serialize(&serializer);
+        LOG() << "[GetRecentMessageList] Send a request requestId requestId = "
+              << req.requestId() << ", loginSessionId = " << loginSessionId
+              << ", chatSessionId = " << chatSessionId;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/message_storage/get_recent", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetRecentMsgRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetRecentMessageList] Error, reason = " << reason;
+                return;
+            }
+
+            dataCenter->ResetRecentMessageList(chatSessionId, pbResp);
+            if (updateUI)
+            {
+                emit dataCenter->GetRecentMessageListDone(chatSessionId);
+            }
+            else
+            {
+                emit dataCenter->GetRecentMessageListDoneNoUI(chatSessionId);
+            }
+        });
+    }
 } // end of namespace network

@@ -422,3 +422,49 @@ void MainWidget::UpdateApplyList()
         sessionFriendArea->AddItem(ItemType::APPLY_ITEM_TYPE, u.userId, u.avatar, u.nickname, "");
     }
 }
+
+void MainWidget::LoadRecentMessage(const QString &chatSessionId)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+
+    if (dataCenter->GetRecentMessageList(chatSessionId) != nullptr)
+    {
+        UpdateRecentMessage(chatSessionId);
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::GetRecentMessageListDone, this,
+                &MainWidget::UpdateRecentMessage, Qt::UniqueConnection);
+
+        dataCenter->GetRecentMessageListAsync(chatSessionId, true);
+    }
+}
+
+// TODO
+void MainWidget::UpdateRecentMessage(const QString &chatSessionId)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    auto* recentMessageList = dataCenter->GetRecentMessageList(chatSessionId);
+
+    messageShowArea->Clear();
+
+    for (int i = recentMessageList->size() - 1; i >= 0; --i)
+    {
+        const Message& message = recentMessageList->at(i);
+        bool isLeft = message.sender.userId != dataCenter->GetMyself()->userId;
+        messageShowArea->AddFrontMessage(isLeft, message);
+    }
+
+    // Set the session title
+    ChatSessionInfo* chatSessionInfo = dataCenter->FindChatSessionById(chatSessionId);
+    if (chatSessionInfo != nullptr)
+    {
+        sessionTitleLabel->setText(chatSessionInfo->chatSessionName);
+    }
+
+    // Saves which session is currently selected
+    dataCenter->SetCurrentChatSessionId(chatSessionId);
+
+    // Automatically scroll the scrollbar to the end
+    // messageShowArea->ScrollToEnd();
+}

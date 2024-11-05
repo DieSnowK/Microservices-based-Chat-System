@@ -167,6 +167,16 @@ namespace model
         return applyList;
     }
 
+    QList<Message> *DataCenter::GetRecentMessageList(const QString &chatSessionId)
+    {
+        if (!recentMessages->contains(chatSessionId))
+        {
+            return nullptr;
+        }
+
+        return &(*recentMessages)[chatSessionId];
+    }
+
     void DataCenter::GetMyselfAsync()
     {
         netClient.GetMyself(loginSessionId);
@@ -250,5 +260,51 @@ namespace model
             userInfo.Load(event.sender());
             applyList->push_back(userInfo);
         }
+    }
+
+    void DataCenter::GetRecentMessageListAsync(const QString &chatSessionId, bool updateUI)
+    {
+        netClient.GetRecentMessageList(loginSessionId, chatSessionId, updateUI);
+    }
+
+    void DataCenter::ResetRecentMessageList(const QString &chatSessionId, std::shared_ptr<SnowK::GetRecentMsgRsp> resp)
+    {
+        QList<Message>& messageList = (*recentMessages)[chatSessionId];
+        messageList.clear();
+
+        for (auto& m : resp->msgList())
+        {
+            Message message;
+            message.Load(m);
+            messageList.push_back(message);
+        }
+    }
+
+    ChatSessionInfo *DataCenter::FindChatSessionById(const QString &chatSessionId)
+    {
+        if (chatSessionList == nullptr)
+        {
+            return nullptr;
+        }
+
+        for (auto& info : *chatSessionList)
+        {
+            if (info.chatSessionId == chatSessionId)
+            {
+                return &info;
+            }
+        }
+
+        return nullptr;
+    }
+
+    void DataCenter::SetCurrentChatSessionId(const QString &chatSessionId)
+    {
+        this->currentChatSessionId = chatSessionId;
+    }
+
+    const QString &DataCenter::GetCurrentChatSessionId()
+    {
+        return this->currentChatSessionId;
     }
 }

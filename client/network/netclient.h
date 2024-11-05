@@ -71,6 +71,8 @@ namespace network
         void GetFriendList(const QString& loginSessionId);
         void GetChatSessionList(const QString& loginSessionId);
         void GetApplyList(const QString& loginSessionId);
+        void GetRecentMessageList(const QString& loginSessionId,
+                                  const QString& chatSessionId, bool updateUI);
 
     private:
         model::DataCenter* dataCenter;

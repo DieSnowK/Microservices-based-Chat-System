@@ -1,6 +1,10 @@
 #include "sessionfriendarea.h"
+#include "mainwidget.h"
 #include "model/data.hpp"
 #include "debug.hpp"
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 //////////////////////////////////////////////////////////
 /// SessionFriendArea implementation
@@ -209,9 +213,22 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
 
 }
 
+// TODO
 void SessionItem::Active()
 {
     LOG() << "Active SessionItem, chatSessionId = " << chatSessionId;
+
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    mainWidget->LoadRecentMessage(chatSessionId);
+
+    // Clears the data for unread messages and updates the display
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    // dataCenter->ClearUnread(chatSessionId);
+
+    // Updated the display of the interface.
+    // Preview the conversation message here, and get
+        //rid of the "[unread x]" content in front of it
+    this->messageLabel->setText(text);
 }
 
 //////////////////////////////////////////////////////////

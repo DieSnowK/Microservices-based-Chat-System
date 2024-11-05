@@ -94,6 +94,68 @@ SnowK::MessageInfo MakeTextMessageInfo(int index, const QString& chatSessionId, 
     return messageInfo;
 }
 
+SnowK::MessageInfo MakeImageMessageInfo(int index, const QString& chatSessionId,
+                                        const QByteArray& avatar)
+{
+    SnowK::MessageInfo messageInfo;
+    messageInfo.setMessageId(QString::number(3000 + index));
+    messageInfo.setChatSessionId(chatSessionId);
+    messageInfo.setTimestamp(Util::GetTime());
+    messageInfo.setSender(MakeUserInfo(index, avatar));
+
+    SnowK::ImageMessageInfo imageMessageInfo;
+    imageMessageInfo.setFileId("testImage");
+
+    // No setup is required, it needs to be downloaded separately
+    // imageMessageInfo.setImageContent();
+
+    SnowK::MessageContent messageContent;
+    messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::IMAGE);
+    messageContent.setImageMessage(imageMessageInfo);
+    messageInfo.setMessage(messageContent);
+    return messageInfo;
+}
+
+SnowK::MessageInfo MakeFileMessageInfo(int index, const QString& chatSessionId,
+                                       const QByteArray& avatar)
+{
+    SnowK::MessageInfo messageInfo;
+    messageInfo.setMessageId(QString::number(3000 + index));
+    messageInfo.setChatSessionId(chatSessionId);
+    messageInfo.setTimestamp(Util::GetTime());
+    messageInfo.setSender(MakeUserInfo(index, avatar));
+
+    SnowK::FileMessageInfo fileMessageInfo;
+    fileMessageInfo.setFileId("testFile");
+    fileMessageInfo.setFileName("test.txt");
+    fileMessageInfo.setFileSize(0);
+
+    SnowK::MessageContent messageContent;
+    messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::FILE);
+    messageContent.setFileMessage(fileMessageInfo);
+    messageInfo.setMessage(messageContent);
+    return messageInfo;
+}
+
+SnowK::MessageInfo MakeSpeechMessageInfo(int index, const QString& chatSessionId,
+                                         const QByteArray& avatar)
+{
+    SnowK::MessageInfo messageInfo;
+    messageInfo.setMessageId(QString::number(3000 + index));
+    messageInfo.setChatSessionId(chatSessionId);
+    messageInfo.setTimestamp(Util::GetTime());
+    messageInfo.setSender(MakeUserInfo(index, avatar));
+
+    SnowK::SpeechMessageInfo speechMessageInfo;
+    speechMessageInfo.setFileId("testSpeech");
+
+    SnowK::MessageContent messageContent;
+    messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::SPEECH);
+    messageContent.setSpeechMessage(speechMessageInfo);
+    messageInfo.setMessage(messageContent);
+    return messageInfo;
+}
+
 //////////////////////////////////////////////////////////////////
 /// HttpServer
 //////////////////////////////////////////////////////////////////
@@ -139,6 +201,12 @@ bool HttpServer::Init()
     {
         return this->GetApplyList(req);
     });
+
+    httpServer.route("/service/message_storage/get_recent", [=](const QHttpServerRequest& req)
+    {
+        return this->GetRecent(req);
+    });
+
 
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
@@ -277,6 +345,45 @@ QHttpServerResponse HttpServer::GetApplyList(const QHttpServerRequest &req)
         friendEventList.push_back(friendEvent);
     }
     pbResp.setEvent(friendEventList);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::GetRecent(const QHttpServerRequest &req)
+{
+    SnowK::GetRecentMsgReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetRecent] requestId = " << pbReq.requestId()
+          << ", loginSessionId = " << pbReq.sessionId()
+          << ", chatSessionId = " << pbReq.chatSessionId();
+
+    SnowK::GetRecentMsgRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::MessageInfo> messageInfoList;
+    for (int i = 0; i < 30; ++i)
+    {
+        SnowK::MessageInfo messageInfo = MakeTextMessageInfo(i, "2000", avatar);
+        messageInfoList.push_back(messageInfo);
+    }
+    SnowK::MessageInfo imageMessageInfo = MakeImageMessageInfo(30, "2000", avatar);
+    messageInfoList.push_back(imageMessageInfo);
+    SnowK::MessageInfo fileMessageInfo = MakeFileMessageInfo(31, "2000", avatar);
+    messageInfoList.push_back(fileMessageInfo);
+    SnowK::MessageInfo speechMessageInfo = MakeSpeechMessageInfo(32, "2000", avatar);
+    messageInfoList.push_back(speechMessageInfo);
+
+    pbResp.setMsgList(messageInfoList);
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

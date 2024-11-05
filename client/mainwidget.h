@@ -47,6 +47,9 @@ public:
     void UpdateChatSessionList();
     void UpdateApplyList();
 
+    void LoadRecentMessage(const QString& chatSessionId);
+    void UpdateRecentMessage(const QString& chatSessionId);
+
 private:
     MainWidget(QWidget *parent = nullptr);
 
