@@ -76,6 +76,22 @@ void MessageShowArea::Clear()
     }
 }
 
+void MessageShowArea::ScrollToEnd()
+{
+    // In order to make the scrolling effect better, set the scrollbar after the interface is drawn
+        // Add a "delay" to the scrolling operation here
+    QTimer* timer = new QTimer();
+    connect(timer, &QTimer::timeout, this, [=]()
+    {
+        int maxValue = this->verticalScrollBar()->maximum();
+        this->verticalScrollBar()->setValue(maxValue);
+
+        timer->stop();
+        timer->deleteLater();
+    });
+    timer->start(500);
+}
+
 ////////////////////////////////////////////////////////
 /// MessageItem
 ////////////////////////////////////////////////////////

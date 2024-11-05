@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QPainterPath>
+#include <QTimer>
 
 #include "model/data.hpp"
 #include "userinfowidget.h"
@@ -30,6 +31,7 @@ public:
     void AddMessage(bool isLeft, const Message& message);
     void AddFrontMessage(bool isLeft, const Message& message);
     void Clear();
+    void ScrollToEnd();
 
 private:
     QWidget *container;

@@ -466,5 +466,5 @@ void MainWidget::UpdateRecentMessage(const QString &chatSessionId)
     dataCenter->SetCurrentChatSessionId(chatSessionId);
 
     // Automatically scroll the scrollbar to the end
-    // messageShowArea->ScrollToEnd();
+    messageShowArea->ScrollToEnd();
 }
