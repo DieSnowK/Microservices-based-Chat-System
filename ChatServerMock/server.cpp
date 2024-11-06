@@ -207,6 +207,11 @@ bool HttpServer::Init()
         return this->GetRecent(req);
     });
 
+    httpServer.route("/service/message_transmit/new_message", [=](const QHttpServerRequest& req)
+    {
+        return this->NewMessage(req);
+    });
+
 
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
@@ -384,6 +389,35 @@ QHttpServerResponse HttpServer::GetRecent(const QHttpServerRequest &req)
     messageInfoList.push_back(speechMessageInfo);
 
     pbResp.setMsgList(messageInfoList);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::NewMessage(const QHttpServerRequest &req)
+{
+    SnowK::NewMessageReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ NewMessage] requestId = " << pbReq.requestId()
+          << ", loginSessionId = " << pbReq.sessionId()
+          << ", chatSessionId = " << pbReq.chatSessionId()
+          << ", messageType = " << pbReq.message().messageType();
+
+    if (pbReq.message().messageType() == SnowK::MessageTypeGadget::MessageType::STRING)
+    {
+        LOG() << "NewMessage: =" << pbReq.message().stringMessage().content();
+    }
+
+    SnowK::NewMessageRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

@@ -39,6 +39,7 @@ public:
     QHttpServerResponse GetChatSessionList(const QHttpServerRequest& req);
     QHttpServerResponse GetApplyList(const QHttpServerRequest& req);
     QHttpServerResponse GetRecent(const QHttpServerRequest& req);
+    QHttpServerResponse NewMessage(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}
