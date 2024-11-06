@@ -22,6 +22,7 @@ public:
     void InitSignalSlot();
 
     void SendTextMessage();
+    void AddSelfMessage(MessageType messageType, const QByteArray& content, const QString& extraInfo);
 
 private:
     QPushButton* sendImageBtn;

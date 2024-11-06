@@ -15,27 +15,37 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageeditarea.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/messageshowarea.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/datacenter.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/network/netclient.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/selfinfowidget.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessiondetailwidget.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.h \
   C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDateTime \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDebug \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFileInfo \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFlags \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QIODevice \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QList \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QMetaType \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QObject \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QRect \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSharedDataPointer \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSize \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSizeF \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QString \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QTimer \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUrl \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUuid \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QVariant \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20functional.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20iterator.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20memory.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20type_traits.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q23utility.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/q26numeric.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qabstractitemmodel.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qalgorithms.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qanystringview.h \
@@ -67,6 +77,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcoreapplication.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcoreapplication_platform.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcoreevent.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qcryptographichash.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdarwinhelpers.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdatastream.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdatetime.h \
@@ -176,6 +187,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/QIcon \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/QPainter \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/QPainterPath \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/QScreen \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/QTransform \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qabstracttextdocumentlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qaction.h \
@@ -227,13 +239,47 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qvectornd.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QAbstractSocket \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkAccessManager \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkProxy \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkReply \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkRequest \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QSslConfiguration \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QSslError \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qabstractsocket.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qhostaddress.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qhttpheaders.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qnetworkaccessmanager.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qnetworkproxy.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qnetworkreply.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qnetworkrequest.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qssl.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qsslcertificate.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qsslconfiguration.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qsslerror.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qsslsocket.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qtcpsocket.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qtnetwork-config.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qtnetworkexports.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qtnetworkglobal.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/QProtobufSerializer \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qabstractprotobufserializer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobuflazymessagepointer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufmessage.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufobject.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufoneof.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufpropertyordering.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufserializer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qtprotobufexports.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qtprotobuftypes.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/QWebSocket \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qtwebsocketsexports.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsocket.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsocketprotocol.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsockets_global.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QApplication \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QCheckBox \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDateTimeEdit \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QDialog \
@@ -253,6 +299,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractscrollarea.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractslider.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qabstractspinbox.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qapplication.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qboxlayout.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qcheckbox.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qdatetimeedit.h \

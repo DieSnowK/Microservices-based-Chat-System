@@ -482,3 +482,8 @@ void MainWidget::SwitchToSession(const QString &userId)
     SwitchTabToSession();
     sessionFriendArea->ClickItem(0);
 }
+
+MessageShowArea *MainWidget::GetMessageShowArea()
+{
+    return messageShowArea;
+}

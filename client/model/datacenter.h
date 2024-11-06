@@ -62,6 +62,8 @@ namespace model
         void SetCurrentChatSessionId(const QString& chatSessionId);
         const QString& GetCurrentChatSessionId();
 
+        void AddMessage(const Message& message);
+
     signals:
         void GetMyselfDone();
         void GetFriendListDone();
@@ -69,6 +71,7 @@ namespace model
         void GetApplyListDone();
         void GetRecentMessageListDone(const QString& chatSessionId);
         void GetRecentMessageListDoneNoUI(const QString& chatSessionId);
+        void SendMessageDone(MessageType messageType, const QByteArray& content, const QString& extraInfo);
 
     private:
         DataCenter();

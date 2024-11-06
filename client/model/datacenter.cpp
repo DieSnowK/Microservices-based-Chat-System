@@ -376,4 +376,10 @@ namespace model
     {
         return this->currentChatSessionId;
     }
+
+    void DataCenter::AddMessage(const Message &message)
+    {
+        QList<Message>& messageList = (*recentMessages)[message.chatSessionId];
+        messageList.push_back(message);
+    }
 }

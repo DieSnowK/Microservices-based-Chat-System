@@ -52,6 +52,8 @@ public:
 
     void SwitchToSession(const QString& userId);
 
+    MessageShowArea* GetMessageShowArea();
+
 private:
     MainWidget(QWidget *parent = nullptr);
 

@@ -1,4 +1,5 @@
 #include "messageeditarea.h"
+#include "mainwidget.h"
 
 using model::DataCenter;
 
@@ -83,6 +84,8 @@ MessageEditArea::MessageEditArea(QWidget *parent)
 
 void MessageEditArea::InitSignalSlot()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+
     connect(showHistoryBtn, &QPushButton::clicked, this, [=]()
     {
         // if (dataCenter->GetCurrentChatSessionId().isEmpty())
@@ -95,6 +98,7 @@ void MessageEditArea::InitSignalSlot()
     });
 
     connect(sendTextBtn, &QPushButton::clicked, this, &MessageEditArea::SendTextMessage);
+    connect(dataCenter, &DataCenter::SendMessageDone, this, &MessageEditArea::AddSelfMessage);
 }
 
 void MessageEditArea::SendTextMessage()
@@ -118,6 +122,24 @@ void MessageEditArea::SendTextMessage()
     textEdit->setPlainText("");
 
     dataCenter->SendTextMessageAsync(dataCenter->GetCurrentChatSessionId(), content);
+}
+
+void MessageEditArea::AddSelfMessage(MessageType messageType, const QByteArray &content, const QString &extraInfo)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    const QString& currentChatSessionId = dataCenter->GetCurrentChatSessionId();
+
+    Message message = Message::MakeMessage(messageType, currentChatSessionId,
+                                           *dataCenter->GetMyself(), content, extraInfo);
+    dataCenter->AddMessage(message);
+
+    // Display this new message in the messageShowArea
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    MessageShowArea* messageShowArea = mainWidget->GetMessageShowArea();
+    messageShowArea->AddMessage(false, message);
+    messageShowArea->ScrollToEnd();
+
+    // emit dataCenter->UpdateLastMessage(currentChatSessionId);
 }
 
 

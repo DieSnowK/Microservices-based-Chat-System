@@ -1,4 +1,18 @@
 C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/5SSUPNRDSB/moc_netclient.cpp: C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/network/netclient.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/base.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/file.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/friend.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/gateway.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/message.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/notify.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/speech.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/transmite.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user.qpb.h \
+  C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/model/data.hpp \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDateTime \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QDebug \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFile \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFileInfo \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QFlags \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QIODevice \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QList \
@@ -7,6 +21,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSharedDataPointer \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QString \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUrl \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUuid \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/QVariant \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20functional.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/q20iterator.h \
@@ -47,6 +62,9 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qdebug.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qendian.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qexceptionhandling.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfile.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfiledevice.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfileinfo.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qflags.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qfloat16.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qforeach.h \
@@ -62,11 +80,13 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qiterable.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qiterator.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qlatin1stringview.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qline.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qlist.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qlocale.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qlogging.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmalloc.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmap.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmargins.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmath.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmetacontainer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qmetaobject.h \
@@ -80,7 +100,9 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qobjectdefs_impl.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qoverload.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qpair.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qpoint.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qprocessordetection.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrect.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrefcount.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qscopedpointer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qscopeguard.h \
@@ -89,6 +111,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qshareddata_impl.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qsharedpointer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qsharedpointer_impl.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qsize.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qspan.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstring.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstringalgorithms.h \
@@ -114,6 +137,7 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtdeprecationmarkers.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtenvironmentvariables.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtextstream.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtimezone.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtmetamacros.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtnoop.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtpreprocessorsupport.h \
@@ -126,11 +150,29 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qtypes.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qurl.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qutf8stringview.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtCore/quuid.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qvariant.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qvarlengtharray.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qversiontagging.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qxptype_traits.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtCore/qyieldcpu.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/QIcon \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qcolor.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qicon.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qimage.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qpaintdevice.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qpixelformat.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qpixmap.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qpolygon.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qregion.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qrgb.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qrgba64.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtgui-config.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtguiexports.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtguiglobal.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qtransform.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QAbstractSocket \
   E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkAccessManager \
   E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkProxy \
@@ -158,7 +200,11 @@ C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/buil
   E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/qtnetworkglobal.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/QProtobufSerializer \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qabstractprotobufserializer.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobuflazymessagepointer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufmessage.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufobject.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufoneof.h \
+  E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufpropertyordering.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qprotobufserializer.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qtprotobufexports.h \
   E:/Qt/6.8.0/msvc2022_64/include/QtProtobuf/qtprotobuftypes.h \

@@ -280,7 +280,7 @@ namespace network
             messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::IMAGE);
 
             SnowK::ImageMessageInfo imageMessageInfo;
-            imageMessageInfo.setFileId("");			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            imageMessageInfo.setFileId("");
             imageMessageInfo.setImageContent(content);
             messageContent.setImageMessage(imageMessageInfo);
         }
@@ -289,7 +289,7 @@ namespace network
             messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::FILE);
 
             SnowK::FileMessageInfo fileMessageInfo;
-            fileMessageInfo.setFileId(""); 			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            fileMessageInfo.setFileId("");
             fileMessageInfo.setFileSize(content.size());
             fileMessageInfo.setFileName(extraInfo);
             fileMessageInfo.setFileContents(content);
@@ -300,7 +300,7 @@ namespace network
             messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::SPEECH);
 
             SnowK::SpeechMessageInfo speechMessageInfo;
-            speechMessageInfo.setFileId(""); 			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            speechMessageInfo.setFileId("");
             speechMessageInfo.setFileContents(content);
             messageContent.setSpeechMessage(speechMessageInfo);
         }
@@ -330,9 +330,6 @@ namespace network
                 return;
             }
 
-            // 此处只是需要记录 "成功失败" , 不需要把内容写入到 DataCenter 中.
-
-            // d) 通知调用者, 响应处理完毕
             emit dataCenter->SendMessageDone(messageType, content, extraInfo);
 
             LOG() << "[GetRecentMessageList] Process the response done, requestId=" << pbReq.requestId();
