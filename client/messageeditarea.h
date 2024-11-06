@@ -9,7 +9,9 @@
 #include <QHBoxLayout>
 #include <QScrollBar>
 
+#include "model/datacenter.h"
 #include "historymessagewidget.h"
+#include "toast.h"
 
 class MessageEditArea : public QWidget
 {
@@ -19,6 +21,7 @@ public:
     explicit MessageEditArea(QWidget *parent = nullptr);
     void InitSignalSlot();
 
+    void SendTextMessage();
 
 private:
     QPushButton* sendImageBtn;

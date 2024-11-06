@@ -7,6 +7,10 @@
 #include <QProtobufSerializer>
 #include <QNetworkReply>
 
+#include "../model/data.hpp"
+
+using model::MessageType;
+
 // To avoid the "loop contains" problem -> Pre-declaration
 namespace model
 {
@@ -73,6 +77,8 @@ namespace network
         void GetApplyList(const QString& loginSessionId);
         void GetRecentMessageList(const QString& loginSessionId,
                                   const QString& chatSessionId, bool updateUI);
+        void SendMessage(const QString& loginSessionId, const QString& chatSessionId,
+                         MessageType messageType,const QByteArray& content, const QString& extraInfo);
 
     private:
         model::DataCenter* dataCenter;

@@ -1,5 +1,7 @@
 #include "messageeditarea.h"
 
+using model::DataCenter;
+
 MessageEditArea::MessageEditArea(QWidget *parent)
     : QWidget{parent}
 {
@@ -83,7 +85,7 @@ void MessageEditArea::InitSignalSlot()
 {
     connect(showHistoryBtn, &QPushButton::clicked, this, [=]()
     {
-        // if (dataCenter->getCurrentChatSessionId().isEmpty())
+        // if (dataCenter->GetCurrentChatSessionId().isEmpty())
         // {
         //     return;
         // }
@@ -91,6 +93,31 @@ void MessageEditArea::InitSignalSlot()
         HistoryMessageWidget* historyMessageWidget = new HistoryMessageWidget(this);
         historyMessageWidget->exec();
     });
+
+    connect(sendTextBtn, &QPushButton::clicked, this, &MessageEditArea::SendTextMessage);
+}
+
+void MessageEditArea::SendTextMessage()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetCurrentChatSessionId().isEmpty())
+    {
+        LOG() << "No conversations are currently selected and no messages will be sent";
+        Toast::ShowMessage("No conversations are currently selected and no messages will be sent");
+        return;
+    }
+
+    // trim: Remove the blank symbols on both sides of the string
+    const QString& content = textEdit->toPlainText().trimmed();
+    if (content.isEmpty())
+    {
+        LOG() << "The input box is empty";
+        return;
+    }
+
+    textEdit->setPlainText("");
+
+    dataCenter->SendTextMessageAsync(dataCenter->GetCurrentChatSessionId(), content);
 }
 
 

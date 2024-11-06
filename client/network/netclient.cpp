@@ -254,5 +254,88 @@ namespace network
                 emit dataCenter->GetRecentMessageListDoneNoUI(chatSessionId);
             }
         });
+
+        LOG() << "[GetRecentMessageList] Process the response done, requestId=" << req.requestId();
+    }
+
+    void NetClient::SendMessage(const QString &loginSessionId, const QString &chatSessionId,
+                                MessageType messageType, const QByteArray &content, const QString &extraInfo)
+    {
+        SnowK::NewMessageReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setChatSessionId(chatSessionId);
+
+        SnowK::MessageContent messageContent;
+        if (messageType == MessageType::TEXT_TYPE)
+        {
+            messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::STRING);
+
+            SnowK::StringMessageInfo stringMessageInfo;
+            stringMessageInfo.setContent(content);
+            messageContent.setStringMessage(stringMessageInfo);
+        }
+        else if (messageType == MessageType::IMAGE_TYPE)
+        {
+            messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::IMAGE);
+
+            SnowK::ImageMessageInfo imageMessageInfo;
+            imageMessageInfo.setFileId("");			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            imageMessageInfo.setImageContent(content);
+            messageContent.setImageMessage(imageMessageInfo);
+        }
+        else if (messageType == MessageType::FILE_TYPE)
+        {
+            messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::FILE);
+
+            SnowK::FileMessageInfo fileMessageInfo;
+            fileMessageInfo.setFileId(""); 			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            fileMessageInfo.setFileSize(content.size());
+            fileMessageInfo.setFileName(extraInfo);
+            fileMessageInfo.setFileContents(content);
+            messageContent.setFileMessage(fileMessageInfo);
+        }
+        else if (messageType == MessageType::SPEECH_TYPE)
+        {
+            messageContent.setMessageType(SnowK::MessageTypeGadget::MessageType::SPEECH);
+
+            SnowK::SpeechMessageInfo speechMessageInfo;
+            speechMessageInfo.setFileId(""); 			// fileId 是文件在服务器存储的时候, 生成的 id, 此时还无法获取到, 暂时填成 ""
+            speechMessageInfo.setFileContents(content);
+            messageContent.setSpeechMessage(speechMessageInfo);
+        }
+        else
+        {
+            LOG() << "Error MessageType, messageType = " << (int)messageType;
+        }
+        pbReq.setMessage(messageContent);
+
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[SendMessage] Send a request requestId requestId = "
+              << pbReq.requestId() << ", loginSessionId=" << pbReq.sessionId()
+              << ", chatSessionId = " << pbReq.chatSessionId()
+              << ", messageType = " << pbReq.message().messageType();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/message_transmit/new_message", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::NewMessageRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[SendMessage] Error, reason = " << reason;
+                return;
+            }
+
+            // 此处只是需要记录 "成功失败" , 不需要把内容写入到 DataCenter 中.
+
+            // d) 通知调用者, 响应处理完毕
+            emit dataCenter->SendMessageDone(messageType, content, extraInfo);
+
+            LOG() << "[GetRecentMessageList] Process the response done, requestId=" << pbReq.requestId();
+        });
     }
 } // end of namespace network

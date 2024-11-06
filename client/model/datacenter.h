@@ -46,6 +46,11 @@ namespace model
         void GetRecentMessageListAsync(const QString& chatSessionId, bool updateUI);
         void ResetRecentMessageList(const QString& chatSessionId, std::shared_ptr<SnowK::GetRecentMsgRsp> resp);
 
+        void SendTextMessageAsync(const QString& chatSessionId, const QString& content);
+        void SendImageMessageAsync(const QString& chatSessionId, const QByteArray& content);
+        void SendFileMessageAsync(const QString& chatSessionId, const QString& fileName, const QByteArray& content);
+        void SendSpeechMessageAsync(const QString& chatSessionid, const QByteArray& content);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

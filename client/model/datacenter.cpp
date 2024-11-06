@@ -280,6 +280,29 @@ namespace model
         }
     }
 
+    void DataCenter::SendTextMessageAsync(const QString &chatSessionId, const QString &content)
+    {
+        netClient.SendMessage(loginSessionId, chatSessionId,
+                              MessageType::TEXT_TYPE, content.toUtf8(), "");
+    }
+
+    void DataCenter::SendImageMessageAsync(const QString &chatSessionId, const QByteArray &content)
+    {
+        netClient.SendMessage(loginSessionId, chatSessionId,
+                              MessageType::IMAGE_TYPE, content, "");
+    }
+
+    void DataCenter::SendFileMessageAsync(const QString &chatSessionId, const QString &fileName, const QByteArray &content)
+    {
+        netClient.SendMessage(loginSessionId, chatSessionId,
+                              MessageType::FILE_TYPE, content, fileName);
+    }
+
+    void DataCenter::SendSpeechMessageAsync(const QString &chatSessionid, const QByteArray &content)
+    {
+        netClient.SendMessage(loginSessionId, chatSessionid, MessageType::SPEECH_TYPE, content, "");
+    }
+
     ChatSessionInfo *DataCenter::FindChatSessionById(const QString &chatSessionId)
     {
         if (chatSessionList == nullptr)
