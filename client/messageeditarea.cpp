@@ -139,7 +139,7 @@ void MessageEditArea::AddSelfMessage(MessageType messageType, const QByteArray &
     messageShowArea->AddMessage(false, message);
     messageShowArea->ScrollToEnd();
 
-    // emit dataCenter->UpdateLastMessage(currentChatSessionId);
+    emit dataCenter->UpdateLastMessage(currentChatSessionId);
 }
 
 

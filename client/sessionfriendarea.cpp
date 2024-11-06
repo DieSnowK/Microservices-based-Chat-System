@@ -210,7 +210,16 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
     , chatSessionId(chatSessionId)
     , text(lastMessage)
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::UpdateLastMessage, this, &SessionItem::UpdateLastMessage);
 
+    // The number of unread messages needs to be displayed in order to support the
+        // correct display of unread messages even after the client restarts.
+    int unread = dataCenter->GetUnread(chatSessionId);
+    if (unread > 0)
+    {
+        this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
+    }
 }
 
 // TODO
