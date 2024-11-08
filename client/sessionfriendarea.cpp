@@ -215,11 +215,11 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
 
     // The number of unread messages needs to be displayed in order to support the
         // correct display of unread messages even after the client restarts.
-    int unread = dataCenter->GetUnread(chatSessionId);
-    if (unread > 0)
-    {
-        this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
-    }
+    // int unread = dataCenter->GetUnread(chatSessionId);
+    // if (unread > 0)
+    // {
+    //     this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
+    // }
 }
 
 // TODO
@@ -238,6 +238,60 @@ void SessionItem::Active()
     // Preview the conversation message here, and get
         //rid of the "[unread x]" content in front of it
     this->messageLabel->setText(text);
+}
+
+void SessionItem::UpdateLastMessage(const QString &chatSessionId)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (this->chatSessionId != chatSessionId)
+    {
+        return;
+    }
+
+    // Get the last message
+    QList<Message>* messageList = dataCenter->GetRecentMessageList(chatSessionId);
+    if (messageList == nullptr || messageList->size() == 0)
+    {
+        return;
+    }
+    const Message& lastMessage = messageList->back();
+
+    // Clearly displayed text content
+    if (lastMessage.msgType == MessageType::TEXT_TYPE)
+    {
+        text = lastMessage.content;
+    }
+    else if (lastMessage.msgType == MessageType::IMAGE_TYPE)
+    {
+        text = "[Image]";
+    }
+    else if (lastMessage.msgType == MessageType::FILE_TYPE)
+    {
+        text = "[File]";
+    }
+    else if (lastMessage.msgType == MessageType::SPEECH_TYPE)
+    {
+        text = "[Speech]";
+    }
+    else
+    {
+        LOG() << "Error MessageType";
+        return;
+    }
+
+    // The preview content is displayed on the interface
+    if (chatSessionId == dataCenter->GetCurrentChatSessionId())
+    {
+        this->messageLabel->setText(text);
+    }
+    else // TODO
+    {
+        // int unread = dataCenter->GetUnread(chatSessionId);
+        // if (unread > 0)
+        // {
+        //     this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
+        // }
+    }
 }
 
 //////////////////////////////////////////////////////////

@@ -90,6 +90,7 @@ public:
                 const QIcon& avatar, const QString& name, const QString& lastMessage);
 
     void Active() override;
+    void UpdateLastMessage(const QString& chatSessionId);
 
 private:
     QString chatSessionId;
