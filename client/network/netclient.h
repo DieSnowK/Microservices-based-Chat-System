@@ -32,7 +32,23 @@ namespace network
         NetClient(model::DataCenter* dataCenter);
         void Ping();
 
+        /////////////////////////////////////////////////////////////////////////////////
+        /// Websocket
+        /////////////////////////////////////////////////////////////////////////////////
+
         void InitWebsocket();
+
+        void HandleWsResponse(const SnowK::NotifyMessage& notifyMessage);
+        void HandleWsMessage(const model::Message& message);
+        void HandleWsRemoveFriend(const QString& userId);
+        void HandleWsAddFriendApply(const model::UserInfo& userInfo);
+        void HandleWsAddFriendProcess(const model::UserInfo& userInfo, bool agree);
+        void HandleWsSessionCreate(const model::ChatSessionInfo& chatSessionInfo);
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        /// HTTP
+        /////////////////////////////////////////////////////////////////////////////////
 
         static QString MakeRequestId();
         QNetworkReply* SendHttpRequest(const QString& apiPath, const QByteArray& body);

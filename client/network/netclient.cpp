@@ -2,6 +2,8 @@
 #include "../model/data.hpp"
 #include "../model/datacenter.h"
 
+using namespace model;
+
 namespace network
 {
     NetClient::NetClient(model::DataCenter *dataCenter)
@@ -9,6 +11,10 @@ namespace network
     {
         InitWebsocket();
     }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    /// Websocket
+    /////////////////////////////////////////////////////////////////////////////////
 
     void NetClient::InitWebsocket()
     {
@@ -36,13 +42,92 @@ namespace network
         connect(&websocketClient, &QWebSocket::binaryMessageReceived, this, [=](const QByteArray& byteArray)
         {
             LOG() << "The websocket receives a binary message: " << byteArray.length();
-            // SnowK::NotifyMessage notifyMessage;
-            // notifyMessage.deserialize(&serializer, byteArray);
-            // handleWsResponse(notifyMessage);
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.deserialize(&serializer, byteArray);
+            HandleWsResponse(notifyMessage);
         });
 
         websocketClient.open(WEBSOCKET_URL);
     }
+
+    void NetClient::HandleWsResponse(const SnowK::NotifyMessage &notifyMessage)
+    {
+        if (notifyMessage.notifyType() == SnowK::NotifyTypeGadget::NotifyType::CHAT_MESSAGE_NOTIFY)
+        {
+            Message message;
+            message.Load(notifyMessage.newMessageInfo().messageInfo());
+            HandleWsMessage(message);
+        }
+        else if (notifyMessage.notifyType() == SnowK::NotifyTypeGadget::NotifyType::CHAT_SESSION_CREATE_NOTIFY)
+        {
+            ChatSessionInfo chatSessionInfo;
+            chatSessionInfo.Load(notifyMessage.newChatSessionInfo().chatSessionInfo());
+            HandleWsSessionCreate(chatSessionInfo);
+        }
+        else if (notifyMessage.notifyType() == SnowK::NotifyTypeGadget::NotifyType::FRIEND_ADD_APPLY_NOTIFY)
+        {
+            UserInfo userInfo;
+            userInfo.Load(notifyMessage.friendAddApply().userInfo());
+            HandleWsAddFriendApply(userInfo);
+        }
+        else if (notifyMessage.notifyType() == SnowK::NotifyTypeGadget::NotifyType::FRIEND_ADD_PROCESS_NOTIFY)
+        {
+            UserInfo userInfo;
+            userInfo.Load(notifyMessage.friendProcessResult().userInfo());
+            bool agree = notifyMessage.friendProcessResult().agree();
+            HandleWsAddFriendProcess(userInfo, agree);
+        }
+        else if (notifyMessage.notifyType() == SnowK::NotifyTypeGadget::NotifyType::FRIEND_REMOVE_NOTIFY)
+        {
+            const QString& userId = notifyMessage.friendRemove().userId();
+            HandleWsRemoveFriend(userId);
+        }
+    }
+
+    void NetClient::HandleWsMessage(const model::Message &message)
+    {
+        QList<Message>* messageList = dataCenter->GetRecentMessageList(message.chatSessionId);
+        if (messageList == nullptr)
+        {
+            // If the message list in the current session is not loaded locally,
+                // need to load the entire message list over the network
+            connect(dataCenter, &DataCenter::GetRecentMessageListDoneNoUI,
+                    this, &NetClient::ReceiveMessage, Qt::UniqueConnection);
+            dataCenter->GetRecentMessageListAsync(message.chatSessionId, false);
+        }
+        else
+        {
+            // If the message list in the current conversation has been loaded
+                // locally, can insert the message tail into the message list
+            messageList->push_back(message);
+            this->ReceiveMessage(message.chatSessionId);
+        }
+    }
+
+    void NetClient::HandleWsRemoveFriend(const QString &userId)
+    {
+
+    }
+
+    void NetClient::HandleWsAddFriendApply(const model::UserInfo &userInfo)
+    {
+
+    }
+
+    void NetClient::HandleWsAddFriendProcess(const model::UserInfo &userInfo, bool agree)
+    {
+
+    }
+
+    void NetClient::HandleWsSessionCreate(const model::ChatSessionInfo &chatSessionInfo)
+    {
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+    /// HTTP
+    /////////////////////////////////////////////////////////////////////////////////
 
     QString NetClient::MakeRequestId()
     {
