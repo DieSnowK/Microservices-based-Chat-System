@@ -477,6 +477,213 @@ bool WebsocketServer::Init()
         {
             qDebug() << "[websocket] Binary data is received! " << byteArray.length();
         });
+
+        connect(this, &WebsocketServer::SendTextResp, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resouce/image/defaultAvatar.png");
+            SnowK::MessageInfo messageInfo = MakeTextMessageInfo(this->messageIndex++, "2000", avatar);
+
+            SnowK::NotifyNewMessage notifyNewMessage;
+            notifyNewMessage.setMessageInfo(messageInfo);
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::CHAT_MESSAGE_NOTIFY);
+            notifyMessage.setNewMessageInfo(notifyNewMessage);
+
+            QByteArray body = notifyMessage.serialize(&this->serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendTextResp: " << messageInfo.message().stringMessage().content();
+        });
+
+        connect(this, &WebsocketServer::SendImageResp, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resouce/image/defaultAvatar.png");
+            SnowK::MessageInfo messageInfo = MakeImageMessageInfo(this->messageIndex++, "2000", avatar);
+
+            SnowK::NotifyNewMessage notifyNewMessage;
+            notifyNewMessage.setMessageInfo(messageInfo);
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::CHAT_MESSAGE_NOTIFY);
+            notifyMessage.setNewMessageInfo(notifyNewMessage);
+
+            QByteArray body = notifyMessage.serialize(&this->serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendImageResp";
+        });
+
+        connect(this, &WebsocketServer::SendFileResp, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+            SnowK::MessageInfo messageInfo = MakeFileMessageInfo(this->messageIndex++, "2000", avatar);
+
+            SnowK::NotifyNewMessage notifyNewMessage;
+            notifyNewMessage.setMessageInfo(messageInfo);
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::CHAT_MESSAGE_NOTIFY);
+            notifyMessage.setNewMessageInfo(notifyNewMessage);
+
+            QByteArray body = notifyMessage.serialize(&this->serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendFileResp";
+        });
+
+        connect(this, &WebsocketServer::SendSpeechResp, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+            SnowK::MessageInfo messageInfo = MakeSpeechMessageInfo(this->messageIndex++, "2000", avatar);
+
+            SnowK::NotifyNewMessage notifyNewMessage;
+            notifyNewMessage.setMessageInfo(messageInfo);
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::CHAT_MESSAGE_NOTIFY);
+            notifyMessage.setNewMessageInfo(notifyNewMessage);
+
+            QByteArray body = notifyMessage.serialize(&this->serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendSpeechResp";
+        });
+
+        connect(this, &WebsocketServer::SendFriendRemove, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid()) {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::FRIEND_REMOVE_NOTIFY);
+
+            SnowK::NotifyFriendRemove notifyFriendRemove;
+            notifyFriendRemove.setUserId("1000");
+            notifyMessage.setFriendRemove(notifyFriendRemove);
+
+            QByteArray body = notifyMessage.serialize(&serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendFriendRemove, userId=1000";
+        });
+
+        connect(this, &WebsocketServer::SendAddFriendApply, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::FRIEND_ADD_APPLY_NOTIFY);
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+            SnowK::UserInfo userInfo = MakeUserInfo(100, avatar);
+
+            SnowK::NotifyFriendAddApply friendAddApply;
+            friendAddApply.setUserInfo(userInfo);
+
+            notifyMessage.setFriendAddApply(friendAddApply);
+
+            QByteArray body = notifyMessage.serialize(&serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendAddFriendApply";
+        });
+
+        connect(this, &WebsocketServer::SendAddFriendProcess, this, [=](bool agree)
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::FRIEND_ADD_PROCESS_NOTIFY);
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+            SnowK::UserInfo userInfo = MakeUserInfo(100, avatar);
+
+            SnowK::NotifyFriendAddProcess friendAddProcess;
+            friendAddProcess.setUserInfo(userInfo);
+            friendAddProcess.setAgree(agree);
+
+            notifyMessage.setFriendProcessResult(friendAddProcess);
+
+            QByteArray body = notifyMessage.serialize(&serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendAddFriendProcess, userId=" << userInfo.userId() << ", agree=" << agree;
+        });
+
+        connect(this, &WebsocketServer::SendCreateChatSession, this, [=]()
+        {
+            if (socket == nullptr || !socket->isValid())
+            {
+                LOG() << "The socket object is invalid";
+                return;
+            }
+
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/groupAvatar.png");
+
+            SnowK::NotifyMessage notifyMessage;
+            notifyMessage.setNotifyEventId("");
+            notifyMessage.setNotifyType(SnowK::NotifyTypeGadget::NotifyType::CHAT_SESSION_CREATE_NOTIFY);
+
+            SnowK::MessageInfo messageInfo = MakeTextMessageInfo(0, "2100", avatar);
+
+            SnowK::ChatSessionInfo chatSessionInfo;
+            chatSessionInfo.setChatSessionId("2100");
+            chatSessionInfo.setSingleChatFriendId("");
+            chatSessionInfo.setChatSessionName("New group chats");
+            chatSessionInfo.setPrevMessage(messageInfo);
+            chatSessionInfo.setAvatar(avatar);
+
+            SnowK::NotifyNewChatSession newChatSession;
+            newChatSession.setChatSessionInfo(chatSessionInfo);
+            notifyMessage.setNewChatSessionInfo(newChatSession);
+
+            QByteArray body = notifyMessage.serialize(&serializer);
+            socket->sendBinaryMessage(body);
+
+            LOG() << "SendCreateChatSession";
+        });
     });
 
 

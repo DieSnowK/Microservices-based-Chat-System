@@ -72,14 +72,14 @@ private:
     int messageIndex = 0;
 
 signals:
-    // void SendTextResp();
-    // void SendImageResp();
-    // void SendFileResp();
-    // void SendSpeechResp();
-    // void SendFriendRemove();
-    // void SendAddFriendApply();
-    // void SendAddFriendProcess(bool agree);
-    // void SendCreateChatSession();
+    void SendTextResp();
+    void SendImageResp();
+    void SendFileResp();
+    void SendSpeechResp();
+    void SendFriendRemove();
+    void SendAddFriendApply();
+    void SendAddFriendProcess(bool agree);
+    void SendCreateChatSession();
 };
 
 #endif // SERVER_H
