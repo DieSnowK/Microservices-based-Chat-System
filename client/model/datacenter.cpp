@@ -177,6 +177,10 @@ namespace model
         return &(*recentMessages)[chatSessionId];
     }
 
+    //////////////////////////////////////////////////////////////////
+    /// Core functions
+    //////////////////////////////////////////////////////////////////
+
     void DataCenter::GetMyselfAsync()
     {
         netClient.GetMyself(loginSessionId);
@@ -303,6 +307,10 @@ namespace model
         netClient.SendMessage(loginSessionId, chatSessionid, MessageType::SPEECH_TYPE, content, "");
     }
 
+    //////////////////////////////////////////////////////////////////
+    /// Helper functions
+    //////////////////////////////////////////////////////////////////
+
     ChatSessionInfo *DataCenter::FindChatSessionById(const QString &chatSessionId)
     {
         if (chatSessionList == nullptr)
@@ -381,5 +389,22 @@ namespace model
     {
         QList<Message>& messageList = (*recentMessages)[message.chatSessionId];
         messageList.push_back(message);
+    }
+
+    void DataCenter::ClearUnread(const QString &chatSessionId)
+    {
+        (*unreadMessageCount)[chatSessionId] = 0;
+        SaveDataFile();
+    }
+
+    void DataCenter::AddUnread(const QString &chatSessionId)
+    {
+        ++(*unreadMessageCount)[chatSessionId];
+        SaveDataFile();
+    }
+
+    int DataCenter::GetUnread(const QString &chatSessionId)
+    {
+        return (*unreadMessageCount)[chatSessionId];
     }
 }

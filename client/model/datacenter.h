@@ -31,6 +31,10 @@ namespace model
         QList<UserInfo>* GetApplyList();
         QList<Message>* GetRecentMessageList(const QString& chatSessionId);
 
+        //////////////////////////////////////////////////////////////////
+        /// Core functions
+        //////////////////////////////////////////////////////////////////
+
         void GetMyselfAsync();
         void ResetMyself(std::shared_ptr<SnowK::GetUserInfoRsp> resp);
 
@@ -63,6 +67,10 @@ namespace model
         const QString& GetCurrentChatSessionId();
 
         void AddMessage(const Message& message);
+
+        void ClearUnread(const QString& chatSessionId);
+        void AddUnread(const QString& chatSessionId);
+        int GetUnread(const QString& chatSessionId);
 
     signals:
         void GetMyselfDone();

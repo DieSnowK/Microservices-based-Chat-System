@@ -215,14 +215,13 @@ SessionItem::SessionItem(QWidget* owner, const QString& chatSessionId,
 
     // The number of unread messages needs to be displayed in order to support the
         // correct display of unread messages even after the client restarts.
-    // int unread = dataCenter->GetUnread(chatSessionId);
-    // if (unread > 0)
-    // {
-    //     this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
-    // }
+    int unread = dataCenter->GetUnread(chatSessionId);
+    if (unread > 0)
+    {
+        this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
+    }
 }
 
-// TODO
 void SessionItem::Active()
 {
     LOG() << "Active SessionItem, chatSessionId = " << chatSessionId;
@@ -232,7 +231,7 @@ void SessionItem::Active()
 
     // Clears the data for unread messages and updates the display
     DataCenter* dataCenter = DataCenter::GetInstance();
-    // dataCenter->ClearUnread(chatSessionId);
+    dataCenter->ClearUnread(chatSessionId);
 
     // Updated the display of the interface.
     // Preview the conversation message here, and get
@@ -284,13 +283,13 @@ void SessionItem::UpdateLastMessage(const QString &chatSessionId)
     {
         this->messageLabel->setText(text);
     }
-    else // TODO
+    else
     {
-        // int unread = dataCenter->GetUnread(chatSessionId);
-        // if (unread > 0)
-        // {
-        //     this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
-        // }
+        int unread = dataCenter->GetUnread(chatSessionId);
+        if (unread > 0)
+        {
+            this->messageLabel->setText(QString("[Unread %1 entry] ").arg(unread) + text);
+        }
     }
 }
 
