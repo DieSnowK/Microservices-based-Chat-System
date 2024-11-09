@@ -420,4 +420,19 @@ namespace network
             LOG() << "[GetRecentMessageList] Process the response done, requestId=" << pbReq.requestId();
         });
     }
+
+    void NetClient::ReceiveMessage(const QString &chatSessionId)
+    {
+        if (chatSessionId == dataCenter->GetCurrentChatSessionId())
+        {
+            const Message& lastMessage = dataCenter->GetRecentMessageList(chatSessionId)->back();
+            emit dataCenter->ReceiveMessageDone(lastMessage);
+        }
+        else
+        {
+            dataCenter->AddUnread(chatSessionId);
+        }
+
+        emit dataCenter->UpdateLastMessage(chatSessionId);
+    }
 } // end of namespace network

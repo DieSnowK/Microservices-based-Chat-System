@@ -73,6 +73,7 @@ namespace model
         void GetRecentMessageListDoneNoUI(const QString& chatSessionId);
         void SendMessageDone(MessageType messageType, const QByteArray& content, const QString& extraInfo);
         void UpdateLastMessage(const QString& chatSessionId);
+        void ReceiveMessageDone(const Message& lastMessage);
 
     private:
         DataCenter();

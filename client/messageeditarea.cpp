@@ -99,6 +99,8 @@ void MessageEditArea::InitSignalSlot()
 
     connect(sendTextBtn, &QPushButton::clicked, this, &MessageEditArea::SendTextMessage);
     connect(dataCenter, &DataCenter::SendMessageDone, this, &MessageEditArea::AddSelfMessage);
+
+    connect(dataCenter, &DataCenter::ReceiveMessageDone, this, &MessageEditArea::AddOtherMessage);
 }
 
 void MessageEditArea::SendTextMessage()
@@ -140,6 +142,17 @@ void MessageEditArea::AddSelfMessage(MessageType messageType, const QByteArray &
     messageShowArea->ScrollToEnd();
 
     emit dataCenter->UpdateLastMessage(currentChatSessionId);
+}
+
+void MessageEditArea::AddOtherMessage(const Message &message)
+{
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    MessageShowArea* messageShowArea = mainWidget->GetMessageShowArea();
+
+    messageShowArea->AddMessage(true, message);
+    messageShowArea->ScrollToEnd();
+
+    Toast::ShowMessage("Received a new message");
 }
 
 

@@ -23,6 +23,7 @@ public:
 
     void SendTextMessage();
     void AddSelfMessage(MessageType messageType, const QByteArray& content, const QString& extraInfo);
+    void AddOtherMessage(const Message& message);
 
 private:
     QPushButton* sendImageBtn;

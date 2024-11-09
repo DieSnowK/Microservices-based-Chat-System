@@ -95,6 +95,7 @@ namespace network
                                   const QString& chatSessionId, bool updateUI);
         void SendMessage(const QString& loginSessionId, const QString& chatSessionId,
                          MessageType messageType,const QByteArray& content, const QString& extraInfo);
+        void ReceiveMessage(const QString& chatSessionId);
 
     private:
         model::DataCenter* dataCenter;
