@@ -461,6 +461,15 @@ bool WebsocketServer::Init()
         connect(socket, &QWebSocket::disconnected, this, [=]()
         {
             qDebug() << "[websocket] The connection is lost";
+
+            disconnect(this, &WebsocketServer::SendTextResp, this, nullptr);
+            disconnect(this, &WebsocketServer::SendFriendRemove, this, nullptr);
+            disconnect(this, &WebsocketServer::SendAddFriendApply, this, nullptr);
+            disconnect(this, &WebsocketServer::SendAddFriendProcess, this, nullptr);
+            disconnect(this, &WebsocketServer::SendCreateChatSession, this, nullptr);
+            disconnect(this, &WebsocketServer::SendImageResp, this, nullptr);
+            disconnect(this, &WebsocketServer::SendFileResp, this, nullptr);
+            disconnect(this, &WebsocketServer::SendSpeechResp, this, nullptr);
         });
 
         connect(socket, &QWebSocket::errorOccurred, this, [=](QAbstractSocket::SocketError error)
