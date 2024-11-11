@@ -23,11 +23,11 @@ ChatServerMock_autogen/timestamp: \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user.qpb.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/user.qpb.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/main.cpp \
-	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/mainwindow.cpp \
-	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/mainwindow.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/resource.qrc \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/server.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/server.h \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/widget.cpp \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/widget.h \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfig.cmake \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfigVersion.cmake \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslTargets-debug.cmake \
@@ -280,10 +280,8 @@ ChatServerMock_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsocketprotocol.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsockets_global.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets/qwebsocketserver.h \
-	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QMainWindow \
-	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qmainwindow.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/QWidget \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qsizepolicy.h \
-	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qtabwidget.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qtwidgets-config.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qtwidgetsexports.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtWidgets/qtwidgetsglobal.h \
@@ -572,4 +570,5 @@ ChatServerMock_autogen/timestamp: \
 	E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Platform/Windows.cmake \
 	E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Platform/WindowsPaths.cmake \
 	E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/SelectLibraryConfigurations.cmake \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/widget.ui \
 	E:/Qt/Tools/CMake_64/bin/cmake.exe

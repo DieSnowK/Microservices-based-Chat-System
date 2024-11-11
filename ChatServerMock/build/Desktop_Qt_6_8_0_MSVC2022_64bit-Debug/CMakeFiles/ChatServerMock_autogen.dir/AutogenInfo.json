@@ -476,12 +476,6 @@
 			null
 		],
 		[
-			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/mainwindow.h",
-			"MU",
-			"EWIEGA46WW/moc_mainwindow.cpp",
-			null
-		],
-		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/server.h",
 			"MU",
 			"EWIEGA46WW/moc_server.cpp",
@@ -617,11 +611,6 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/main.cpp",
-			"MU",
-			null
-		],
-		[
-			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/mainwindow.cpp",
 			"MU",
 			null
 		],

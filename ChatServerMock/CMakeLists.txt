@@ -19,8 +19,8 @@ file(GLOB PB_FILES "../client/proto/*.proto")
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

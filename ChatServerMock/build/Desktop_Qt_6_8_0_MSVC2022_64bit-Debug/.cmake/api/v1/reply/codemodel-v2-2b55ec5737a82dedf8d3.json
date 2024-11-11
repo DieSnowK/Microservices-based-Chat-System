@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-b17225475406caf88028.json",
+					"jsonFile" : "directory-.-Debug-c5c99b051b58f3166971.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -46,7 +46,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ChatServerMock::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ChatServerMock-Debug-74e08589596f5297ce2b.json",
+					"jsonFile" : "target-ChatServerMock-Debug-e77e8fbe5693a21280b4.json",
 					"name" : "ChatServerMock",
 					"projectIndex" : 0
 				},
@@ -67,7 +67,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ChatServerMock_qtprotobufgen_deps_0::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ChatServerMock_qtprotobufgen_deps_0-Debug-80a59e20b711ce4f30bc.json",
+					"jsonFile" : "target-ChatServerMock_qtprotobufgen_deps_0-Debug-3f769f97a34aa9f6b5ee.json",
 					"name" : "ChatServerMock_qtprotobufgen_deps_0",
 					"projectIndex" : 0
 				}

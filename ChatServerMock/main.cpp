@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "widget.h"
 #include "server.h"
 
 #include <QApplication>
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     }
     qDebug() << "The WebSocket server started successfully";
 
-    MainWindow w;
+    Widget w;
     w.show();
     return a.exec();
 }
