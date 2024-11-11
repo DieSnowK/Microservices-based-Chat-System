@@ -1,6 +1,9 @@
 #include "messageshowarea.h"
 #include "debug.hpp"
 #include "mainwidget.h"
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 ////////////////////////////////////////////////////////
 /// MessageShowArea
@@ -170,6 +173,22 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
         UserInfoWidget* userInfoWidget = new UserInfoWidget(message.sender, mainWidget);
         userInfoWidget->exec();
     });
+
+    // TODO
+    if (!isLeft)
+    {
+        DataCenter* dataCenter = DataCenter::GetInstance();
+        connect(dataCenter, &DataCenter::ChangeNicknameDone, messageItem, [=]()
+        {
+            nameLabel->setText(dataCenter->GetMyself()->nickname + " | " + message.time);
+        });
+
+        // connect(dataCenter, &DataCenter::ChangeAvatarDone, messageItem, [=]()
+        // {
+        //     UserInfo* myself = dataCenter->GetMyself();
+        //     avatarBtn->setIcon(myself->avatar);
+        // });
+    }
 
     return messageItem;
 }
