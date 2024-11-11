@@ -96,6 +96,7 @@ namespace network
         void SendMessage(const QString& loginSessionId, const QString& chatSessionId,
                          MessageType messageType,const QByteArray& content, const QString& extraInfo);
         void ReceiveMessage(const QString& chatSessionId);
+        void ChangeNickname(const QString& loginSessionId, const QString& nickname);
 
     private:
         model::DataCenter* dataCenter;

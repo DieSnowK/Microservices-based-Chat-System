@@ -307,6 +307,16 @@ namespace model
         netClient.SendMessage(loginSessionId, chatSessionid, MessageType::SPEECH_TYPE, content, "");
     }
 
+    void DataCenter::ChangeNicknameAsync(const QString &nickname)
+    {
+        netClient.ChangeNickname(loginSessionId, nickname);
+    }
+
+    void DataCenter::ResetNickname(const QString &nickname)
+    {
+
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

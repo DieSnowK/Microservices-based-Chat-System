@@ -55,6 +55,9 @@ namespace model
         void SendFileMessageAsync(const QString& chatSessionId, const QString& fileName, const QByteArray& content);
         void SendSpeechMessageAsync(const QString& chatSessionid, const QByteArray& content);
 
+        void ChangeNicknameAsync(const QString& nickname);
+        void ResetNickname(const QString& nickname);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////
@@ -82,6 +85,7 @@ namespace model
         void SendMessageDone(MessageType messageType, const QByteArray& content, const QString& extraInfo);
         void UpdateLastMessage(const QString& chatSessionId);
         void ReceiveMessageDone(const Message& lastMessage);
+        void ChangeNicknameDone();
 
     private:
         DataCenter();

@@ -254,7 +254,15 @@ void SelfInfoWidget::InitSignalSlot()
 
 void SelfInfoWidget::ClickNameSubmitBtn()
 {
+    const QString& nickname = nameEdit->text();
+    if (nickname.isEmpty()) {
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::ChangeNicknameDone, this,
+            &SelfInfoWidget::ClickNameSubmitBtnDone, Qt::UniqueConnection);
+    dataCenter->ChangeNicknameAsync(nickname);
 }
 
 void SelfInfoWidget::ClickNameSubmitBtnDone()

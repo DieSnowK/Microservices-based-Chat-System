@@ -187,7 +187,7 @@ namespace network
         req.setRequestId(MakeRequestId());
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[GetMyself] Send a request requestId = "
+        LOG() << "[GetMyself] Send a request, requestId = "
               << req.requestId() << ", loginSessionId = " << loginSessionId;
 
         QNetworkReply* httpResp = SendHttpRequest("/service/user/get_user_info", body);
@@ -217,7 +217,7 @@ namespace network
         req.setRequestId(MakeRequestId());
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[GetFriendList] Send a request requestId requestId = "
+        LOG() << "[GetFriendList] Send a request, requestId = "
               << req.requestId() << ", loginSessionId=" << loginSessionId;
 
         QNetworkReply* httpResp = this->SendHttpRequest("/service/friend/get_friend_list", body);
@@ -247,7 +247,7 @@ namespace network
         req.setRequestId(MakeRequestId());
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[GetChatSessionList] Send a request requestId requestId = "
+        LOG() << "[GetChatSessionList] Send a request, requestId = "
               << req.requestId() << ", loginSessionId = " << loginSessionId;
 
         QNetworkReply* resp = this->SendHttpRequest("/service/friend/get_chat_session_list", body);
@@ -278,7 +278,7 @@ namespace network
         req.setRequestId(MakeRequestId());
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[GetApplyList] Send a request requestId requestId = "
+        LOG() << "[GetApplyList] Send a request, requestId = "
               << req.requestId() << ", loginSessionId = " << loginSessionId;
 
         QNetworkReply* resp = this->SendHttpRequest("/service/friend/get_pending_friend_events", body);
@@ -311,7 +311,7 @@ namespace network
         req.setMsgCount(50);    // Get the last 50 records here in a pin
         req.setSessionId(loginSessionId);
         QByteArray body = req.serialize(&serializer);
-        LOG() << "[GetRecentMessageList] Send a request requestId requestId = "
+        LOG() << "[GetRecentMessageList] Send a request, requestId = "
               << req.requestId() << ", loginSessionId = " << loginSessionId
               << ", chatSessionId = " << chatSessionId;
 
@@ -434,5 +434,36 @@ namespace network
         }
 
         emit dataCenter->UpdateLastMessage(chatSessionId);
+    }
+
+    void NetClient::ChangeNickname(const QString &loginSessionId, const QString &nickname)
+    {
+        SnowK::SetUserNicknameReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setNickname(nickname);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[ChangeNickname] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessionId=" << pbReq.sessionId() << ", nickname=" << pbReq.nickname();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/set_nickname", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::SetUserNicknameRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[ChangeNickname] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetNickname(nickname);
+            emit dataCenter->ChangeNicknameDone();
+
+            LOG() << "[ChangeNickname] Process the response done, requestId=" << pbResp->requestId();
+        });
     }
 } // end of namespace network
