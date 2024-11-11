@@ -1,5 +1,9 @@
 #include "selfinfowidget.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
+
+using model::DataCenter;
+using model::UserInfo;
 
 SelfInfoWidget::SelfInfoWidget(QWidget* parent)
     : QDialog(parent)
@@ -175,18 +179,16 @@ SelfInfoWidget::SelfInfoWidget(QWidget* parent)
 
     InitSignalSlot();
 
-    // // 11. 加载数据到界面上
-    // DataCenter* dataCenter = DataCenter::getInstance();
-    // UserInfo* myself = dataCenter->getMyself();
-    // if (myself != nullptr)
-    // {
-    //     // 就把个人信息, 显示到界面上
-    //     avatarBtn->setIcon(myself->avatar);
-    //     idLabel->setText(myself->userId);
-    //     nameLabel->setText(myself->nickname);
-    //     descLabel->setText(myself->description);
-    //     phoneLabel->setText(myself->phone);
-    // }
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    UserInfo* myself = dataCenter->GetMyself();
+    if (myself != nullptr)
+    {
+        avatarBtn->setIcon(myself->avatar);
+        idLabel->setText(myself->userId);
+        nameLabel->setText(myself->nickname);
+        descLabel->setText(myself->description);
+        phoneLabel->setText(myself->phone);
+    }
 }
 
 void SelfInfoWidget::InitSignalSlot()
