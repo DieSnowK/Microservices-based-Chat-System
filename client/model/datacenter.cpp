@@ -314,7 +314,11 @@ namespace model
 
     void DataCenter::ResetNickname(const QString &nickname)
     {
-
+        if (myself == nullptr)
+        {
+            return;
+        }
+        myself->nickname = nickname;
     }
 
     //////////////////////////////////////////////////////////////////

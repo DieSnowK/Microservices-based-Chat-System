@@ -267,7 +267,16 @@ void SelfInfoWidget::ClickNameSubmitBtn()
 
 void SelfInfoWidget::ClickNameSubmitBtnDone()
 {
+    layout->removeWidget(nameEdit);
+    nameEdit->hide();
+    layout->addWidget(nameLabel, 1, 2);
+    nameLabel->show();
+    nameLabel->setText(nameEdit->text());
 
+    layout->removeWidget(nameSubmitBtn);
+    nameSubmitBtn->hide();
+    layout->addWidget(nameModifyBtn, 1, 3);
+    nameModifyBtn->show();
 }
 
 void SelfInfoWidget::ClickDescSubmitBtn()

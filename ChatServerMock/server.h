@@ -40,6 +40,7 @@ public:
     QHttpServerResponse GetApplyList(const QHttpServerRequest& req);
     QHttpServerResponse GetRecent(const QHttpServerRequest& req);
     QHttpServerResponse NewMessage(const QHttpServerRequest& req);
+    QHttpServerResponse SetNickname(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}
