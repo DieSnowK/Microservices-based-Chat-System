@@ -217,6 +217,11 @@ bool HttpServer::Init()
         return this->SetNickname(req);
     });
 
+    httpServer.route("/service/user/set_description", [=](const QHttpServerRequest& req)
+    {
+        return this->SetDesc(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
 }
 
@@ -441,6 +446,28 @@ QHttpServerResponse HttpServer::SetNickname(const QHttpServerRequest &req)
           << pbReq.sessionId() << ", nickname = " << pbReq.nickname();
 
     SnowK::SetUserNicknameRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::SetDesc(const QHttpServerRequest &req)
+{
+    SnowK::SetUserDescriptionReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ SetDesc] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", desc=" << pbReq.description();
+
+    SnowK::SetUserDescriptionRsp pbResp;
     pbResp.setRequestId(pbReq.requestId());
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");

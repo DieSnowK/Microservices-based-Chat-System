@@ -58,6 +58,9 @@ namespace model
         void ChangeNicknameAsync(const QString& nickname);
         void ResetNickname(const QString& nickname);
 
+        void ChangeDescriptionAsync(const QString& desc);
+        void ResetDescription(const QString& desc);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////
@@ -86,6 +89,10 @@ namespace model
         void UpdateLastMessage(const QString& chatSessionId);
         void ReceiveMessageDone(const Message& lastMessage);
         void ChangeNicknameDone();
+        void ChangeDescriptionDone();
+        void GetVerifyCodeDone();
+        void ChangePhoneDone();
+        void ChangeAvatarDone();
 
     private:
         DataCenter();

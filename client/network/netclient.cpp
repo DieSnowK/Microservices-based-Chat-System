@@ -466,4 +466,35 @@ namespace network
             LOG() << "[ChangeNickname] Process the response done, requestId=" << pbResp->requestId();
         });
     }
+
+    void NetClient::ChangeDescription(const QString &loginSessionId, const QString &desc)
+    {
+        SnowK::SetUserDescriptionReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setDescription(desc);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[ChangeDescription] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessisonId=" << pbReq.sessionId() << ", desc=" << pbReq.description();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/set_description", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::SetUserDescriptionRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[ChangeDescription] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetDescription(desc);
+            emit dataCenter->ChangeDescriptionDone();
+
+            LOG() << "[ChangeDescription] Process the response done, requestId=" << pbResp->requestId();
+        });
+    }
 } // end of namespace network

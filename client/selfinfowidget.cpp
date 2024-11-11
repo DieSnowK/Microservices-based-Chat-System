@@ -281,12 +281,30 @@ void SelfInfoWidget::ClickNameSubmitBtnDone()
 
 void SelfInfoWidget::ClickDescSubmitBtn()
 {
+    const QString& desc = descEdit->text();
+    if (desc.isEmpty())
+    {
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::ChangeDescriptionDone, this,
+            &SelfInfoWidget::ChickDescSubmitBtnDone, Qt::UniqueConnection);
+    dataCenter->ChangeDescriptionAsync(desc);
 }
 
 void SelfInfoWidget::ChickDescSubmitBtnDone()
 {
+    layout->removeWidget(descEdit);
+    descEdit->hide();
+    layout->addWidget(descLabel, 2, 2);
+    descLabel->show();
+    descLabel->setText(descEdit->text());
 
+    layout->removeWidget(descSubmitBtn);
+    descSubmitBtn->hide();
+    layout->addWidget(descModifyBtn, 2, 3);
+    descModifyBtn->show();
 }
 
 void SelfInfoWidget::ClickGetVerifyCodeBtn()

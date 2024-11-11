@@ -321,6 +321,20 @@ namespace model
         myself->nickname = nickname;
     }
 
+    void DataCenter::ChangeDescriptionAsync(const QString &desc)
+    {
+        netClient.ChangeDescription(loginSessionId, desc);
+    }
+
+    void DataCenter::ResetDescription(const QString &desc)
+    {
+        if (myself == nullptr)
+        {
+            return;
+        }
+        myself->description = desc;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////
