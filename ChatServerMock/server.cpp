@@ -226,6 +226,10 @@ bool HttpServer::Init()
         return this->GetPhoneVerifyCode(req);
     });
 
+    httpServer.route("/service/user/set_phone", [=](const QHttpServerRequest& req) {
+        return this->SetPhone(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -497,6 +501,29 @@ QHttpServerResponse HttpServer::GetPhoneVerifyCode(const QHttpServerRequest &req
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
     pbResp.setVerifyCodeId("testVerifyCodeId");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::SetPhone(const QHttpServerRequest &req)
+{
+    SnowK::SetUserPhoneNumberReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ SetPhone] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", phone=" << pbReq.phoneNumber() << ", verifyCodeId="
+          << pbReq.phoneVerifyCodeId() << ", verifyCode=" << pbReq.phoneVerifyCode();
+
+    SnowK::SetUserPhoneNumberRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

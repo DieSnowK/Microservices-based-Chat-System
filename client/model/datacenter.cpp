@@ -177,6 +177,11 @@ namespace model
         return &(*recentMessages)[chatSessionId];
     }
 
+    const QString &DataCenter::GetVerifyCodeId()
+    {
+        return currentVerifyCodeId;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Core functions
     //////////////////////////////////////////////////////////////////
