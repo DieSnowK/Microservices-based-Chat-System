@@ -42,6 +42,7 @@ public:
     QHttpServerResponse NewMessage(const QHttpServerRequest& req);
     QHttpServerResponse SetNickname(const QHttpServerRequest& req);
     QHttpServerResponse SetDesc(const QHttpServerRequest& req);
+    QHttpServerResponse GetPhoneVerifyCode(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}
