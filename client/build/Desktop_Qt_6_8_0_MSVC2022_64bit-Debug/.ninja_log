@@ -222,3 +222,17 @@
 5572	11802	7543302670302834	CMakeFiles/client.dir/user.qpb.cpp.obj	5f059312ff508b42
 6842	11953	7543302671822770	CMakeFiles/client.dir/user_protobuftyperegistrations.cpp.obj	16028c63f1dd1407
 11953	12685	7543302678424586	client.exe	e015b28bf7c14622
+8	467	7543311512576054	client_autogen/timestamp	d7b7435b614a47b9
+8	467	7543311512576054	client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+8	467	7543311512576054	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/timestamp	d7b7435b614a47b9
+8	467	7543311512576054	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+482	3670	7543311544987533	CMakeFiles/client.dir/selfinfowidget.cpp.obj	c41769a248cbc3af
+484	3734	7543311545633895	CMakeFiles/client.dir/model/datacenter.cpp.obj	8347c0941eff3c73
+488	3817	7543311546475853	CMakeFiles/client.dir/network/netclient.cpp.obj	4a39b564976a0571
+471	3978	7543311548094161	CMakeFiles/client.dir/main.cpp.obj	a7fb734edb07b076
+480	3997	7543311548280770	CMakeFiles/client.dir/messageeditarea.cpp.obj	8a443d6d85686b53
+477	4006	7543311548380705	CMakeFiles/client.dir/messageshowarea.cpp.obj	d0cb0e7a6bf1c1af
+475	4038	7543311548688944	CMakeFiles/client.dir/sessionfriendarea.cpp.obj	92c2e31008391010
+473	4164	7543311549959805	CMakeFiles/client.dir/mainwidget.cpp.obj	3f36bc43270b8689
+468	4382	7543311552131297	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.obj	c74912f0f2f685d2
+4382	4942	7543311557021868	client.exe	e015b28bf7c14622

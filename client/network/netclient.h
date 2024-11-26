@@ -25,8 +25,8 @@ namespace network
         Q_OBJECT
 
     private:
-        const QString HTTP_URL = "http://127.0.0.1:8000";
-        const QString WEBSOCKET_URL = "ws://127.0.0.1:8001/ws";
+        const QString HTTP_URL = "http://127.0.0.1:9000";
+        const QString WEBSOCKET_URL = "ws://127.0.0.1:9001/ws";
 
     public:
         NetClient(model::DataCenter* dataCenter);

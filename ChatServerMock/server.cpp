@@ -222,7 +222,7 @@ bool HttpServer::Init()
         return this->SetDesc(req);
     });
 
-    return tcpServer.listen(QHostAddress::Any, 8000) && httpServer.bind(&tcpServer);
+    return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
 QHttpServerResponse HttpServer::GetUserInfo(const QHttpServerRequest &req)
@@ -749,5 +749,5 @@ bool WebsocketServer::Init()
     });
 
 
-    return websocketServer.listen(QHostAddress::Any, 8001);
+    return websocketServer.listen(QHostAddress::Any, 9001);
 }
