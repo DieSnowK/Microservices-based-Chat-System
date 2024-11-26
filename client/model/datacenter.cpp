@@ -347,6 +347,20 @@ namespace model
         this->currentVerifyCodeId = verifyCodeId;
     }
 
+    void DataCenter::ChangePhoneAsync(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
+    {
+        netClient.ChangePhone(loginSessionId, phone, verifyCodeId, verifyCode);
+    }
+
+    void DataCenter::ResetPhone(const QString &phone)
+    {
+        if (myself == nullptr)
+        {
+            return;
+        }
+        myself->phone = phone;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

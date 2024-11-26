@@ -526,4 +526,39 @@ namespace network
             LOG() << "[GetVerifyCode] Process the response done requestId=" << pbResp->requestId();
         });
     }
+
+    void NetClient::ChangePhone(const QString &loginSessionId, const QString &phone,
+                                const QString &verifyCodeId, const QString &verifyCode)
+    {
+        SnowK::SetUserPhoneNumberReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setPhoneNumber(phone);
+        pbReq.setPhoneVerifyCodeId(verifyCodeId);
+        pbReq.setPhoneVerifyCode(verifyCode);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[ChangePhone] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessionId=" << pbReq.sessionId() << ", phone=" << pbReq.phoneNumber()
+              << ", verifyCodeId=" << pbReq.phoneVerifyCodeId() << ", verifyCode=" << pbReq.phoneVerifyCode();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/set_phone", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::SetUserPhoneNumberRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[ChangePhone] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetPhone(phone);
+            emit dataCenter->ChangePhoneDone();
+
+            LOG() << "[ChangePhone] Process the response done requestId" << pbResp->requestId();
+        });
+    }
 } // end of namespace network

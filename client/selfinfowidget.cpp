@@ -352,7 +352,34 @@ void SelfInfoWidget::ClickGetVerifyCodeBtn()
 
 void SelfInfoWidget::ClickPhoneSubmitBtn()
 {
+    // 1.First determine whether the current verification code has been received
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QString verifyCodeId = dataCenter->GetVerifyCodeId();
+    if (verifyCodeId.isEmpty())
+    {
+        Toast::ShowMessage("The server has not returned a response yet, please try again later");
+        return;
+    }
+    // If you have currently obtained the verifyCodeId, you can clear the value stored in the DataCenter.
+        // Make sure that the above logic is still valid the next time you click the submit button.
+    dataCenter->ResetVerifyCodeId("");
 
+    // 2.Get the verification code entered by the user
+    QString verifyCode = verifyCodeEdit->text();
+    if (verifyCode.isEmpty())
+    {
+        Toast::ShowMessage("Verification code cannot be empty");
+        return;
+    }
+    verifyCodeEdit->setText("");
+
+    // 3.Send request
+    connect(dataCenter, &DataCenter::ChangePhoneDone, this,
+            &SelfInfoWidget::clickPhoneSubmitBtnDone, Qt::UniqueConnection);
+    dataCenter->ChangePhoneAsync(this->phoneToChange, verifyCodeId, verifyCode);
+
+    // 4.Stop the countdown of the verification code button
+    leftTime = 1;
 }
 
 void SelfInfoWidget::ClickPhoneSubmitBtnDone()

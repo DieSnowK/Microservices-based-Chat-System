@@ -65,6 +65,9 @@ namespace model
         void GetVerifyCodeAsync(const QString& phone);
         void ResetVerifyCodeId(const QString& verifyCodeId);
 
+        void ChangePhoneAsync(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
+        void ResetPhone(const QString& phone);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////
