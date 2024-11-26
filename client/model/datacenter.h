@@ -30,6 +30,7 @@ namespace model
         QList<ChatSessionInfo>* GetChatSessionList();
         QList<UserInfo>* GetApplyList();
         QList<Message>* GetRecentMessageList(const QString& chatSessionId);
+        const QString& GetVerifyCodeId();
 
         //////////////////////////////////////////////////////////////////
         /// Core functions
@@ -60,6 +61,9 @@ namespace model
 
         void ChangeDescriptionAsync(const QString& desc);
         void ResetDescription(const QString& desc);
+
+        void GetVerifyCodeAsync(const QString& phone);
+        void ResetVerifyCodeId(const QString& verifyCodeId);
 
         //////////////////////////////////////////////////////////////////
         /// Helper functions

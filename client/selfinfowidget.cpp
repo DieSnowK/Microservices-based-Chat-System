@@ -1,6 +1,7 @@
 #include "selfinfowidget.h"
 #include "debug.hpp"
 #include "model/datacenter.h"
+#include "toast.h"
 
 using model::DataCenter;
 using model::UserInfo;
@@ -309,7 +310,44 @@ void SelfInfoWidget::ChickDescSubmitBtnDone()
 
 void SelfInfoWidget::ClickGetVerifyCodeBtn()
 {
+    const QString& phone = phoneEdit->text();
+    if (phone.isEmpty())
+    {
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::GetVerifyCodeDone, this, [=]()
+    {
+        Toast::ShowMessage("SMS verification code has been sent");
+    });
+    dataCenter->GetVerifyCodeAsync(phone);
+
+    // Save the mobile phone number you just sent the request to
+    // Subsequently, click the submit button to modify the phone number. The modified
+        // number will not be read from the input box, but this variable will be read
+    this->phoneToChange = phone;
+
+    // Disable the send verification code button and give a countdown
+    this->getVerifyCodeBtn->setEnabled(false);
+
+    leftTime = 30;
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=]()
+    {
+        if (leftTime <= 1)
+        {
+            getVerifyCodeBtn->setEnabled(true);
+            getVerifyCodeBtn->setText("Get Captcha");
+            timer->stop();
+            timer->deleteLater();
+            return;
+        }
+
+        --leftTime;
+        getVerifyCodeBtn->setText(QString::number(leftTime) + "s");
+    });
+    timer->start(1000);
 }
 
 void SelfInfoWidget::ClickPhoneSubmitBtn()

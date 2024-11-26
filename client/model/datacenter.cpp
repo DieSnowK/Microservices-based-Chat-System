@@ -335,6 +335,18 @@ namespace model
         myself->description = desc;
     }
 
+    void DataCenter::GetVerifyCodeAsync(const QString &phone)
+    {
+        // In order to be compatible with the logic of subsequent mobile
+            // phone number login, the loginSessionId is not passed here.
+        netClient.GetVerifyCode(phone);
+    }
+
+    void DataCenter::ResetVerifyCodeId(const QString &verifyCodeId)
+    {
+        this->currentVerifyCodeId = verifyCodeId;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

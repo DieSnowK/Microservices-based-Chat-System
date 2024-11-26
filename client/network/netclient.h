@@ -98,6 +98,7 @@ namespace network
         void ReceiveMessage(const QString& chatSessionId);
         void ChangeNickname(const QString& loginSessionId, const QString& nickname);
         void ChangeDescription(const QString& loginSessionId, const QString& desc);
+        void GetVerifyCode(const QString& phone);
 
     private:
         model::DataCenter* dataCenter;

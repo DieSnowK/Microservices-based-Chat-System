@@ -497,4 +497,33 @@ namespace network
             LOG() << "[ChangeDescription] Process the response done, requestId=" << pbResp->requestId();
         });
     }
+
+    void NetClient::GetVerifyCode(const QString &phone)
+    {
+        SnowK::PhoneVerifyCodeReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setPhoneNumber(phone);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[GetVerifyCode] Send a request, requestId = " << pbReq.requestId() << ", phone=" << phone;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/get_phone_verify_code", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::PhoneVerifyCodeRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetVerifyCode] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetVerifyCodeId(pbResp->verifyCodeId());
+            emit dataCenter->GetVerifyCodeDone();
+
+            LOG() << "[GetVerifyCode] Process the response done requestId=" << pbResp->requestId();
+        });
+    }
 } // end of namespace network
