@@ -375,7 +375,7 @@ void SelfInfoWidget::ClickPhoneSubmitBtn()
 
     // 3.Send request
     connect(dataCenter, &DataCenter::ChangePhoneDone, this,
-            &SelfInfoWidget::clickPhoneSubmitBtnDone, Qt::UniqueConnection);
+            &SelfInfoWidget::ClickPhoneSubmitBtnDone, Qt::UniqueConnection);
     dataCenter->ChangePhoneAsync(this->phoneToChange, verifyCodeId, verifyCode);
 
     // 4.Stop the countdown of the verification code button
@@ -384,7 +384,22 @@ void SelfInfoWidget::ClickPhoneSubmitBtn()
 
 void SelfInfoWidget::ClickPhoneSubmitBtnDone()
 {
+    layout->removeWidget(verifyCodeTag);
+    layout->removeWidget(verifyCodeEdit);
+    layout->removeWidget(getVerifyCodeBtn);
+    layout->removeWidget(phoneEdit);
+    layout->removeWidget(phoneSubmitBtn);
+    verifyCodeTag->hide();
+    verifyCodeEdit->hide();
+    getVerifyCodeBtn->hide();
+    phoneEdit->hide();
+    phoneSubmitBtn->hide();
 
+    layout->addWidget(phoneLabel, 3, 2);
+    phoneLabel->show();
+    phoneLabel->setText(this->phoneToChange);
+    layout->addWidget(phoneModifyBtn, 3, 3);
+    phoneModifyBtn->show();
 }
 
 void SelfInfoWidget::ClickAvatarBtn()
