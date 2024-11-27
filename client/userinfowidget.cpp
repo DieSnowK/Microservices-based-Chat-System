@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "userinfowidget.h"
 #include "model/datacenter.h"
 #include "mainwidget.h"
@@ -118,14 +119,40 @@ UserInfoWidget::UserInfoWidget(const UserInfo& userInfo, QWidget* parent)
 
 void UserInfoWidget::InitSignalSlot()
 {
-    // connect(sendMessageBtn, &QPushButton::clicked, this, [=]()
-    // {
-    //     MainWidget* mainWidget = MainWidget::GetInstance();
-    //     mainWidget->SwitchSession(userInfo.userId);
+    connect(sendMessageBtn, &QPushButton::clicked, this, [=]()
+    {
+        MainWidget* mainWidget = MainWidget::GetInstance();
+        mainWidget->SwitchToSession(userInfo.userId);
 
-    //     this->close();
-    // });
+        this->close();
+    });
 
-    // connect(deleteFriendBtn, &QPushButton::clicked, this, &UserInfoWidget::clickDeleteFriendBtn);
-    // connect(applyBtn, &QPushButton::clicked, this, &UserInfoWidget::clickApplyBtn);
+    connect(deleteFriendBtn, &QPushButton::clicked, this, &UserInfoWidget::ClickDeleteFriendBtn);
+    connect(applyBtn, &QPushButton::clicked, this, &UserInfoWidget::ClickApplyBtn);
+}
+
+void UserInfoWidget::ClickDeleteFriendBtn()
+{
+    auto result = QMessageBox::warning(this, "Confirm deletion", "Confirm to delete current friend?",
+                                       QMessageBox::Ok | QMessageBox::Cancel);
+    if (result != QMessageBox::Ok)
+    {
+        LOG() << "Delete friend cancel";
+        return;
+    }
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    // Signal -> MainWidget
+    dataCenter->DeleteFriendAsync(userInfo.userId);
+
+    this->close();
+}
+
+void UserInfoWidget::ClickApplyBtn()
+{
+    // // 1. 发送好友申请
+    // DataCenter* dataCenter = DataCenter::getInstance();
+    // dataCenter->addFriendApplyAsync(userInfo.userId);
+    // // 2. 关闭窗口
+    // this->close();
 }

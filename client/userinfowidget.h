@@ -19,6 +19,8 @@ public:
     UserInfoWidget(const UserInfo& userInfo, QWidget* parent);
 
     void InitSignalSlot();
+    void ClickDeleteFriendBtn();
+    void ClickApplyBtn();
 
 private:
     const UserInfo& userInfo;

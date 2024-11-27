@@ -380,6 +380,43 @@ namespace model
         myself->avatar = Util::MakeIcon(avatar);
     }
 
+    void DataCenter::DeleteFriendAsync(const QString &userId)
+    {
+        netClient.DeleteFriend(loginSessionId, userId);
+    }
+
+    void DataCenter::RemoveFriend(const QString &userId)
+    {
+        if (friendList == nullptr || chatSessionList == nullptr)
+        {
+            return;
+        }
+
+        friendList->removeIf([=](const UserInfo& userInfo) {
+            return userInfo.userId == userId;
+        });
+
+        chatSessionList->removeIf([=](const ChatSessionInfo& chatSessionInfo)
+        {
+            if (chatSessionInfo.userId == "")
+            {
+                return false;
+            }
+
+            if (chatSessionInfo.userId == userId)
+            {
+                if (chatSessionInfo.chatSessionId == this->currentChatSessionId)
+                {
+                    emit this->ClearCurrentSession();
+                }
+
+                return true;
+            }
+
+            return false;
+        });
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

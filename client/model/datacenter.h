@@ -71,6 +71,9 @@ namespace model
         void ChangeAvatarAsync(const QByteArray& imageBytes);
         void ResetAvatar(const QByteArray& avatar);
 
+        void DeleteFriendAsync(const QString& userId);
+        void RemoveFriend(const QString& userId);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////
@@ -104,6 +107,24 @@ namespace model
         void GetVerifyCodeDone();
         void ChangePhoneDone();
         void ChangeAvatarDone();
+        void DeleteFriendDone();
+        void ClearCurrentSession();
+        void AddFriendApplyDone();
+        void ReceiveFriendApplyDone();
+        void AcceptFriendApplyDone();
+        void RejectFriendApplyDone();
+        void ReceiveFriendProcessDone(const QString& nickname, bool agree);
+        void CreateGroupChatSessionDone();
+        void ReceiveSessionCreateDone();
+        void GetMemberListDone(const QString& chatSessionId);
+        void SearchUserDone();
+        void SearchMessageDone();
+        void UserLoginDone(bool ok, const QString& reason);
+        void UserRegisterDone(bool ok, const QString& reason);
+        void PhoneLoginDone(bool ok, const QString& reason);
+        void PhoneRegisterDone(bool ok, const QString& reason);
+        void GetSingleFileDone(const QString& fileId, const QByteArray& fileContent);
+        void SpeechConvertTextDone(const QString& fileId, const QString& text);
 
     private:
         DataCenter();

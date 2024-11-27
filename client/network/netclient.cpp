@@ -592,4 +592,35 @@ namespace network
             LOG() << "[ChangeAvatar] Process the response done, requestId" << pbResp->requestId();
         });
     }
+
+    void NetClient::DeleteFriend(const QString &loginSessionId, const QString &userId)
+    {
+        SnowK::FriendRemoveReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setPeerId(userId);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[DeleteFriend] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessionId=" << pbReq.sessionId() << ", peerId=" << pbReq.peerId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/remove_friend", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::FriendRemoveRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[DeleteFriend] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->RemoveFriend(userId);
+            emit dataCenter->DeleteFriendDone();
+
+            LOG() << "[DeleteFriend] Process the response done, requestId" << pbResp->requestId();
+        });
+    }
 } // end of namespace network

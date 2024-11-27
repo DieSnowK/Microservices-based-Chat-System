@@ -102,6 +102,7 @@ namespace network
         void ChangePhone(const QString& loginSessionId, const QString& phone,
                          const QString& verifyCodeId, const QString& verifyCode);
         void ChangeAvatar(const QString& loginSessionId, const QByteArray& avatar);
+        void DeleteFriend(const QString& loginSessionId, const QString& userId);
 
     private:
         model::DataCenter* dataCenter;

@@ -267,6 +267,22 @@ void MainWidget::InitSignalSlot()
         UserInfo* myself = dataCenter->GetMyself();
         userAvatar->setIcon(myself->avatar);
     });
+
+    connect(dataCenter, &DataCenter::DeleteFriendDone, this, [=]()
+    {
+        this->UpdateFriendList();
+        this->UpdateChatSessionList();
+        LOG() << "DeleteFriendDone";
+    });
+
+    connect(dataCenter, &DataCenter::ClearCurrentSession, this, [=]()
+    {
+        sessionTitleLabel->setText("");
+        messageShowArea->Clear();
+        dataCenter->SetCurrentChatSessionId("");
+        LOG() << "ClearCurrentSession";
+    });
+
 }
 
 void MainWidget::SwitchTabToSession()
