@@ -107,7 +107,8 @@ namespace network
 
     void NetClient::HandleWsRemoveFriend(const QString &userId)
     {
-
+        dataCenter->RemoveFriend(userId);
+        emit dataCenter->DeleteFriendDone();
     }
 
     void NetClient::HandleWsAddFriendApply(const model::UserInfo &userInfo)
