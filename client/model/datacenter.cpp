@@ -366,6 +366,20 @@ namespace model
         myself->phone = phone;
     }
 
+    void DataCenter::ChangeAvatarAsync(const QByteArray &imageBytes)
+    {
+        netClient.ChangeAvatar(loginSessionId, imageBytes);
+    }
+
+    void DataCenter::ResetAvatar(const QByteArray &avatar)
+    {
+        if (myself == nullptr)
+        {
+            return;
+        }
+        myself->avatar = Util::MakeIcon(avatar);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

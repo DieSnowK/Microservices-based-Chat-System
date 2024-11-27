@@ -523,7 +523,7 @@ namespace network
             dataCenter->ResetVerifyCodeId(pbResp->verifyCodeId());
             emit dataCenter->GetVerifyCodeDone();
 
-            LOG() << "[GetVerifyCode] Process the response done requestId=" << pbResp->requestId();
+            LOG() << "[GetVerifyCode] Process the response done, requestId=" << pbResp->requestId();
         });
     }
 
@@ -558,7 +558,38 @@ namespace network
             dataCenter->ResetPhone(phone);
             emit dataCenter->ChangePhoneDone();
 
-            LOG() << "[ChangePhone] Process the response done requestId" << pbResp->requestId();
+            LOG() << "[ChangePhone] Process the response done, requestId" << pbResp->requestId();
+        });
+    }
+
+    void NetClient::ChangeAvatar(const QString &loginSessionId, const QByteArray &avatar)
+    {
+        SnowK::SetUserAvatarReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setAvatar(avatar);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[ChangeAvatar] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessionId=" << pbReq.sessionId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/set_avatar", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::SetUserAvatarRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[ChangeAvatar] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetAvatar(avatar);
+            emit dataCenter->ChangeAvatarDone();
+
+            LOG() << "[ChangeAvatar] Process the response done, requestId" << pbResp->requestId();
         });
     }
 } // end of namespace network

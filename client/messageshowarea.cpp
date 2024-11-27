@@ -174,7 +174,6 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
         userInfoWidget->exec();
     });
 
-    // TODO
     if (!isLeft)
     {
         DataCenter* dataCenter = DataCenter::GetInstance();
@@ -183,11 +182,11 @@ MessageItem *MessageItem::MakeMessageItem(bool isLeft, const Message &message)
             nameLabel->setText(dataCenter->GetMyself()->nickname + " | " + message.time);
         });
 
-        // connect(dataCenter, &DataCenter::ChangeAvatarDone, messageItem, [=]()
-        // {
-        //     UserInfo* myself = dataCenter->GetMyself();
-        //     avatarBtn->setIcon(myself->avatar);
-        // });
+        connect(dataCenter, &DataCenter::ChangeAvatarDone, messageItem, [=]()
+        {
+            UserInfo* myself = dataCenter->GetMyself();
+            avatarBtn->setIcon(myself->avatar);
+        });
     }
 
     return messageItem;

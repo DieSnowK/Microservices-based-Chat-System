@@ -230,6 +230,10 @@ bool HttpServer::Init()
         return this->SetPhone(req);
     });
 
+    httpServer.route("/service/user/set_avatar", [=](const QHttpServerRequest& req) {
+        return this->SetAvatar(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -521,6 +525,27 @@ QHttpServerResponse HttpServer::SetPhone(const QHttpServerRequest &req)
           << pbReq.phoneVerifyCodeId() << ", verifyCode=" << pbReq.phoneVerifyCode();
 
     SnowK::SetUserPhoneNumberRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::SetAvatar(const QHttpServerRequest &req)
+{
+    SnowK::SetUserAvatarReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ SetAvatar] requestId = " << pbReq.requestId() << ", loginSessionId=" << pbReq.sessionId();
+
+    SnowK::SetUserAvatarRsp pbResp;
     pbResp.setRequestId(pbReq.requestId());
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");

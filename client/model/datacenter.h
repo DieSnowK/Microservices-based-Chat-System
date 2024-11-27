@@ -68,6 +68,9 @@ namespace model
         void ChangePhoneAsync(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
         void ResetPhone(const QString& phone);
 
+        void ChangeAvatarAsync(const QByteArray& imageBytes);
+        void ResetAvatar(const QByteArray& avatar);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

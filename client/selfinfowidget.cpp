@@ -1,7 +1,9 @@
+#include <QFileDialog>
 #include "selfinfowidget.h"
 #include "debug.hpp"
 #include "model/datacenter.h"
 #include "toast.h"
+#include "model/data.hpp"
 
 using model::DataCenter;
 using model::UserInfo;
@@ -404,10 +406,24 @@ void SelfInfoWidget::ClickPhoneSubmitBtnDone()
 
 void SelfInfoWidget::ClickAvatarBtn()
 {
+    QString filter = "Image Files (*.png *.jpg *.jpeg)";
+    QString imagePath = QFileDialog::getOpenFileName(this, "Choose Avatar", QDir::homePath(), filter);
+    if (imagePath.isEmpty())
+    {
+        LOG() << "User has not selected any avatar";
+        return;
+    }
 
+    QByteArray imageBytes = model::Util::LoadFileToByteArray(imagePath);
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::ChangeAvatarDone, this,
+            &SelfInfoWidget::ClickAvatarBtnDone, Qt::UniqueConnection);
+    dataCenter->ChangeAvatarAsync(imageBytes);
 }
 
 void SelfInfoWidget::ClickAvatarBtnDone()
 {
-
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    avatarBtn->setIcon(dataCenter->GetMyself()->avatar);
 }

@@ -262,6 +262,11 @@ void MainWidget::InitSignalSlot()
     LoadSessionList();
     LoadApplyList();
 
+    connect(dataCenter, &DataCenter::ChangeAvatarDone, this, [=]()
+    {
+        UserInfo* myself = dataCenter->GetMyself();
+        userAvatar->setIcon(myself->avatar);
+    });
 }
 
 void MainWidget::SwitchTabToSession()
