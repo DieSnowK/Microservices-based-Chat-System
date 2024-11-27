@@ -420,6 +420,24 @@ namespace model
         return nullptr;
     }
 
+    UserInfo *DataCenter::FindFriendById(const QString &userId)
+    {
+        if (this->friendList == nullptr)
+        {
+            return nullptr;
+        }
+
+        for (auto& f : *friendList)
+        {
+            if (f.userId == userId)
+            {
+                return &f;
+            }
+        }
+
+        return nullptr;
+    }
+
     void DataCenter::TopChatSessionInfo(const ChatSessionInfo &chatSessionInfo)
     {
         if (chatSessionList == nullptr)

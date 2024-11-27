@@ -18,6 +18,8 @@ class UserInfoWidget : public QDialog
 public:
     UserInfoWidget(const UserInfo& userInfo, QWidget* parent);
 
+    void InitSignalSlot();
+
 private:
     const UserInfo& userInfo;
 

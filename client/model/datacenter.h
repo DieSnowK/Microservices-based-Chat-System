@@ -76,6 +76,7 @@ namespace model
         //////////////////////////////////////////////////////////////////
         ChatSessionInfo* FindChatSessionById(const QString& chatSessionId);
         ChatSessionInfo* FindChatSessionByUserId(const QString& userId);
+        UserInfo* FindFriendById(const QString& userId);
 
         void TopChatSessionInfo(const ChatSessionInfo& chatSessionInfo);
 

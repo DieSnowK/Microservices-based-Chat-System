@@ -1,4 +1,8 @@
 #include "userinfowidget.h"
+#include "model/datacenter.h"
+#include "mainwidget.h"
+
+using namespace model;
 
 UserInfoWidget::UserInfoWidget(const UserInfo& userInfo, QWidget* parent)
     : QDialog(parent)
@@ -96,19 +100,32 @@ UserInfoWidget::UserInfoWidget(const UserInfo& userInfo, QWidget* parent)
     layout->addWidget(sendMessageBtn, 3, 1);
     layout->addWidget(deleteFriendBtn, 3, 2);
 
-    // // 9. 初始化按钮的禁用关系
-    // //    判定依据就是拿着当前用户的 userId, 在 DataCenter 的好友列表中, 查询即可.
-    // DataCenter* dataCenter = DataCenter::getInstance();
-    // auto* myFriend = dataCenter->findFriendById(this->userInfo.userId);
-    // if (myFriend == nullptr)
-    // {
-    //     sendMessageBtn->setEnabled(false);
-    //     deleteFriendBtn->setEnabled(false);
-    // }
-    // else
-    // {
-    //     applyBtn->setEnabled(false);
-    // }
+    // Initialize the disabled relationship of the button
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    auto* myFriend = dataCenter->FindFriendById(this->userInfo.userId);
+    if (myFriend == nullptr)
+    {
+        sendMessageBtn->setEnabled(false);
+        deleteFriendBtn->setEnabled(false);
+    }
+    else
+    {
+        applyBtn->setEnabled(false);
+    }
 
-    // InitSignalSlot();
+    InitSignalSlot();
+}
+
+void UserInfoWidget::InitSignalSlot()
+{
+    // connect(sendMessageBtn, &QPushButton::clicked, this, [=]()
+    // {
+    //     MainWidget* mainWidget = MainWidget::GetInstance();
+    //     mainWidget->SwitchSession(userInfo.userId);
+
+    //     this->close();
+    // });
+
+    // connect(deleteFriendBtn, &QPushButton::clicked, this, &UserInfoWidget::clickDeleteFriendBtn);
+    // connect(applyBtn, &QPushButton::clicked, this, &UserInfoWidget::clickApplyBtn);
 }
