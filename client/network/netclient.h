@@ -103,6 +103,7 @@ namespace network
                          const QString& verifyCodeId, const QString& verifyCode);
         void ChangeAvatar(const QString& loginSessionId, const QByteArray& avatar);
         void DeleteFriend(const QString& loginSessionId, const QString& userId);
+        void AddFriendApply(const QString& loginSessionId, const QString& userId);
 
     private:
         model::DataCenter* dataCenter;

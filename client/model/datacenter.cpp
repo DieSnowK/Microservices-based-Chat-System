@@ -417,6 +417,11 @@ namespace model
         });
     }
 
+    void DataCenter::AddFriendApplyAsync(const QString &userId)
+    {
+        netClient.AddFriendApply(loginSessionId, userId);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

@@ -283,6 +283,11 @@ void MainWidget::InitSignalSlot()
         LOG() << "ClearCurrentSession";
     });
 
+    connect(dataCenter, &DataCenter::AddFriendApplyDone, this, [=]()
+    {
+        Toast::ShowMessage("Friend request has been sent");
+    });
+
 }
 
 void MainWidget::SwitchTabToSession()

@@ -150,8 +150,8 @@ void UserInfoWidget::ClickDeleteFriendBtn()
 
 void UserInfoWidget::ClickApplyBtn()
 {
-    // DataCenter* dataCenter = DataCenter::getInstance();
-    // dataCenter->addFriendApplyAsync(userInfo.userId);
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->AddFriendApplyAsync(userInfo.userId);
 
-    // this->close();
+    this->close();
 }

@@ -238,6 +238,10 @@ bool HttpServer::Init()
         return this->RemoveFriend(req);
     });
 
+    httpServer.route("/service/friend/add_friend_apply", [=](const QHttpServerRequest& req) {
+        return this->AddFriendApply(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -575,6 +579,29 @@ QHttpServerResponse HttpServer::RemoveFriend(const QHttpServerRequest &req)
     pbResp.setRequestId(pbReq.requestId());
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::AddFriendApply(const QHttpServerRequest &req)
+{
+    SnowK::FriendAddReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ AddFriendApply] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", userId=" << pbReq.respondentId();
+
+    SnowK::FriendAddRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+    pbResp.setNotifyEventId("");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

@@ -74,6 +74,8 @@ namespace model
         void DeleteFriendAsync(const QString& userId);
         void RemoveFriend(const QString& userId);
 
+        void AddFriendApplyAsync(const QString& userId);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////
