@@ -150,9 +150,8 @@ void UserInfoWidget::ClickDeleteFriendBtn()
 
 void UserInfoWidget::ClickApplyBtn()
 {
-    // // 1. 发送好友申请
     // DataCenter* dataCenter = DataCenter::getInstance();
     // dataCenter->addFriendApplyAsync(userInfo.userId);
-    // // 2. 关闭窗口
+
     // this->close();
 }

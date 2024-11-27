@@ -45,6 +45,7 @@ public:
     QHttpServerResponse GetPhoneVerifyCode(const QHttpServerRequest& req);
     QHttpServerResponse SetPhone(const QHttpServerRequest& req);
     QHttpServerResponse SetAvatar(const QHttpServerRequest& req);
+    QHttpServerResponse RemoveFriend(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

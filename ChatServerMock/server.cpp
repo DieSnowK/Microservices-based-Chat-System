@@ -234,6 +234,10 @@ bool HttpServer::Init()
         return this->SetAvatar(req);
     });
 
+    httpServer.route("/service/friend/remove_friend", [=](const QHttpServerRequest& req) {
+        return this->RemoveFriend(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -546,6 +550,28 @@ QHttpServerResponse HttpServer::SetAvatar(const QHttpServerRequest &req)
     LOG() << "[REQ SetAvatar] requestId = " << pbReq.requestId() << ", loginSessionId=" << pbReq.sessionId();
 
     SnowK::SetUserAvatarRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::RemoveFriend(const QHttpServerRequest &req)
+{
+    SnowK::FriendRemoveReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ RemoveFriend] requestId = " << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", peerId=" << pbReq.peerId();
+
+    SnowK::FriendRemoveRsp pbResp;
     pbResp.setRequestId(pbReq.requestId());
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
