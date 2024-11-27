@@ -288,6 +288,11 @@ void MainWidget::InitSignalSlot()
         Toast::ShowMessage("Friend request has been sent");
     });
 
+    connect(dataCenter, &DataCenter::ReceiveFriendApplyDone, this, [=]()
+    {
+        this->UpdateApplyList();
+        Toast::ShowMessage("Received new friend request");
+    });
 }
 
 void MainWidget::SwitchTabToSession()

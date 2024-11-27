@@ -113,7 +113,15 @@ namespace network
 
     void NetClient::HandleWsAddFriendApply(const model::UserInfo &userInfo)
     {
+        QList<UserInfo>* applyList = dataCenter->GetApplyList();
+        if (applyList == nullptr)
+        {
+            LOG() << "The client does not load the friend application list!";
+            return;
+        }
 
+        applyList->push_front(userInfo);
+        emit dataCenter->ReceiveFriendApplyDone();
     }
 
     void NetClient::HandleWsAddFriendProcess(const model::UserInfo &userInfo, bool agree)
