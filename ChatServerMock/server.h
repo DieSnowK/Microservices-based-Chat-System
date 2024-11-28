@@ -47,6 +47,8 @@ public:
     QHttpServerResponse SetAvatar(const QHttpServerRequest& req);
     QHttpServerResponse RemoveFriend(const QHttpServerRequest& req);
     QHttpServerResponse AddFriendApply(const QHttpServerRequest& req);
+    QHttpServerResponse AddFriendProcess(const QHttpServerRequest& req);
+
 
 private:
     HttpServer() {}

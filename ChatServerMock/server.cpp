@@ -242,6 +242,10 @@ bool HttpServer::Init()
         return this->AddFriendApply(req);
     });
 
+    httpServer.route("/service/friend/add_friend_process", [=](const QHttpServerRequest& req) {
+        return this->AddFriendProcess(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -602,6 +606,29 @@ QHttpServerResponse HttpServer::AddFriendApply(const QHttpServerRequest &req)
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
     pbResp.setNotifyEventId("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::AddFriendProcess(const QHttpServerRequest &req)
+{
+    SnowK::FriendAddProcessReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ AddFriendProcess] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", applyUserId=" << pbReq.applyUserId() << ", agree=" << pbReq.agree();
+
+    SnowK::FriendAddProcessRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+    pbResp.setNewSessionId("");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
