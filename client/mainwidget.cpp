@@ -293,6 +293,19 @@ void MainWidget::InitSignalSlot()
         this->UpdateApplyList();
         Toast::ShowMessage("Received new friend request");
     });
+
+    connect(dataCenter, &DataCenter::AcceptFriendApplyDone, this, [=]()
+    {
+        this->UpdateApplyList();
+        this->UpdateFriendList();
+        Toast::ShowMessage("Friends have been added");
+    });
+
+    connect(dataCenter, &DataCenter::RejectFriendApplyDone, this, [=]()
+    {
+        this->UpdateApplyList();
+        Toast::ShowMessage("Friend request has been rejected");
+    });
 }
 
 void MainWidget::SwitchTabToSession()

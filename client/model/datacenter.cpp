@@ -422,6 +422,37 @@ namespace model
         netClient.AddFriendApply(loginSessionId, userId);
     }
 
+    void DataCenter::AcceptFriendApplyAsync(const QString &userId)
+    {
+        netClient.AcceptFriendApply(loginSessionId, userId);
+    }
+
+    // TODO memory leak?
+    UserInfo DataCenter::RemoveFromApplyList(const QString &userId)
+    {
+        if (applyList == nullptr)
+        {
+            return UserInfo();
+        }
+
+        for (auto it = applyList->begin(); it != applyList->end(); ++it)
+        {
+            if (it->userId == userId)
+            {
+                UserInfo toDelete = *it;
+                applyList->erase(it);
+                return toDelete;
+            }
+        }
+
+        return UserInfo();
+    }
+
+    void DataCenter::RejectFriendApplyAsync(const QString &userId)
+    {
+        netClient.RejectFriendApply(loginSessionId, userId);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

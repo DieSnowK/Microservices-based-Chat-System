@@ -662,4 +662,71 @@ namespace network
             LOG() << "[AddFriendApply] Process the response done, requestId" << pbResp->requestId();
         });
     }
+
+    void NetClient::AcceptFriendApply(const QString &loginSessionId, const QString &userId)
+    {
+        SnowK::FriendAddProcessReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setAgree(true);
+        pbReq.setApplyUserId(userId);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[AcceptFriendApply] Send a request, requestId = " << pbReq.requestId() << ", loginSessionId="
+              << pbReq.sessionId() << ", userId=" << pbReq.applyUserId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/add_friend_process", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::FriendAddRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[AcceptFriendApply] Error, reason=" << reason;
+                return;
+            }
+
+            UserInfo applyUser = dataCenter->RemoveFromApplyList(userId);
+            QList<UserInfo>* friendList = dataCenter->GetFriendList();
+            friendList->push_front(applyUser);
+
+            emit dataCenter->AcceptFriendApplyDone();
+
+            LOG() << "[AcceptFriendApply] Process the response done, requestId" << pbResp->requestId();
+        });
+    }
+
+    void NetClient::RejectFriendApply(const QString &loginSessionId, const QString &userId)
+    {
+        SnowK::FriendAddProcessReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setAgree(false);
+        pbReq.setApplyUserId(userId);
+        QByteArray body = pbReq.serialize(&serializer);
+        LOG() << "[RejectFriendApply] Send a request, requestId = " << pbReq.requestId() << ", loginSessionId="
+              << pbReq.sessionId() << ", userId=" << pbReq.applyUserId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/add_friend_process", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::FriendAddRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[RejectFriendApply] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->RemoveFromApplyList(userId);
+            emit dataCenter->RejectFriendApplyDone();
+
+            LOG() << "[RejectFriendApply] Process the response done, requestId" << pbResp->requestId();
+        });
+    }
 } // end of namespace network

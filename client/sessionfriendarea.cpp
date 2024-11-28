@@ -333,10 +333,25 @@ ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
 
     layout->addWidget(acceptBtn, 1, 2, 1, 1);
     layout->addWidget(rejectBtn, 1, 3, 1, 1);
+
+    connect(acceptBtn, &QPushButton::clicked, this, &ApplyItem::AcceptFriendApply);
+    connect(rejectBtn, &QPushButton::clicked, this, &ApplyItem::RejectFriendApply);
 }
 
 void ApplyItem::Active()
 {
     LOG() << "Active ApplyItem, chatSessionId = " << userId;
 
+}
+
+void ApplyItem::AcceptFriendApply()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->AcceptFriendApplyAsync(this->userId);
+}
+
+void ApplyItem::RejectFriendApply()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->RejectFriendApplyAsync(this->userId);
 }

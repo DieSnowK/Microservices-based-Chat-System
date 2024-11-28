@@ -128,6 +128,9 @@ public:
               const QIcon& avatar, const QString& name);
 
     void Active() override;
+
+    void AcceptFriendApply();
+    void RejectFriendApply();
     
 private:
     QString userId;

@@ -76,6 +76,11 @@ namespace model
 
         void AddFriendApplyAsync(const QString& userId);
 
+        void AcceptFriendApplyAsync(const QString& userId);
+        UserInfo RemoveFromApplyList(const QString& userId);
+
+        void RejectFriendApplyAsync(const QString& userId);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

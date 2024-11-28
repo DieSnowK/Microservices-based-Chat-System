@@ -104,6 +104,8 @@ namespace network
         void ChangeAvatar(const QString& loginSessionId, const QByteArray& avatar);
         void DeleteFriend(const QString& loginSessionId, const QString& userId);
         void AddFriendApply(const QString& loginSessionId, const QString& userId);
+        void AcceptFriendApply(const QString& loginSessionId, const QString& userId);
+        void RejectFriendApply(const QString& loginSessionId, const QString& userId);
 
     private:
         model::DataCenter* dataCenter;
