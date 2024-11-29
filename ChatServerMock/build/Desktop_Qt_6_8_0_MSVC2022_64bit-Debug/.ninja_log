@@ -154,3 +154,5 @@
 474	3642	7545121960089170	CMakeFiles/ChatServerMock.dir/widget.cpp.obj	ca211ad2936b001f
 471	3999	7545121963681869	CMakeFiles/ChatServerMock.dir/server.cpp.obj	9f0f170ca4978e8e
 3999	4983	7545121972784004	ChatServerMock.exe	e91a477d188b3344
+28	59	0	CMakeFiles/clean.additional	26ab82f82478fbc9
+59	75	0	clean	e82bfea11328ce35

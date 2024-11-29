@@ -177,3 +177,5 @@
 566	4755	7545122078537358	CMakeFiles/client.dir/mainwidget.cpp.obj	3f36bc43270b8689
 560	5090	7545122081888155	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.obj	c74912f0f2f685d2
 5090	6117	7545122091215401	client.exe	e015b28bf7c14622
+25	61	0	CMakeFiles/clean.additional	26ab82f82478fbc9
+61	78	0	clean	e82bfea11328ce35
