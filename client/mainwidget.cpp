@@ -306,6 +306,19 @@ void MainWidget::InitSignalSlot()
         this->UpdateApplyList();
         Toast::ShowMessage("Friend request has been rejected");
     });
+
+    connect(dataCenter, &DataCenter::ReceiveFriendProcessDone, this, [=](const QString& nickname, bool agree)
+    {
+        if (agree)
+        {
+            this->UpdateFriendList();
+            Toast::ShowMessage(nickname + " has approved your friend request");
+        }
+        else
+        {
+            Toast::ShowMessage(nickname + " has rejected your friend request");
+        }
+    });
 }
 
 void MainWidget::SwitchTabToSession()

@@ -126,7 +126,18 @@ namespace network
 
     void NetClient::HandleWsAddFriendProcess(const model::UserInfo &userInfo, bool agree)
     {
+        if (agree)
+        {
+            QList<UserInfo>* friendList = dataCenter->GetFriendList();
+            if (friendList == nullptr)
+            {
+                LOG() << "The client does not load the friend application list!";
+                return;
+            }
+            friendList->push_front(userInfo);
+        }
 
+        emit dataCenter->ReceiveFriendProcessDone(userInfo.nickname, agree);
     }
 
     void NetClient::HandleWsSessionCreate(const model::ChatSessionInfo &chatSessionInfo)
