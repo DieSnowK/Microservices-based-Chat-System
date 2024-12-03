@@ -48,6 +48,7 @@ public:
     QHttpServerResponse RemoveFriend(const QHttpServerRequest& req);
     QHttpServerResponse AddFriendApply(const QHttpServerRequest& req);
     QHttpServerResponse AddFriendProcess(const QHttpServerRequest& req);
+    QHttpServerResponse CreateChatSession(const QHttpServerRequest& req);
 
 
 private:

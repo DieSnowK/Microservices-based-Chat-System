@@ -246,6 +246,11 @@ bool HttpServer::Init()
         return this->AddFriendProcess(req);
     });
 
+    httpServer.route("/service/friend/create_chat_session", [=](const QHttpServerRequest& req)
+    {
+        return this->CreateChatSession(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -629,6 +634,28 @@ QHttpServerResponse HttpServer::AddFriendProcess(const QHttpServerRequest &req)
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
     pbResp.setNewSessionId("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::CreateChatSession(const QHttpServerRequest &req)
+{
+    SnowK::ChatSessionCreateReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ CreateChatSession] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", userIdList=" << pbReq.memberIdList();
+
+    SnowK::ChatSessionCreateRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
