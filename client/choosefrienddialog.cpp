@@ -2,6 +2,7 @@
 #include "debug.hpp"
 #include "model/datacenter.h"
 #include "model/data.hpp"
+#include "toast.h"
 
 using model::DataCenter;
 using model::UserInfo;
@@ -218,11 +219,11 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
     }
 #endif
 
-    // connect(okBtn, &QPushButton::clicked, this, &ChooseFriendDialog::clickOkBtn);
-    // connect(cancelBtn, &QPushButton::clicked, this, [=]()
-    // {
-    //     this->close();
-    // });
+    connect(okBtn, &QPushButton::clicked, this, &ChooseFriendDialog::ClickOkBtn);
+    connect(cancelBtn, &QPushButton::clicked, this, [=]()
+    {
+        this->close();
+    });
 }
 
 void ChooseFriendDialog::InitData()
@@ -247,6 +248,51 @@ void ChooseFriendDialog::InitData()
             this->AddFriend(it->userId, it->avatar, it->nickname, false);
         }
     }
+}
+
+void ChooseFriendDialog::ClickOkBtn()
+{
+    QList<QString> userIdList = GenerateMemberList();
+    if (userIdList.size() < 3)
+    {
+        Toast::ShowMessage("There are less than 3 members in the group chat");
+        return;
+    }
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->CreateGroupChatSessionAsync(userIdList);
+
+    this->close();
+}
+
+QList<QString> ChooseFriendDialog::GenerateMemberList()
+{
+    QList<QString> result;
+
+    // Myself
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetMyself() == nullptr)
+    {
+        LOG() << "Personal information has not been loaded yet";
+        return result;
+    }
+    result.push_back(dataCenter->GetMyself()->userId);
+
+    // ChooseList
+    QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(selectedContainer->layout());
+    for (int i = 0; i < layout->count(); ++i)
+    {
+        auto* item = layout->itemAt(i);
+        if (item == nullptr || item->widget() == nullptr)
+        {
+            continue;
+        }
+
+        auto* chooseFriendItem = dynamic_cast<ChooseFriendItem*>(item->widget());
+        result.push_back(chooseFriendItem->GetUserId());
+    }
+
+    return result;
 }
 
 void ChooseFriendDialog::AddFriend(const QString &userId, const QIcon &avatar, const QString &name, bool checked)

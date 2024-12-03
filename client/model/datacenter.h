@@ -81,6 +81,8 @@ namespace model
 
         void RejectFriendApplyAsync(const QString& userId);
 
+        void CreateGroupChatSessionAsync(const QList<QString>& userIdList);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

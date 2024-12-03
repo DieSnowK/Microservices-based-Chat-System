@@ -58,6 +58,9 @@ public:
     void InitRight(QHBoxLayout* layout);
     void InitData();
 
+    void ClickOkBtn();
+    QList<QString> GenerateMemberList();
+
     void AddFriend(const QString& userId, const QIcon& avatar, const QString& name, bool checked);
     void AddSelectedFriend(const QString& userId, const QIcon& avatar, const QString& name);
     void DeleteSelectedFriend(const QString& userId);

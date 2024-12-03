@@ -320,6 +320,11 @@ void MainWidget::InitSignalSlot()
             Toast::ShowMessage(nickname + " has rejected your friend request");
         }
     });
+
+    connect(dataCenter, &DataCenter::CreateGroupChatSessionDone, this, [=]()
+    {
+        Toast::ShowMessage("The request to create a group chat session has been sent");
+    });
 }
 
 void MainWidget::SwitchTabToSession()

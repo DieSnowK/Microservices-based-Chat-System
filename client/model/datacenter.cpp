@@ -453,6 +453,11 @@ namespace model
         netClient.RejectFriendApply(loginSessionId, userId);
     }
 
+    void DataCenter::CreateGroupChatSessionAsync(const QList<QString> &userIdList)
+    {
+        netClient.CreateGroupChatSession(loginSessionId, userIdList);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////
