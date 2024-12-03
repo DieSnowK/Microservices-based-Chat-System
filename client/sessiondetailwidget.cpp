@@ -1,4 +1,8 @@
 #include "sessiondetailwidget.h"
+#include "model/datacenter.h"
+#include <QMessageBox>
+
+using model::DataCenter;
 
 /////////////////////////////////////////////
 /// AvatarItem
@@ -100,6 +104,17 @@ SessionDetailWidget::SessionDetailWidget(QWidget* parent, const UserInfo& userIn
 
 void SessionDetailWidget::ClickDeleteFriendBtn()
 {
+    auto ret = QMessageBox::warning(this, "Confirm deletion", "Confirm to delete this friend?",
+                                       QMessageBox::Ok | QMessageBox::Cancel);
+    if (ret != QMessageBox::Ok)
+    {
+        LOG() << "User canceled friend deletion";
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->DeleteFriendAsync(this->userInfo.userId);
+
+    this->close();
 }
 

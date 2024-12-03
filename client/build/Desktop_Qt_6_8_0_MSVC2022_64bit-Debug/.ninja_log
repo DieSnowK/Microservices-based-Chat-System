@@ -290,3 +290,10 @@
 31	176	7549367918359859	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
 180	3046	7549367949656813	CMakeFiles/client.dir/mainwidget.cpp.obj	3f36bc43270b8689
 3046	3933	7549367957806228	client.exe	e015b28bf7c14622
+9	143	7549374717119184	client_autogen/timestamp	d7b7435b614a47b9
+9	143	7549374717119184	client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+9	143	7549374717119184	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/timestamp	d7b7435b614a47b9
+9	143	7549374717119184	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+149	2410	7549374914525010	CMakeFiles/client.dir/sessiondetailwidget.cpp.obj	a6e1aad9bd57de1e
+147	2743	7549374917844980	CMakeFiles/client.dir/mainwidget.cpp.obj	3f36bc43270b8689
+2743	3099	7549374920784990	client.exe	e015b28bf7c14622
