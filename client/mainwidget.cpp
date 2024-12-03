@@ -204,29 +204,30 @@ void MainWidget::InitSignalSlot()
 
     connect(extraBtn, &QPushButton::clicked, this, [=]()
     {
-#if TEST_GROUP_SESSION_DETAIL
-        bool isSingleChat = false;
-#else
-        bool isSingleChat = true;
-#endif
+// #if TEST_GROUP_SESSION_DETAIL
+//         bool isSingleChat = false;
+// #else
+//         bool isSingleChat = true;
+// #endif
 
-        // ChatSessionInfo* chatSessionInfo = dataCenter->findChatSessionById(dataCenter->getCurrentChatSessionId());
-        // if (chatSessionInfo == nullptr) {
-        //     LOG() << "The current session does not exist, the Session Details dialog box cannot be displayed";
-        //     return;
-        // }
+        ChatSessionInfo* chatSessionInfo = dataCenter->FindChatSessionById(dataCenter->GetCurrentChatSessionId());
+        if (chatSessionInfo == nullptr) {
+            LOG() << "The current session does not exist, the Session Details dialog box cannot be displayed";
+            return;
+        }
 
-        // bool isSingleChat = chatSessionInfo->userId != "";
-
+        bool isSingleChat = chatSessionInfo->userId != "";
         if (isSingleChat)
         {
-            // UserInfo* userInfo = dataCenter->findFriendById(chatSessionInfo->userId);
-            // if (userInfo == nullptr) {
-            //     LOG() << "The user for a one-to-one chat session does not exist, the session details window cannot be displayed";
-            //     return;
-            // }
-            // SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
-            // sessionDetailWidget->exec();
+            UserInfo* userInfo = dataCenter->FindFriendById(chatSessionInfo->userId);
+            if (userInfo == nullptr)
+            {
+                LOG() << "The user for a one-to-one chat session does not exist, "
+                         "the session details window cannot be displayed";
+                return;
+            }
+            SessionDetailWidget* sessionDetailWidget = new SessionDetailWidget(this, *userInfo);
+            sessionDetailWidget->exec();
         }
         else
         {
