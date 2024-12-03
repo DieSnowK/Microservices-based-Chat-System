@@ -1,5 +1,10 @@
 #include "choosefrienddialog.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
+#include "model/data.hpp"
+
+using model::DataCenter;
+using model::UserInfo;
 
 ////////////////////////////////////////////////
 /// ChooseFriendItem
@@ -97,7 +102,9 @@ QCheckBox *ChooseFriendItem::GetCheckBox()
 /// ChooseFriendDialog
 ////////////////////////////////////////////////
 
-ChooseFriendDialog::ChooseFriendDialog(QWidget *parent)
+ChooseFriendDialog::ChooseFriendDialog(QWidget *parent, const QString& userId)
+    : QDialog(parent)
+    , currentUserId(userId)
 {
     this->setWindowTitle("Choose Friend");
     this->setWindowIcon(QIcon(":/resource/image/logo.png"));
@@ -113,7 +120,7 @@ ChooseFriendDialog::ChooseFriendDialog(QWidget *parent)
     InitLeft(layout);
     InitRight(layout);
 
-    // InitData();
+    InitData();
 }
 
 void ChooseFriendDialog::InitLeft(QHBoxLayout *layout)
@@ -203,7 +210,7 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
     gridLayout->addWidget(okBtn, 2, 1, 1, 3);
     gridLayout->addWidget(cancelBtn, 2, 5, 1, 3);
 
-#if 0
+#if TEST_UI
     QIcon defaultAvatar(":/resource/image/defaultAvatar.png");
     for (int i = 0; i < 10; ++i)
     {
@@ -216,6 +223,30 @@ void ChooseFriendDialog::InitRight(QHBoxLayout *layout)
     // {
     //     this->close();
     // });
+}
+
+void ChooseFriendDialog::InitData()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<UserInfo>* friendList = dataCenter->GetFriendList();
+    if (friendList == nullptr)
+    {
+        LOG() << "Friends list is empty!";
+        return;
+    }
+
+    for (auto it = friendList->begin(); it != friendList->end(); ++it)
+    {
+        if (it->userId == this->currentUserId)
+        {
+            this->AddSelectedFriend(it->userId, it->avatar, it->nickname);
+            this->AddFriend(it->userId, it->avatar, it->nickname, true);
+        }
+        else
+        {
+            this->AddFriend(it->userId, it->avatar, it->nickname, false);
+        }
+    }
 }
 
 void ChooseFriendDialog::AddFriend(const QString &userId, const QIcon &avatar, const QString &name, bool checked)

@@ -94,8 +94,7 @@ SessionDetailWidget::SessionDetailWidget(QWidget* parent, const UserInfo& userIn
 
     connect(createGroupBtn->GetAvatar(), &QPushButton::clicked, this, [=]()
     {
-        // ChooseFriendDialog* chooseFriendDialog = new ChooseFriendDialog(this, userInfo.userId);
-        ChooseFriendDialog* chooseFriendDialog = new ChooseFriendDialog(this);
+        ChooseFriendDialog* chooseFriendDialog = new ChooseFriendDialog(this, userInfo.userId);
         chooseFriendDialog->exec();
     });
 
@@ -117,4 +116,3 @@ void SessionDetailWidget::ClickDeleteFriendBtn()
 
     this->close();
 }
-
