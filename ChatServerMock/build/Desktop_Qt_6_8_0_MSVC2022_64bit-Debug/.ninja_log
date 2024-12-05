@@ -172,3 +172,12 @@
 1211	8029	7550741241260203	CMakeFiles/ChatServerMock.dir/friend.qpb.cpp.obj	268863130c7fbc51
 1225	8100	7550741241971099	CMakeFiles/ChatServerMock.dir/user.qpb.cpp.obj	fe83e5bdae78768f
 8100	8918	7550741249383798	ChatServerMock.exe	e91a477d188b3344
+7	407	7550779692127563	ChatServerMock_autogen/timestamp	b4014e89218540b9
+7	407	7550779692127563	ChatServerMock_autogen/mocs_compilation.cpp	b4014e89218540b9
+7	407	7550779692127563	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/ChatServerMock_autogen/timestamp	b4014e89218540b9
+7	407	7550779692127563	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/ChatServerMock_autogen/mocs_compilation.cpp	b4014e89218540b9
+408	3684	7550779725416833	CMakeFiles/ChatServerMock.dir/ChatServerMock_autogen/mocs_compilation.cpp.obj	4a12aeaf572e7a3a
+416	3687	7550779725459166	CMakeFiles/ChatServerMock.dir/widget.cpp.obj	ca211ad2936b001f
+411	3689	7550779725459166	CMakeFiles/ChatServerMock.dir/main.cpp.obj	91e029824aaa8a7d
+413	4115	7550779729703990	CMakeFiles/ChatServerMock.dir/server.cpp.obj	9f0f170ca4978e8e
+4115	4515	7550779733057588	ChatServerMock.exe	e91a477d188b3344

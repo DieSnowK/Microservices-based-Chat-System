@@ -18,7 +18,7 @@ public:
     GroupSessionDetailWidget(QWidget* parent);
 
     void InitData();
-    // void InitMembers(const QString& chatSessionId);
+    void InitMembers(const QString& chatSessionId);
 
     void AddMember(AvatarItem* avatarItem);
 
