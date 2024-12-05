@@ -31,6 +31,7 @@ namespace model
         QList<UserInfo>* GetApplyList();
         QList<Message>* GetRecentMessageList(const QString& chatSessionId);
         const QString& GetVerifyCodeId();
+        QList<UserInfo>* GetMemberList(const QString& chatSessionId);
 
         //////////////////////////////////////////////////////////////////
         /// Core functions
@@ -82,6 +83,9 @@ namespace model
         void RejectFriendApplyAsync(const QString& userId);
 
         void CreateGroupChatSessionAsync(const QList<QString>& userIdList);
+
+        void GetMemberListAsync(const QString& chatSessionId);
+        void ResetMemberList(const QString& chatSessionId, const QList<SnowK::UserInfo>& memberList);
 
         //////////////////////////////////////////////////////////////////
         /// Helper functions

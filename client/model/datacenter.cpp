@@ -182,6 +182,16 @@ namespace model
         return currentVerifyCodeId;
     }
 
+    QList<UserInfo> *DataCenter::GetMemberList(const QString &chatSessionId)
+    {
+        if (!this->memberList->contains(chatSessionId))
+        {
+            return nullptr;
+        }
+
+        return &(*this->memberList)[chatSessionId];
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Core functions
     //////////////////////////////////////////////////////////////////
@@ -456,6 +466,24 @@ namespace model
     void DataCenter::CreateGroupChatSessionAsync(const QList<QString> &userIdList)
     {
         netClient.CreateGroupChatSession(loginSessionId, userIdList);
+    }
+
+    void DataCenter::GetMemberListAsync(const QString &chatSessionId)
+    {
+        netClient.GetMemberList(loginSessionId, chatSessionId);
+    }
+
+    void DataCenter::ResetMemberList(const QString &chatSessionId, const QList<SnowK::UserInfo> &memberList)
+    {
+        QList<UserInfo>& currentMemberList = (*this->memberList)[chatSessionId];
+        currentMemberList.clear();
+
+        for (const auto& m : memberList)
+        {
+            UserInfo userInfo;
+            userInfo.Load(m);
+            currentMemberList.push_back(userInfo);
+        }
     }
 
     //////////////////////////////////////////////////////////////////

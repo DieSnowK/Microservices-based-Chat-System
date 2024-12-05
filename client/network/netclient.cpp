@@ -796,4 +796,36 @@ namespace network
             LOG() << "[CreateGroupChatSession] Process the response done, requestId = " << pbResp->requestId();
         });
     }
+
+    void NetClient::GetMemberList(const QString &loginSessionId, const QString &chatSessionId)
+    {
+        SnowK::GetChatSessionMemberReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setChatSessionId(chatSessionId);
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[GetMemberList] Send a request, requestId = " << pbReq.requestId() << ", loginSessionId="
+              << pbReq.sessionId() << ", chatSessionId=" << pbReq.chatSessionId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/get_chat_session_member", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetChatSessionMemberRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetMemberList] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetMemberList(chatSessionId, pbResp->memberInfoList());
+            emit dataCenter->GetMemberListDone(chatSessionId);
+
+            LOG() << "[GetMemberList] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
 } // end of namespace network

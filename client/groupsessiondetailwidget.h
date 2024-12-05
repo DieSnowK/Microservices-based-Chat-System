@@ -17,7 +17,7 @@ class GroupSessionDetailWidget : public QDialog
 public:
     GroupSessionDetailWidget(QWidget* parent);
 
-    // void InitData();
+    void InitData();
     // void InitMembers(const QString& chatSessionId);
 
     void AddMember(AvatarItem* avatarItem);

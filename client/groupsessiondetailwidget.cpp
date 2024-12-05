@@ -1,5 +1,8 @@
 #include "groupsessiondetailwidget.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 GroupSessionDetailWidget::GroupSessionDetailWidget(QWidget* parent)
     : QDialog(parent)
@@ -85,7 +88,33 @@ GroupSessionDetailWidget::GroupSessionDetailWidget(QWidget* parent)
     }
 #endif
 
-    // InitData();
+    InitData();
+}
+
+void GroupSessionDetailWidget::InitData()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::GetMemberListDone, this, &GroupSessionDetailWidget::InitMembers);
+    dataCenter->GetMemberListAsync(dataCenter->GetCurrentChatSessionId());
+}
+
+void GroupSessionDetailWidget::InitMembers(const QString &chatSessionId)
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<UserInfo>* memberList = dataCenter->GetMemberList(chatSessionId);
+    if (memberList == nullptr)
+    {
+        LOG() << "The obtained member list is empty, chatSessionId=" << chatSessionId;
+        return;
+    }
+
+    for (const auto& u : *memberList)
+    {
+        AvatarItem* avatarItem = new AvatarItem(u.avatar, u.nickname);
+        this->AddMember(avatarItem);
+    }
+
+    groupNameLabel->setText("New group chat");
 }
 
 void GroupSessionDetailWidget::AddMember(AvatarItem *avatarItem)
