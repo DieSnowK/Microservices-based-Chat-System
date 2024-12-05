@@ -142,7 +142,15 @@ namespace network
 
     void NetClient::HandleWsSessionCreate(const model::ChatSessionInfo &chatSessionInfo)
     {
+        QList<ChatSessionInfo>* chatSessionList = dataCenter->GetChatSessionList();
+        if (chatSessionList == nullptr)
+        {
+            LOG() << "The client did not load the session list";
+            return;
+        }
 
+        chatSessionList->push_front(chatSessionInfo);
+        emit dataCenter->ReceiveSessionCreateDone();
     }
 
     /////////////////////////////////////////////////////////////////////////////////

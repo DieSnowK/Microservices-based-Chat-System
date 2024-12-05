@@ -325,6 +325,12 @@ void MainWidget::InitSignalSlot()
     {
         Toast::ShowMessage("The request to create a group chat session has been sent");
     });
+
+    connect(dataCenter, &DataCenter::ReceiveSessionCreateDone, this, [=]()
+    {
+        this->UpdateChatSessionList();
+        Toast::ShowMessage("You have been added to a new group chat!");
+    });
 }
 
 void MainWidget::SwitchTabToSession()
