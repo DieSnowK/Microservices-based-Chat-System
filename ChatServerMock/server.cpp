@@ -255,6 +255,10 @@ bool HttpServer::Init()
         return this->GetChatSessionMember(req);
     });
 
+    httpServer.route("/service/friend/search_friend", [=](const QHttpServerRequest& req) {
+        return this->SearchFriend(req);
+    });
+
 
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
@@ -692,6 +696,37 @@ QHttpServerResponse HttpServer::GetChatSessionMember(const QHttpServerRequest &r
         userInfoList.push_back(userInfo);
     }
     pbResp.setMemberInfoList(userInfoList);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::SearchFriend(const QHttpServerRequest &req)
+{
+    SnowK::FriendSearchReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ SearchFriend] requestId=" << pbReq.requestId() << ", loginSessionId="
+          << pbReq.sessionId() << ", searchKey=" << pbReq.searchKey();
+
+    SnowK::FriendSearchRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::UserInfo> userInfoList;
+    for (int i = 0; i < 30; ++i)
+    {
+        SnowK::UserInfo userInfo = MakeUserInfo(i, avatar);
+        userInfoList.push_back(userInfo);
+    }
+    pbResp.setUserInfo(userInfoList);
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

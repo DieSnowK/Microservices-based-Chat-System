@@ -50,6 +50,7 @@ public:
     QHttpServerResponse AddFriendProcess(const QHttpServerRequest& req);
     QHttpServerResponse CreateChatSession(const QHttpServerRequest& req);
     QHttpServerResponse GetChatSessionMember(const QHttpServerRequest& req);
+    QHttpServerResponse SearchFriend(const QHttpServerRequest& req);
 
 
 private:
