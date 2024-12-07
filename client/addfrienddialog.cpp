@@ -57,7 +57,13 @@ FriendResultItem::FriendResultItem(const UserInfo &userInfo)
 
 void FriendResultItem::ClickAddBtn()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->AddFriendApplyAsync(this->userInfo.userId);
 
+    addBtn->setEnabled(false);
+    addBtn->setText("Already applied");
+    addBtn->setStyleSheet("QPushButton { border:none; color: rgb(255, 255, 255); "
+                          "background-color: rgb(200, 200, 200); border-radius: 10px;}");
 }
 
 //////////////////////////////////////
