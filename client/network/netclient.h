@@ -109,6 +109,9 @@ namespace network
         void CreateGroupChatSession(const QString& loginSessionId, const QList<QString>& userIdList);
         void GetMemberList(const QString& loginSessionId, const QString& chatSessionId);
         void SearchUser(const QString& loginSessionId, const QString& searchKey);
+        void SearchMessage(const QString& loginSessionId, const QString& chatSessionId, const QString& searchKey);
+        void SearchMessageByTime(const QString& loginSessionId, const QString& chatSessionId,
+                                 const QDateTime& begTime, const QDateTime& endTime);
 
     private:
         model::DataCenter* dataCenter;

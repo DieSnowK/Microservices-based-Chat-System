@@ -33,6 +33,7 @@ namespace model
         const QString& GetVerifyCodeId();
         QList<UserInfo>* GetMemberList(const QString& chatSessionId);
         QList<UserInfo>* GetSearchUserResult();
+        QList<Message>* GetSearchMessageResult();
 
         //////////////////////////////////////////////////////////////////
         /// Core functions
@@ -90,6 +91,10 @@ namespace model
 
         void SearchUserAsync(const QString& searchKey);
         void ResetSearchUserResult(const QList<SnowK::UserInfo>& userList);
+
+        void SearchMessageAsync(const QString& searchKey);
+        void SearchMessageByTimeAsync(const QDateTime& begTime, const QDateTime& endTime);
+        void ResetSearchMessageResult(const QList<SnowK::MessageInfo>& msgList);
 
         //////////////////////////////////////////////////////////////////
         /// Helper functions

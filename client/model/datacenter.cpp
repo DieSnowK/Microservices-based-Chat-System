@@ -197,6 +197,11 @@ namespace model
         return searchUserResult;
     }
 
+    QList<Message> *DataCenter::GetSearchMessageResult()
+    {
+        return searchMessageResult;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Core functions
     //////////////////////////////////////////////////////////////////
@@ -509,6 +514,32 @@ namespace model
             UserInfo userInfo;
             userInfo.Load(u);
             searchUserResult->push_back(userInfo);
+        }
+    }
+
+    void DataCenter::SearchMessageAsync(const QString &searchKey)
+    {
+        netClient.SearchMessage(loginSessionId, this->currentChatSessionId, searchKey);
+    }
+
+    void DataCenter::SearchMessageByTimeAsync(const QDateTime &begTime, const QDateTime &endTime)
+    {
+        netClient.SearchMessageByTime(loginSessionId, currentChatSessionId, begTime, endTime);
+    }
+
+    void DataCenter::ResetSearchMessageResult(const QList<SnowK::MessageInfo> &msgList)
+    {
+        if (this->searchMessageResult == nullptr)
+        {
+            this->searchMessageResult = new QList<Message>();
+        }
+        this->searchMessageResult->clear();
+
+        for (const auto& m : msgList)
+        {
+            Message message;
+            message.Load(m);
+            searchMessageResult->push_back(message);
         }
     }
 

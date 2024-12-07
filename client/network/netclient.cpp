@@ -860,4 +860,75 @@ namespace network
             LOG() << "[SearchUser] Process the response done, requestId = " << pbResp->requestId();
         });
     }
+
+    void NetClient::SearchMessage(const QString &loginSessionId, const QString &chatSessionId, const QString &searchKey)
+    {
+        SnowK::MsgSearchReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setChatSessionId(chatSessionId);
+        pbReq.setSearchKey(searchKey);
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[SearchMessage] Send a request, requestId = " << pbReq.requestId() << ", loginSessionId="
+              << pbReq.sessionId() << ", chatSessionId=" << pbReq.chatSessionId() << ", searchKey=" << searchKey;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/message_storage/search_history", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::MsgSearchRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[SearchMessage] Error, reason=" << reason;
+                return;
+            }
+
+
+            dataCenter->ResetSearchMessageResult(pbResp->msgList());
+            emit dataCenter->SearchMessageDone();
+
+            LOG() << "[SearchMessage] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
+
+    void NetClient::SearchMessageByTime(const QString &loginSessionId, const QString &chatSessionId,
+                                        const QDateTime &begTime, const QDateTime &endTime)
+    {
+        SnowK::GetHistoryMsgReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setChatSessionId(chatSessionId);
+        pbReq.setStartTime(begTime.toSecsSinceEpoch());
+        pbReq.setOverTime(endTime.toSecsSinceEpoch());
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[SearchMessageByTime] Send a request, requestId = " << pbReq.requestId()
+              << ", loginSessionId=" << loginSessionId << ", chatSessionId=" << chatSessionId
+              << ", begTime=" << begTime << ", endTime=" << endTime;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/message_storage/get_history", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetHistoryMsgRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[SearchMessageByTime] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetSearchMessageResult(pbResp->msgList());
+            emit dataCenter->SearchMessageDone();
+
+            LOG() << "[SearchMessageByTime] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
+
 } // end of namespace network

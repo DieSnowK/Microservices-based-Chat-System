@@ -1,5 +1,9 @@
 #include "historymessagewidget.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
+#include "toast.h"
+
+using model::DataCenter;
 
 ////////////////////////////////////////////////////////////////////
 /// HistoryItem
@@ -197,7 +201,32 @@ void HistoryMessageWidget::Clear()
 
 void HistoryMessageWidget::ClickSearchBtn()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::SearchMessageDone, this,
+            &HistoryMessageWidget::ClickSearchBtnDone, Qt::UniqueConnection);
 
+    if (keyRadioBtn->isChecked())
+    {
+        const QString& searchKey = searchEdit->text();
+        if (searchKey.isEmpty())
+        {
+            return;
+        }
+
+        dataCenter->SearchMessageAsync(searchKey);
+    }
+    else // timeRadioBtn
+    {
+        auto begTime = begTimeEdit->dateTime();
+        auto endTime = endTimeEdit->dateTime();
+        if (begTime >= endTime)
+        {
+            Toast::ShowMessage("Time error");
+            return;
+        }
+
+        dataCenter->SearchMessageByTimeAsync(begTime, endTime);
+    }
 }
 
 void HistoryMessageWidget::ClickSearchBtnDone()

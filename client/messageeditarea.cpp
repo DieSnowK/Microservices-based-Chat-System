@@ -88,10 +88,10 @@ void MessageEditArea::InitSignalSlot()
 
     connect(showHistoryBtn, &QPushButton::clicked, this, [=]()
     {
-        // if (dataCenter->GetCurrentChatSessionId().isEmpty())
-        // {
-        //     return;
-        // }
+        if (dataCenter->GetCurrentChatSessionId().isEmpty())
+        {
+            return;
+        }
 
         HistoryMessageWidget* historyMessageWidget = new HistoryMessageWidget(this);
         historyMessageWidget->exec();
