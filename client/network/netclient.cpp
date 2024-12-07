@@ -828,4 +828,36 @@ namespace network
             LOG() << "[GetMemberList] Process the response done, requestId = " << pbResp->requestId();
         });
     }
+
+    void NetClient::SearchUser(const QString &loginSessionId, const QString &searchKey)
+    {
+        SnowK::FriendSearchReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setSearchKey(searchKey);
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[SearchUser] Send a request, requestId = " << pbReq.requestId() << ", loginSessionId="
+              << loginSessionId << ", searchKey=" << searchKey;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/friend/search_friend", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::FriendSearchRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[SearchUser] Error, reason=" << reason;
+                return;
+            }
+
+            dataCenter->ResetSearchUserResult(pbResp->userInfo());
+            emit dataCenter->SearchUserDone();
+
+            LOG() << "[SearchUser] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
 } // end of namespace network

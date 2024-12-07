@@ -32,6 +32,7 @@ namespace model
         QList<Message>* GetRecentMessageList(const QString& chatSessionId);
         const QString& GetVerifyCodeId();
         QList<UserInfo>* GetMemberList(const QString& chatSessionId);
+        QList<UserInfo>* GetSearchUserResult();
 
         //////////////////////////////////////////////////////////////////
         /// Core functions
@@ -86,6 +87,9 @@ namespace model
 
         void GetMemberListAsync(const QString& chatSessionId);
         void ResetMemberList(const QString& chatSessionId, const QList<SnowK::UserInfo>& memberList);
+
+        void SearchUserAsync(const QString& searchKey);
+        void ResetSearchUserResult(const QList<SnowK::UserInfo>& userList);
 
         //////////////////////////////////////////////////////////////////
         /// Helper functions

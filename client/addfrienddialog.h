@@ -50,8 +50,8 @@ public:
 
     void SetSearchKey(const QString& searchKey);
 
-    // void ClickSearchBtn();
-    // void ClickSearchBtnDone();
+    void ClickSearchBtn();
+    void ClickSearchBtnDone();
 
 private:
     QLineEdit* searchEdit;

@@ -108,6 +108,7 @@ namespace network
         void RejectFriendApply(const QString& loginSessionId, const QString& userId);
         void CreateGroupChatSession(const QString& loginSessionId, const QList<QString>& userIdList);
         void GetMemberList(const QString& loginSessionId, const QString& chatSessionId);
+        void SearchUser(const QString& loginSessionId, const QString& searchKey);
 
     private:
         model::DataCenter* dataCenter;

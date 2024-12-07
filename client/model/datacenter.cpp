@@ -192,6 +192,11 @@ namespace model
         return &(*this->memberList)[chatSessionId];
     }
 
+    QList<UserInfo> *DataCenter::GetSearchUserResult()
+    {
+        return searchUserResult;
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Core functions
     //////////////////////////////////////////////////////////////////
@@ -483,6 +488,27 @@ namespace model
             UserInfo userInfo;
             userInfo.Load(m);
             currentMemberList.push_back(userInfo);
+        }
+    }
+
+    void DataCenter::SearchUserAsync(const QString &searchKey)
+    {
+        netClient.SearchUser(loginSessionId, searchKey);
+    }
+
+    void DataCenter::ResetSearchUserResult(const QList<SnowK::UserInfo> &userList)
+    {
+        if (searchUserResult == nullptr)
+        {
+            searchUserResult = new QList<UserInfo>();
+        }
+        searchUserResult->clear();
+
+        for (const auto& u : userList)
+        {
+            UserInfo userInfo;
+            userInfo.Load(u);
+            searchUserResult->push_back(userInfo);
         }
     }
 

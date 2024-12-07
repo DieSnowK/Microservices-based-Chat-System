@@ -1,5 +1,8 @@
 #include "addfrienddialog.h"
 #include "debug.hpp"
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 //////////////////////////////////////
 /// FriendResultItem
@@ -111,7 +114,7 @@ AddFriendDialog::AddFriendDialog(QWidget* parent)
     }
 #endif
 
-    // connect(searchBtn, &QPushButton::clicked, this, &AddFriendDialog::ClickSearchBtn);
+    connect(searchBtn, &QPushButton::clicked, this, &AddFriendDialog::ClickSearchBtn);
 }
 
 void AddFriendDialog::InitResultArea()
@@ -160,6 +163,36 @@ void AddFriendDialog::Clear()
 void AddFriendDialog::SetSearchKey(const QString &searchKey)
 {
     searchEdit->setText(searchKey);
+}
+
+void AddFriendDialog::ClickSearchBtn()
+{
+    const QString& text = searchEdit->text();
+    if (text.isEmpty())
+    {
+        return;
+    }
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::SearchUserDone, this,
+            &AddFriendDialog::ClickSearchBtnDone, Qt::UniqueConnection);
+    dataCenter->SearchUserAsync(text);
+}
+
+void AddFriendDialog::ClickSearchBtnDone()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<UserInfo>* searchResult = dataCenter->GetSearchUserResult();
+    if (searchResult == nullptr)
+    {
+        return;
+    }
+
+    this->Clear();
+    for (const auto& u : *searchResult)
+    {
+        this->AddResult(u);
+    }
 }
 
 
