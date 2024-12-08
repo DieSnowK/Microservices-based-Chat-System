@@ -231,7 +231,18 @@ void HistoryMessageWidget::ClickSearchBtn()
 
 void HistoryMessageWidget::ClickSearchBtnDone()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    QList<Message>* messageResult = dataCenter->GetSearchMessageResult();
+    if (messageResult == nullptr)
+    {
+        return;
+    }
+    this->Clear();
 
+    for (const Message& m : *messageResult)
+    {
+        this->AddHistoryMessage(m);
+    }
 }
 
 void HistoryMessageWidget::InitScrollArea(QGridLayout *layout)
