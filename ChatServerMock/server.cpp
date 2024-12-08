@@ -259,6 +259,9 @@ bool HttpServer::Init()
         return this->SearchFriend(req);
     });
 
+    httpServer.route("/service/message_storage/search_history", [=](const QHttpServerRequest& req) {
+        return this->SearchHistory(req);
+    });
 
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
@@ -727,6 +730,45 @@ QHttpServerResponse HttpServer::SearchFriend(const QHttpServerRequest &req)
         userInfoList.push_back(userInfo);
     }
     pbResp.setUserInfo(userInfoList);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::SearchHistory(const QHttpServerRequest &req)
+{
+    SnowK::MsgSearchReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+
+    LOG() << "[REQ SearchHistory] requestId=" << pbReq.requestId() << ", loginSessionId=" << pbReq.sessionId()
+          << ", chatSessionId=" << pbReq.chatSessionId() << ", searchKey=" << pbReq.searchKey();
+
+    SnowK::MsgSearchRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
+    QList<SnowK::MessageInfo> msgList;
+    for (int i = 0; i < 10; ++i)
+    {
+        SnowK::MessageInfo message = MakeTextMessageInfo(i, pbReq.chatSessionId(), avatar);
+        msgList.push_back(message);
+    }
+    SnowK::MessageInfo message = MakeImageMessageInfo(10, pbReq.chatSessionId(), avatar);
+    msgList.push_back(message);
+    message = MakeFileMessageInfo(11, pbReq.chatSessionId(), avatar);
+    msgList.push_back(message);
+    message = MakeSpeechMessageInfo(12, pbReq.chatSessionId(), avatar);
+    msgList.push_back(message);
+
+    pbResp.setMsgList(msgList);
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
