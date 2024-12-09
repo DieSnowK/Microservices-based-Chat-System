@@ -52,6 +52,7 @@ public:
     QHttpServerResponse GetChatSessionMember(const QHttpServerRequest& req);
     QHttpServerResponse SearchFriend(const QHttpServerRequest& req);
     QHttpServerResponse SearchHistory(const QHttpServerRequest& req);
+    QHttpServerResponse GetHistory(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}
