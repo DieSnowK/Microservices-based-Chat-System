@@ -24,7 +24,10 @@ QString VerifyCodeWidget::GenerateVerifyCode()
 
 void VerifyCodeWidget::RefreshVerifyCode()
 {
+    verifyCode = GenerateVerifyCode();
 
+    // Refresh the interface and trigger paintEvent
+    this->update();
 }
 
 bool VerifyCodeWidget::CheckVerifyCode(const QString &verifyCode)
@@ -68,7 +71,7 @@ void VerifyCodeWidget::paintEvent(QPaintEvent *event)
         pen = QPen(QColor(randomGenerator.generate() % 255,
                           randomGenerator.generate() % 255, randomGenerator.generate() % 255));
         painter.setPen(pen);
-        painter.drawText(5+20*i, randomGenerator.generate() % 10,
+        painter.drawText(5 + 20 * i, randomGenerator.generate() % 10,
                          30, 30, Qt::AlignCenter, QString(verifyCode[i]));
     }
 }
