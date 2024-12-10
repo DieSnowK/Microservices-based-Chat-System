@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QGridLayout>
 
+#include "verifycodewidget.h"
+
 class LoginWidget : public QWidget
 {
     Q_OBJECT
@@ -25,7 +27,7 @@ private:
     QLineEdit* usernameEdit;
     QLineEdit* passwordEdit;
     QLineEdit* verifyCodeEdit;
-    // VerifyCodeWidget* verifyCodeWidget;
+    VerifyCodeWidget* verifyCodeWidget;
 
     QLabel* titleLabel;
     QPushButton* submitBtn;

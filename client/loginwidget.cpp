@@ -47,11 +47,7 @@ LoginWidget::LoginWidget(QWidget *parent)
     verifyCodeEdit->setPlaceholderText("Enter captcha");
     verifyCodeEdit->setStyleSheet(editStyle);
 
-    // TODO
-    QPushButton* verifyCodeWidget = new QPushButton();
-    verifyCodeWidget->setText("Captcha");
-    verifyCodeWidget->setStyleSheet("QWidget { border: none; }");
-    // verifyCodeWidget = new VerifyCodeWidget(this);
+    verifyCodeWidget = new VerifyCodeWidget(this);
 
     submitBtn = new QPushButton();
     submitBtn->setText("Login");

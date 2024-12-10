@@ -32,7 +32,8 @@ void VerifyCodeWidget::RefreshVerifyCode()
 
 bool VerifyCodeWidget::CheckVerifyCode(const QString &verifyCode)
 {
-
+    // When comparing captchas here, need to ignore case
+    return this->verifyCode.compare(verifyCode, Qt::CaseInsensitive) == 0;
 }
 
 void VerifyCodeWidget::paintEvent(QPaintEvent *event)
@@ -78,5 +79,6 @@ void VerifyCodeWidget::paintEvent(QPaintEvent *event)
 
 void VerifyCodeWidget::mousePressEvent(QMouseEvent *event)
 {
-
+    (void) event;
+    this->RefreshVerifyCode();
 }

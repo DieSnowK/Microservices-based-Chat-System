@@ -58,6 +58,8 @@ client_autogen/timestamp: \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.h \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/verifycodewidget.cpp \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/verifycodewidget.h \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfig.cmake \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslConfigVersion.cmake \
 	C:/Users/w1752/Desktop/My_Repository/vcpkg/installed/x64-windows/share/absl/abslTargets-debug.cmake \
@@ -84,6 +86,7 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QList \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QMetaType \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QObject \
+	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QRandomGenerator \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QRect \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSharedDataPointer \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSize \
@@ -181,6 +184,7 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qpair.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qpoint.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qprocessordetection.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrandom.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrect.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qrefcount.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qregularexpression.h \
