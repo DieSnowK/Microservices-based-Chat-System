@@ -572,6 +572,12 @@
 			"MU",
 			"EWIEGA46WW/moc_userinfowidget.cpp",
 			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/verifycodewidget.h",
+			"MU",
+			"EWIEGA46WW/moc_verifycodewidget.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -775,6 +781,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/verifycodewidget.cpp",
 			"MU",
 			null
 		]
