@@ -267,6 +267,11 @@ bool HttpServer::Init()
         return this->GetHistory(req);
     });
 
+    httpServer.route("/service/user/username_login", [=](const QHttpServerRequest& req) {
+        return this->UsernameLogin(req);
+    });
+
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -805,6 +810,29 @@ QHttpServerResponse HttpServer::GetHistory(const QHttpServerRequest &req)
         msgList.push_back(message);
     }
     pbResp.setMsgList(msgList);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::UsernameLogin(const QHttpServerRequest &req)
+{
+    SnowK::UserLoginReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ UsernameLogin] requestId=" << pbReq.requestId() << ", username="
+          << pbReq.nickname() << ", password=" << pbReq.password();
+
+    SnowK::UserLoginRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+    pbResp.setLoginSessionId("testLoginSessionId");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

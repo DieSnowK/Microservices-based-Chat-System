@@ -137,6 +137,7 @@ void LoginWidget::ClickSubmitBtn()
 
     if (!verifyCodeWidget->CheckVerifyCode(verifyCode))
     {
+        verifyCodeWidget->RefreshVerifyCode();
         Toast::ShowMessage("Verification code is incorrect");
         return;
     }
