@@ -112,6 +112,10 @@ namespace network
         void SearchMessage(const QString& loginSessionId, const QString& chatSessionId, const QString& searchKey);
         void SearchMessageByTime(const QString& loginSessionId, const QString& chatSessionId,
                                  const QDateTime& begTime, const QDateTime& endTime);
+        void UserLogin(const QString& username, const QString& password);
+        void UserRegister(const QString& username, const QString& password);
+        void PhoneLogin(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
+        void PhoneRegister(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
 
     private:
         model::DataCenter* dataCenter;

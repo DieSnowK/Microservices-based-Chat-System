@@ -543,6 +543,36 @@ namespace model
         }
     }
 
+    void DataCenter::UserLoginAsync(const QString &username, const QString &password)
+    {
+        // Login operation, no loginSessionId.
+        // After successful login, the server will return loginSessionId
+        netClient.UserLogin(username, password);
+    }
+
+    void DataCenter::ResetLoginSessionId(const QString &loginSessionId)
+    {
+        this->loginSessionId = loginSessionId;
+
+        // Once the session id is changed, it needs to be saved to the hard disk.
+        SaveDataFile();
+    }
+
+    void DataCenter::UserRegisterAsync(const QString &username, const QString &password)
+    {
+
+    }
+
+    void DataCenter::PhoneLoginAsync(const QString &phone, const QString &verifyCode)
+    {
+
+    }
+
+    void DataCenter::PhoneRegisterAsync(const QString &phone, const QString &verifyCode)
+    {
+
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

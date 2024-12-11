@@ -96,6 +96,12 @@ namespace model
         void SearchMessageByTimeAsync(const QDateTime& begTime, const QDateTime& endTime);
         void ResetSearchMessageResult(const QList<SnowK::MessageInfo>& msgList);
 
+        void UserLoginAsync(const QString& username, const QString& password);
+        void ResetLoginSessionId(const QString& loginSessionId);
+        void UserRegisterAsync(const QString& username, const QString& password);
+        void PhoneLoginAsync(const QString& phone, const QString& verifyCode);
+        void PhoneRegisterAsync(const QString& phone, const QString& verifyCode);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

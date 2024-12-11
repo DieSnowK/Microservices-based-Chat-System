@@ -931,4 +931,54 @@ namespace network
         });
     }
 
+    void NetClient::UserLogin(const QString &username, const QString &password)
+    {
+        SnowK::UserLoginReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setNickname(username);
+        pbReq.setPassword(password);
+        pbReq.setVerifyCodeId("");
+        pbReq.setVerifyCode("");
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[UserLogin] Send a request, requestId = " << pbReq.requestId()
+              << ", username=" << pbReq.nickname() << ", password=" << pbReq.password();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/username_login", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::UserLoginRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[UserLogin] Error, reason=" << reason;
+                emit dataCenter->UserLoginDone(false, reason);
+                return;
+            }
+
+            dataCenter->ResetLoginSessionId(pbResp->loginSessionId());
+            emit dataCenter->UserLoginDone(true, "");
+
+            LOG() << "[UserLogin] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
+
+    void NetClient::UserRegister(const QString &username, const QString &password)
+    {
+
+    }
+
+    void NetClient::PhoneLogin(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
+    {
+
+    }
+
+    void NetClient::PhoneRegister(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
+    {
+
+    }
+
 } // end of namespace network
