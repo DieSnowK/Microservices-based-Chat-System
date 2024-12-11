@@ -1,10 +1,10 @@
 #include "loginwidget.h"
 #include "phoneloginwidget.h"
 #include "debug.hpp"
-
-#if TEST_TOAST
 #include "toast.h"
-#endif
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 LoginWidget::LoginWidget(QWidget *parent)
     : QWidget{parent}
@@ -125,7 +125,32 @@ void LoginWidget::SwitchMode()
 
 void LoginWidget::ClickSubmitBtn()
 {
+    const QString& username = usernameEdit->text();
+    const QString& password = passwordEdit->text();
+    const QString& verifyCode = verifyCodeEdit->text();
+    if (username.isEmpty() || password.isEmpty() || verifyCode.isEmpty())
+    {
+        Toast::ShowMessage("Username/password/verification code cannot be empty");
+        return;
+    }
 
+    if (!verifyCodeWidget->CheckVerifyCode(verifyCode))
+    {
+        Toast::ShowMessage("Verification code is incorrect");
+        return;
+    }
+
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (isLoginMode)
+    {
+        connect(dataCenter, &DataCenter::UserLoginDone, this, &LoginWidget::userLoginDone);
+        dataCenter->UserLoginAsync(username, password);
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::UserRegisterDone, this, &LoginWidget::userRegisterDone);
+        dataCenter->UserRegisterAsync(username, password);
+    }
 }
 
 void LoginWidget::UserLoginDone(bool ok, const QString &reason)
