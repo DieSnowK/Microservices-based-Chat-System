@@ -3,6 +3,7 @@
 #include "debug.hpp"
 #include "toast.h"
 #include "model/datacenter.h"
+#include "mainwidget.h"
 
 using model::DataCenter;
 
@@ -143,19 +144,28 @@ void LoginWidget::ClickSubmitBtn()
     DataCenter* dataCenter = DataCenter::GetInstance();
     if (isLoginMode)
     {
-        connect(dataCenter, &DataCenter::UserLoginDone, this, &LoginWidget::userLoginDone);
+        connect(dataCenter, &DataCenter::UserLoginDone, this, &LoginWidget::UserLoginDone);
         dataCenter->UserLoginAsync(username, password);
     }
     else
     {
-        connect(dataCenter, &DataCenter::UserRegisterDone, this, &LoginWidget::userRegisterDone);
+        connect(dataCenter, &DataCenter::UserRegisterDone, this, &LoginWidget::UserRegisterDone);
         dataCenter->UserRegisterAsync(username, password);
     }
 }
 
 void LoginWidget::UserLoginDone(bool ok, const QString &reason)
 {
+    if (!ok)
+    {
+        Toast::ShowMessage("Login failed" + reason);
+        return;
+    }
 
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    mainWidget->show();
+
+    this->close();
 }
 
 void LoginWidget::UserRegisterDone(bool ok, const QString &reason)
