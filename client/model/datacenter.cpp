@@ -560,7 +560,7 @@ namespace model
 
     void DataCenter::UserRegisterAsync(const QString &username, const QString &password)
     {
-
+        netClient.UserRegister(username, password);
     }
 
     void DataCenter::PhoneLoginAsync(const QString &phone, const QString &verifyCode)

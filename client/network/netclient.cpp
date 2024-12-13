@@ -968,7 +968,36 @@ namespace network
 
     void NetClient::UserRegister(const QString &username, const QString &password)
     {
+        SnowK::UserRegisterReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setNickname(username);
+        pbReq.setPassword(password);
+        pbReq.setVerifyCodeId("");
+        pbReq.setVerifyCode("");
+        QByteArray body = pbReq.serialize(&serializer);
 
+        LOG() << "[UserRegister] Send a request, requestId = " << pbReq.requestId()
+              << ", username=" << pbReq.nickname() << ", password=" << pbReq.password();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/username_register", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::UserRegisterRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[UserRegister] Error, reason=" << reason;
+                emit dataCenter->UserRegisterDone(false, reason);
+                return;
+            }
+
+            emit dataCenter->UserRegisterDone(true, "");
+
+            LOG() << "[UserRegister] Process the response done, requestId = " << pbResp->requestId();
+        });
     }
 
     void NetClient::PhoneLogin(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
