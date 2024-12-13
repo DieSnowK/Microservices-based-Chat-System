@@ -171,5 +171,18 @@ void LoginWidget::UserLoginDone(bool ok, const QString &reason)
 
 void LoginWidget::UserRegisterDone(bool ok, const QString &reason)
 {
+    if (!ok)
+    {
+        Toast::ShowMessage("Registration failed" + reason);
+        return;
+    }
+    Toast::ShowMessage("Registration successful");
 
+    this->SwitchMode();
+
+    // Here, just clear the verification code
+        // The user name and password are likely to be the same.
+    verifyCodeEdit->clear();
+
+    verifyCodeWidget->RefreshVerifyCode();
 }
