@@ -32,6 +32,7 @@ MainWidget::MainWidget(QWidget *parent)
     InitMidWindow();
     InitRightWindow();
     InitSignalSlot();
+    InitWebsocket();
 }
 
 MainWidget::~MainWidget()
@@ -331,6 +332,12 @@ void MainWidget::InitSignalSlot()
         this->UpdateChatSessionList();
         Toast::ShowMessage("You have been added to a new group chat!");
     });
+}
+
+void MainWidget::InitWebsocket()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->InitWebsocket();
 }
 
 void MainWidget::SwitchTabToSession()

@@ -24,6 +24,8 @@ namespace model
 
         void Ping();
 
+        void InitWebsocket();
+
         const QString& GetLoginSessionId() const;
         UserInfo* GetMyself();
         QList<UserInfo>* GetFriendList();

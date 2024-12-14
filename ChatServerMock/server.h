@@ -54,6 +54,7 @@ public:
     QHttpServerResponse SearchHistory(const QHttpServerRequest& req);
     QHttpServerResponse GetHistory(const QHttpServerRequest& req);
     QHttpServerResponse UsernameLogin(const QHttpServerRequest& req);
+    QHttpServerResponse UsernameRegister(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

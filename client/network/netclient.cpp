@@ -9,7 +9,8 @@ namespace network
     NetClient::NetClient(model::DataCenter *dataCenter)
         : dataCenter(dataCenter)
     {
-        InitWebsocket();
+        // Error, It shouldn't be initialized here, it should be in the MainWidget
+        // InitWebsocket();
     }
 
     /////////////////////////////////////////////////////////////////////////////////

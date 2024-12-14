@@ -142,6 +142,11 @@ namespace model
         netClient.Ping();
     }
 
+    void DataCenter::InitWebsocket()
+    {
+        netClient.InitWebsocket();
+    }
+
     const QString &DataCenter::GetLoginSessionId() const
     {
         return loginSessionId;

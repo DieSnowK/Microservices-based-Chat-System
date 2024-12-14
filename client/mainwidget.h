@@ -36,6 +36,7 @@ public:
     void InitRightWindow();
 
     void InitSignalSlot();
+    void InitWebsocket();
 
     void SwitchTabToSession();
     void SwitchTabToFriend();
