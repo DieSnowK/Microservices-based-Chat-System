@@ -146,7 +146,28 @@ void PhoneLoginWidget::SendVerifyCodeDone()
 
 void PhoneLoginWidget::ClickSubmitBtn()
 {
+    const QString& phone = this->currentPhone;
+    const QString& verifyCode = verifyCodeEdit->text();
+    if (phone.isEmpty() || verifyCode.isEmpty())
+    {
+        Toast::ShowMessage("The phone number or code should not be empty");
+        return;
+    }
 
+    // 2. 发送请求
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (isLoginMode)
+    {
+        connect(dataCenter, &DataCenter::PhoneLoginDone, this,
+                &PhoneLoginWidget::PhoneLoginDone, Qt::UniqueConnection);
+        dataCenter->PhoneLoginAsync(phone, verifyCode);
+    }
+    else
+    {
+        connect(dataCenter, &DataCenter::PhoneRegisterDone, this,
+                &PhoneLoginWidget::PhoneRegisterDone, Qt::UniqueConnection);
+        dataCenter->PhoneRegisterAsync(phone, verifyCode);
+    }
 }
 
 void PhoneLoginWidget::PhoneLoginDone(bool ok, const QString &reason)
