@@ -37,7 +37,9 @@ private:
     QPushButton* switchModeBtn;
 
     bool isLoginMode = true;
+
     QString currentPhone = "";  // Record which phone number was used to send the verification code
+
     QTimer* timer;
     int leftTime = 30;
 

@@ -1,6 +1,7 @@
 #include "phoneloginwidget.h"
 #include "loginwidget.h"
 #include "model/datacenter.h"
+#include "toast.h"
 
 using model::DataCenter;
 
@@ -140,7 +141,7 @@ void PhoneLoginWidget::SendVerifyCode()
 
 void PhoneLoginWidget::SendVerifyCodeDone()
 {
-
+    Toast::ShowMessage("A verification code has been sent");
 }
 
 void PhoneLoginWidget::ClickSubmitBtn()
@@ -160,5 +161,21 @@ void PhoneLoginWidget::PhoneRegisterDone(bool ok, const QString &reason)
 
 void PhoneLoginWidget::CountDown()
 {
+    if (leftTime <= 1)
+    {
+        sendVerifyCodeBtn->setEnabled(true);
+        sendVerifyCodeBtn->setText("Send Captcha");
 
+        timer->stop();
+        leftTime = 30;
+
+        return;
+    }
+
+    leftTime -= 1;
+    sendVerifyCodeBtn->setText(QString::number(leftTime) + " s");
+    if (sendVerifyCodeBtn->isEnabled())
+    {
+        sendVerifyCodeBtn->setEnabled(false);
+    }
 }
