@@ -1,5 +1,8 @@
 #include "phoneloginwidget.h"
 #include "loginwidget.h"
+#include "model/datacenter.h"
+
+using model::DataCenter;
 
 PhoneLoginWidget::PhoneLoginWidget(QWidget *parent)
     : QWidget{parent}
@@ -120,7 +123,19 @@ void PhoneLoginWidget::SwitchMode()
 
 void PhoneLoginWidget::SendVerifyCode()
 {
+    const QString& phone = this->phoneEdit->text();
+    if (phone.isEmpty())
+    {
+        return;
+    }
+    this->currentPhone = phone;
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::GetVerifyCodeDone, this,
+            &PhoneLoginWidget::SendVerifyCodeDone, Qt::UniqueConnection);
+    dataCenter->GetVerifyCodeAsync(phone);
+
+    timer->start(1000);
 }
 
 void PhoneLoginWidget::SendVerifyCodeDone()
