@@ -1003,7 +1003,36 @@ namespace network
 
     void NetClient::PhoneLogin(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
     {
+        SnowK::PhoneLoginReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setPhoneNumber(phone);
+        pbReq.setVerifyCodeId(verifyCodeId);
+        pbReq.setVerifyCode(verifyCode);
+        QByteArray body = pbReq.serialize(&serializer);
 
+        LOG() << "[PhoneLogin] Send a request, requestId = " << pbReq.requestId() << ", phone=" << pbReq.phoneNumber()
+              << ", verifyCodeId=" << pbReq.verifyCodeId() << ", verifyCode=" << pbReq.verifyCode();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/phone_login", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::PhoneLoginRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[PhoneLogin] Error, reason=" << reason;
+                emit dataCenter->PhoneLoginDone(false, reason);
+                return;
+            }
+
+            dataCenter->ResetLoginSessionId(pbResp->loginSessionId());
+            emit dataCenter->PhoneLoginDone(true, "");
+
+            LOG() << "[PhoneLogin] Process the response done, requestId = " << pbResp->requestId();
+        });
     }
 
     void NetClient::PhoneRegister(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)

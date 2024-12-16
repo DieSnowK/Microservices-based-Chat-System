@@ -570,7 +570,7 @@ namespace model
 
     void DataCenter::PhoneLoginAsync(const QString &phone, const QString &verifyCode)
     {
-
+        netClient.PhoneLogin(phone, this->currentVerifyCodeId, verifyCode);
     }
 
     void DataCenter::PhoneRegisterAsync(const QString &phone, const QString &verifyCode)
