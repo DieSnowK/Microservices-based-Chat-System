@@ -1037,7 +1037,36 @@ namespace network
 
     void NetClient::PhoneRegister(const QString &phone, const QString &verifyCodeId, const QString &verifyCode)
     {
+        SnowK::PhoneRegisterReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setPhoneNumber(phone);
+        pbReq.setVerifyCodeId(verifyCodeId);
+        pbReq.setVerifyCode(verifyCode);
+        QByteArray body = pbReq.serialize(&serializer);
 
+        LOG() << "[PhoneRegister] Send a request, requestId = " << pbReq.requestId()
+              << ", phone=" << pbReq.phoneNumber() << ", verifyCodeId=" << pbReq.verifyCodeId()
+              << ", verifyCode=" << pbReq.verifyCode();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/user/phone_register", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::PhoneRegisterRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[PhoneRegister] Error, reason=" << reason;
+                emit dataCenter->PhoneRegisterDone(false, reason);
+                return;
+            }
+
+            emit dataCenter->PhoneRegisterDone(true, "");
+
+            LOG() << "[PhoneRegister] Process the response done, requestId = " << pbResp->requestId();
+        });
     }
 
 } // end of namespace network

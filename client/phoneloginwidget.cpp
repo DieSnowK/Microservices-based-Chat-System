@@ -186,7 +186,17 @@ void PhoneLoginWidget::PhoneLoginDone(bool ok, const QString &reason)
 
 void PhoneLoginWidget::PhoneRegisterDone(bool ok, const QString &reason)
 {
+    if (!ok)
+    {
+        Toast::ShowMessage("Failed to register! " + reason);
+        return;
+    }
+    Toast::ShowMessage("Registration successful!");
 
+    SwitchMode();
+
+    verifyCodeEdit->clear();
+    leftTime = 1;
 }
 
 void PhoneLoginWidget::CountDown()

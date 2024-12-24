@@ -575,7 +575,7 @@ namespace model
 
     void DataCenter::PhoneRegisterAsync(const QString &phone, const QString &verifyCode)
     {
-
+        netClient.PhoneRegister(phone, this->currentVerifyCodeId, verifyCode);
     }
 
     //////////////////////////////////////////////////////////////////
