@@ -56,7 +56,7 @@ public:
     QHttpServerResponse UsernameLogin(const QHttpServerRequest& req);
     QHttpServerResponse UsernameRegister(const QHttpServerRequest& req);
     QHttpServerResponse PhoneLogin(const QHttpServerRequest& req);
-
+    QHttpServerResponse PhoneRegister(const QHttpServerRequest& req);
 private:
     HttpServer() {}
     static HttpServer* instance;

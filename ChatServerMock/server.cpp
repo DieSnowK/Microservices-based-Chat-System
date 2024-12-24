@@ -279,6 +279,9 @@ bool HttpServer::Init()
         return this->PhoneLogin(req);
     });
 
+    httpServer.route("/service/user/phone_register", [=](const QHttpServerRequest& req) {
+        return this->PhoneRegister(req);
+    });
 
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
@@ -897,6 +900,28 @@ QHttpServerResponse HttpServer::PhoneLogin(const QHttpServerRequest &req)
     return httpResp;
 }
 
+QHttpServerResponse HttpServer::PhoneRegister(const QHttpServerRequest &req)
+{
+    SnowK::PhoneRegisterReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ PhoneRegister] requestId=" << pbReq.requestId() << ", phone=" << pbReq.phoneNumber()
+          << ", verifyCodeId=" << pbReq.verifyCodeId() << ", verifyCode=" << pbReq.verifyCode();
+
+    SnowK::PhoneRegisterRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
 //////////////////////////////////////////////////////////////////
 /// WebsocketServer
 //////////////////////////////////////////////////////////////////
@@ -1162,7 +1187,6 @@ bool WebsocketServer::Init()
             LOG() << "SendCreateChatSession";
         });
     });
-
 
     return websocketServer.listen(QHostAddress::Any, 9001);
 }
