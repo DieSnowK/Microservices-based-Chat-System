@@ -55,6 +55,7 @@ public:
     QHttpServerResponse GetHistory(const QHttpServerRequest& req);
     QHttpServerResponse UsernameLogin(const QHttpServerRequest& req);
     QHttpServerResponse UsernameRegister(const QHttpServerRequest& req);
+    QHttpServerResponse PhoneLogin(const QHttpServerRequest& req);
 
 private:
     HttpServer() {}

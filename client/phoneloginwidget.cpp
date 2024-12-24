@@ -2,6 +2,7 @@
 #include "loginwidget.h"
 #include "model/datacenter.h"
 #include "toast.h"
+#include "mainwidget.h"
 
 using model::DataCenter;
 
@@ -172,7 +173,15 @@ void PhoneLoginWidget::ClickSubmitBtn()
 
 void PhoneLoginWidget::PhoneLoginDone(bool ok, const QString &reason)
 {
+    if (!ok)
+    {
+        Toast::ShowMessage("Failed to login " + reason);
+        return;
+    }
 
+    MainWidget* mainWidget = MainWidget::GetInstance();
+    mainWidget->show();
+    this->close();
 }
 
 void PhoneLoginWidget::PhoneRegisterDone(bool ok, const QString &reason)

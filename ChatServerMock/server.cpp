@@ -275,6 +275,10 @@ bool HttpServer::Init()
         return this->UsernameRegister(req);
     });
 
+    httpServer.route("/service/user/phone_login", [=](const QHttpServerRequest& req) {
+        return this->PhoneLogin(req);
+    });
+
 
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
@@ -861,6 +865,29 @@ QHttpServerResponse HttpServer::UsernameRegister(const QHttpServerRequest &req)
     pbResp.setErrmsg("");
 
     QString body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::PhoneLogin(const QHttpServerRequest &req)
+{
+    SnowK::PhoneLoginReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ PhoneLogin] requestId=" << pbReq.requestId() << ", phone=" << pbReq.phoneNumber()
+          << ", verifyCodeId=" << pbReq.verifyCodeId() << ", verifyCode=" << pbReq.verifyCode();
+
+    SnowK::PhoneLoginRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+    pbResp.setLoginSessionId("testLoginSessionId");
+
+    QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
 
     QHttpHeaders httpHeader;
