@@ -98,3 +98,5 @@
 472	3612	7568351079728743	CMakeFiles/ChatServerMock.dir/ChatServerMock_autogen/mocs_compilation.cpp.obj	4a12aeaf572e7a3a
 477	4310	7568351086689976	CMakeFiles/ChatServerMock.dir/server.cpp.obj	9f0f170ca4978e8e
 4310	5174	7568351094557331	ChatServerMock.exe	e91a477d188b3344
+4	28	0	CMakeFiles/clean.additional	26ab82f82478fbc9
+29	52	0	clean	e82bfea11328ce35

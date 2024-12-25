@@ -242,3 +242,5 @@
 590	7686	7568351248914130	CMakeFiles/client.dir/network/netclient.cpp.obj	4a39b564976a0571
 534	7945	7568351251517798	CMakeFiles/client.dir/client_autogen/mocs_compilation.cpp.obj	c74912f0f2f685d2
 7945	8436	7568351255795518	client.exe	36245fea05f79f0d
+4	40	0	CMakeFiles/clean.additional	26ab82f82478fbc9
+40	64	0	clean	e82bfea11328ce35
