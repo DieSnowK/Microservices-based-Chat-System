@@ -104,6 +104,8 @@ namespace model
         void PhoneLoginAsync(const QString& phone, const QString& verifyCode);
         void PhoneRegisterAsync(const QString& phone, const QString& verifyCode);
 
+        void GetSingleFileAsync(const QString& fileId);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

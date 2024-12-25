@@ -578,6 +578,11 @@ namespace model
         netClient.PhoneRegister(phone, this->currentVerifyCodeId, verifyCode);
     }
 
+    void DataCenter::GetSingleFileAsync(const QString &fileId)
+    {
+        netClient.GetSingleFile(loginSessionId, fileId);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////

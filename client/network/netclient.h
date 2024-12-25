@@ -116,6 +116,7 @@ namespace network
         void UserRegister(const QString& username, const QString& password);
         void PhoneLogin(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
         void PhoneRegister(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
+        void GetSingleFile(const QString& loginSessionId, const QString& fileId);
 
     private:
         model::DataCenter* dataCenter;

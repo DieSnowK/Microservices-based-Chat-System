@@ -1069,4 +1069,36 @@ namespace network
         });
     }
 
+    void NetClient::GetSingleFile(const QString &loginSessionId, const QString &fileId)
+    {
+        SnowK::GetSingleFileReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setFileId(fileId);
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[GetSingleFile] Send a request, requestId = " << pbReq.requestId() << ", fileId=" << fileId;
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/file/get_single_file", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::GetSingleFileRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[GetSingleFile] Error, reason=" << reason;
+                return;
+            }
+
+            // There may be many files involved. Do not use DataCenter to save.
+                // Deliver file data directly to the caller's location through signals.
+            emit dataCenter->GetSingleFileDone(fileId, pbResp->fileData().fileContent());
+
+            LOG() << "[GetSingleFile] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
+
 } // end of namespace network
