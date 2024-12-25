@@ -591,11 +591,11 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "ChatServerMock_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
-		},
-		{
 			"backtrace" : 0,
 			"id" : "ChatServerMock_autogen::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "ChatServerMock_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "ChatServerMock::@6890427a1f51a3e7e1df",

@@ -21,5 +21,7 @@
         <file>resource/image/sound_active.png</file>
         <file>resource/image/submit.png</file>
         <file>resource/image/unchecked.png</file>
+        <file>resource/file/speech.pcm</file>
+        <file>resource/file/test.txt</file>
     </qresource>
 </RCC>

@@ -283,6 +283,10 @@ bool HttpServer::Init()
         return this->PhoneRegister(req);
     });
 
+    httpServer.route("/service/file/get_single_file", [=](const QHttpServerRequest& req) {
+        return this->GetSingleFile(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -911,6 +915,48 @@ QHttpServerResponse HttpServer::PhoneRegister(const QHttpServerRequest &req)
     pbResp.setRequestId(pbReq.requestId());
     pbResp.setSuccess(true);
     pbResp.setErrmsg("");
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::GetSingleFile(const QHttpServerRequest &req)
+{
+    SnowK::GetSingleFileReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ GetSingleFile] requestId=" << pbReq.requestId() << ", fileId=" << pbReq.fileId();
+
+    SnowK::GetSingleFileRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+
+    SnowK::FileDownloadData fileDownloadData;
+    fileDownloadData.setFileId(pbReq.fileId());
+    if (pbReq.fileId() == "testImage")
+    {
+        fileDownloadData.setFileContent(Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png"));
+    }
+    else if (pbReq.fileId() == "testFile")
+    {
+        fileDownloadData.setFileContent(Util::LoadFileToByteArray(":/resource/file/test.txt"));
+    }
+    else if (pbReq.fileId() == "testSpeech")
+    {
+        fileDownloadData.setFileContent(Util::LoadFileToByteArray(":/resource/file/speech.pcm"));
+    }
+    else
+    {
+        pbResp.setSuccess(false);
+        pbResp.setErrmsg("fileId is not the expected test fileId");
+    }
+    pbResp.setFileData(fileDownloadData);
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
