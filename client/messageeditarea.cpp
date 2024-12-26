@@ -1,5 +1,7 @@
 #include "messageeditarea.h"
 #include "mainwidget.h"
+#include "model/data.hpp"
+#include <QFileDialog>
 
 using model::DataCenter;
 
@@ -99,8 +101,15 @@ void MessageEditArea::InitSignalSlot()
 
     connect(sendTextBtn, &QPushButton::clicked, this, &MessageEditArea::SendTextMessage);
     connect(dataCenter, &DataCenter::SendMessageDone, this, &MessageEditArea::AddSelfMessage);
-
     connect(dataCenter, &DataCenter::ReceiveMessageDone, this, &MessageEditArea::AddOtherMessage);
+
+    connect(sendImageBtn, &QPushButton::clicked, this, &MessageEditArea::ClickSendImageBtn);
+    connect(sendFileBtn, &QPushButton::clicked, this, &MessageEditArea::ClickSendFileBtn);
+
+    // connect(sendSpeechBtn, &QPushButton::pressed, this, &MessageEditArea::SoundRecordPressed);
+    // connect(sendSpeechBtn, &QPushButton::released, this, &MessageEditArea::SoundRecordReleased);
+    // SoundRecorder* soundRecorder = SoundRecorder::getInstance();
+    // connect(soundRecorder, &SoundRecorder::soundRecordDone, this, &MessageEditArea::SendSpeech);
 }
 
 void MessageEditArea::SendTextMessage()
@@ -153,6 +162,49 @@ void MessageEditArea::AddOtherMessage(const Message &message)
     messageShowArea->ScrollToEnd();
 
     Toast::ShowMessage("Received a new message");
+}
+
+void MessageEditArea::ClickSendImageBtn()
+{
+    DataCenter* dataCenter = DataCenter::GetInstance();
+
+    if (dataCenter->GetCurrentChatSessionId().isEmpty())
+    {
+        Toast::ShowMessage("You haven't selected any sessions yet");
+        return;
+    }
+
+    QString filter = "Image Files (*.png *.jpg *.jpeg)";
+    QString imagePath = QFileDialog::getOpenFileName(this, "Select picture", QDir::homePath(), filter);
+    if (imagePath.isEmpty())
+    {
+        LOG() << "User deselects image";
+        return;
+    }
+
+    QByteArray imageContent = model::Util::LoadFileToByteArray(imagePath);
+
+    dataCenter->SendImageMessageAsync(dataCenter->GetCurrentChatSessionId(), imageContent);
+}
+
+void MessageEditArea::ClickSendFileBtn()
+{
+
+}
+
+void MessageEditArea::SoundRecordPressed()
+{
+
+}
+
+void MessageEditArea::SoundRecordReleased()
+{
+
+}
+
+void MessageEditArea::SendSpeech(const QString &path)
+{
+
 }
 
 

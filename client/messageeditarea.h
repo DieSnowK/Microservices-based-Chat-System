@@ -25,6 +25,13 @@ public:
     void AddSelfMessage(MessageType messageType, const QByteArray& content, const QString& extraInfo);
     void AddOtherMessage(const Message& message);
 
+    void ClickSendImageBtn();
+    void ClickSendFileBtn();
+
+    void SoundRecordPressed();
+    void SoundRecordReleased();
+    void SendSpeech(const QString& path);
+
 private:
     QPushButton* sendImageBtn;
     QPushButton* sendFileBtn;
