@@ -335,3 +335,46 @@ void MessageContentLabel::paintEvent(QPaintEvent *event)
         // the name and time, as well as leave some space for redundancy
     parent->setFixedHeight(height + 50);
 }
+
+////////////////////////////////////////////////////////
+/// MessageImageLabel
+////////////////////////////////////////////////////////
+
+// For this class, there are the following two situations
+    // 1.fileid = "", content has content
+        // Sending a message locally to the server
+    // 2.filed has content, content = ""
+        // Received a message pushed by the server, containing only fileId
+        // If you want to get the real data of the image, you need to send a
+            // request to the server again to get the file content based on fileId.
+MessageImageLabel::MessageImageLabel(const QString &fileId, const QByteArray &content, bool isLeft)
+    : fileId(fileId), content(content), isLeft(isLeft)
+{
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    imageBtn = new QPushButton(this);
+    imageBtn->setStyleSheet("QPushButton { border: none; }");
+
+    if (content.isEmpty())
+    {
+        DataCenter* dataCenter = DataCenter::GetInstance();
+        connect(dataCenter, &DataCenter::GetSingleFileDone, this, &MessageImageLabel::UpdateUI);
+        dataCenter->GetSingleFileAsync(fileId);
+    }
+}
+
+void MessageImageLabel::UpdateUI(const QString &fileId, const QByteArray &content)
+{
+    if (this->fileId != fileId)
+    {
+        return;
+    }
+
+    this->content = content;
+    this->update(); // In order to call paintEvent()
+}
+
+void MessageImageLabel::paintEvent(QPaintEvent *event)
+{
+
+}

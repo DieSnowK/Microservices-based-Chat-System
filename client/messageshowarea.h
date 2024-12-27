@@ -87,4 +87,24 @@ private:
     bool loadContentDone = false;
 };
 
+////////////////////////////////////////////////////////
+/// MessageImageLabel
+////////////////////////////////////////////////////////
+class MessageImageLabel : public QWidget
+{
+    Q_OBJECT
+
+public:
+    MessageImageLabel(const QString& fileId, const QByteArray& content, bool isLeft);
+
+    void UpdateUI(const QString& fileId, const QByteArray& content);
+    void paintEvent(QPaintEvent* event);
+
+private:
+    QPushButton* imageBtn;
+    QString fileId;
+    QByteArray content;
+    bool isLeft;
+};
+
 #endif // MESSAGESHOWAREA_H
