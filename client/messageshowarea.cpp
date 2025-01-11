@@ -2,6 +2,7 @@
 #include "debug.hpp"
 #include "mainwidget.h"
 #include "model/datacenter.h"
+#include "model/data.hpp"
 
 using model::DataCenter;
 
@@ -376,5 +377,63 @@ void MessageImageLabel::UpdateUI(const QString &fileId, const QByteArray &conten
 
 void MessageImageLabel::paintEvent(QPaintEvent *event)
 {
+    (void) event;
 
+    // 1.The width of the image shown here is 60% of the width of the top parent element
+    QObject* object = this->parent();
+    if (!object->isWidgetType())
+    {
+        return;
+    }
+    QWidget* parent = dynamic_cast<QWidget*>(object);
+    int width = parent->width() * 0.6;
+
+    // 2.Load binary data as image object
+    QImage image;
+    if (content.isEmpty())
+    {
+        // At this time, the response data of the image has not been returned yet.
+            // Here, let’s replace it with a “fixed default image”.
+        QByteArray tmpContent = model::Util::LoadFileToByteArray(":/resource/image/image.png");
+        image.loadFromData(tmpContent);
+    }
+    else
+    {
+        image.loadFromData(content); // Automatic recognition
+    }
+
+    // 3. Zoom to image.
+    int height = 0;
+    if (image.width() > width)
+    {
+        // Proportional scaling.
+        height = ((double)image.height() / image.width()) * width;
+    }
+    else
+    {
+        width = image.width();
+        height = image.height();
+    }
+
+    // pixmap 只是一个中间变量. QImage 不能直接转成 QIcon, 需要 QPixmap 中转一下
+    QPixmap pixmap = QPixmap::fromImage(image);
+    // imageBtn->setFixedSize(width, height);
+    imageBtn->setIconSize(QSize(width, height));
+    imageBtn->setIcon(QIcon(pixmap));
+
+    // 4. 由于图片高度是计算算出来的. 该元素的父对象的高度, 能够容纳下当前的元素.
+    //    此处 + 50 是为了能够容纳下 上方的 "名字" 部分. 同时留下一点 冗余 空间.
+    parent->setFixedHeight(height + 50);
+
+    // 5. 确定按钮所在的位置.
+    //    左侧消息, 和右侧消息, 要显示的位置是不同的.
+    if (isLeft)
+    {
+        imageBtn->setGeometry(10, 0, width, height);
+    }
+    else
+    {
+        int leftPos = this->width() - width - 10;
+        imageBtn->setGeometry(leftPos, 0, width, height);
+    }
 }
