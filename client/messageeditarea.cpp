@@ -1,6 +1,7 @@
 #include "messageeditarea.h"
 #include "mainwidget.h"
 #include "model/data.hpp"
+#include "soundrecorder.h"
 #include <QFileDialog>
 
 using model::DataCenter;
@@ -63,13 +64,13 @@ MessageEditArea::MessageEditArea(QWidget *parent)
                                                  "background-color: rgb(45, 45, 45); }");
     vlayout->addWidget(textEdit);
 
-    // tipLabel = new QLabel();
-    // tipLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // tipLabel->setText("Recording...");
-    // tipLabel->setAlignment(Qt::AlignCenter);
-    // tipLabel->setFont(QFont("微软雅黑", 24, 600));
-    // vlayout->addWidget(tipLabel);
-    // tipLabel->hide();
+    tipLabel = new QLabel();
+    tipLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    tipLabel->setText("Recording...");
+    tipLabel->setAlignment(Qt::AlignCenter);
+    tipLabel->setFont(QFont("微软雅黑", 24, 600));
+    vlayout->addWidget(tipLabel);
+    tipLabel->hide();
 
     sendTextBtn = new QPushButton();
     sendTextBtn->setText("Send");
@@ -106,10 +107,10 @@ void MessageEditArea::InitSignalSlot()
     connect(sendImageBtn, &QPushButton::clicked, this, &MessageEditArea::ClickSendImageBtn);
     connect(sendFileBtn, &QPushButton::clicked, this, &MessageEditArea::ClickSendFileBtn);
 
-    // connect(sendSpeechBtn, &QPushButton::pressed, this, &MessageEditArea::SoundRecordPressed);
-    // connect(sendSpeechBtn, &QPushButton::released, this, &MessageEditArea::SoundRecordReleased);
-    // SoundRecorder* soundRecorder = SoundRecorder::getInstance();
-    // connect(soundRecorder, &SoundRecorder::soundRecordDone, this, &MessageEditArea::SendSpeech);
+    connect(sendSpeechBtn, &QPushButton::pressed, this, &MessageEditArea::SoundRecordPressed);
+    connect(sendSpeechBtn, &QPushButton::released, this, &MessageEditArea::SoundRecordReleased);
+    SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
+    connect(soundRecorder, &SoundRecorder::SoundRecordDone, this, &MessageEditArea::SendSpeech);
 }
 
 void MessageEditArea::SendTextMessage()
@@ -219,12 +220,38 @@ void MessageEditArea::ClickSendFileBtn()
 
 void MessageEditArea::SoundRecordPressed()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetCurrentChatSessionId().isEmpty())
+    {
+        LOG() << "You haven't selected any sessions yet";
+        return;
+    }
 
+    sendSpeechBtn->setIcon(QIcon(":/resource/image/sound_active.png"));
+
+    SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
+    soundRecorder->StartRecord();
+
+    tipLabel->show();
+    textEdit->hide();
 }
 
 void MessageEditArea::SoundRecordReleased()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetCurrentChatSessionId().isEmpty())
+    {
+        LOG() << "You haven't selected any sessions yet";
+        return;
+    }
 
+    sendSpeechBtn->setIcon(QIcon(":/resource/image/sound.png"));
+
+    SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
+    soundRecorder->StopRecord();
+
+    tipLabel->hide();
+    textEdit->show();
 }
 
 void MessageEditArea::SendSpeech(const QString &path)

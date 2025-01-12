@@ -54,6 +54,8 @@ client_autogen/timestamp: \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessiondetailwidget.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.h \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/soundrecorder.cpp \
+	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/soundrecorder.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.cpp \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.h \
 	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/userinfowidget.cpp \
@@ -91,6 +93,7 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSharedDataPointer \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSize \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QSizeF \
+	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QStandardPaths \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QString \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QTimer \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/QUrl \
@@ -197,6 +200,7 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qsharedpointer_impl.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qsize.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qspan.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstandardpaths.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstring.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstringalgorithms.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtCore/qstringbuilder.h \
@@ -296,6 +300,19 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/include/QtGui/qvectornd.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtGui/qwindowdefs_win.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/QAudioSink \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/QAudioSource \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/QMediaDevices \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qaudio.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qaudiodevice.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qaudioformat.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qaudiosink.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qaudiosource.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qmediadevices.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qtaudio.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qtmultimedia-config.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qtmultimediaexports.h \
+	E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia/qtmultimediaglobal.h \
 	E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QAbstractSocket \
 	E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkAccessManager \
 	E:/Qt/6.8.0/msvc2022_64/include/QtNetwork/QNetworkProxy \
@@ -539,6 +556,27 @@ client_autogen/timestamp: \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaAdditionalTargetInfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfig.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersion.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersionImpl.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaDependencies.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaMacros.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaPlugins.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets-debug.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets-relwithdebinfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaVersionlessAliasTargets.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginAdditionalTargetInfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginConfig.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets-debug.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets-relwithdebinfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginAdditionalTargetInfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginConfig.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets-debug.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets-relwithdebinfo.cmake \
+	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets.cmake \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkAdditionalTargetInfo.cmake \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfig.cmake \
 	E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Network/Qt6NetworkConfigVersion.cmake \

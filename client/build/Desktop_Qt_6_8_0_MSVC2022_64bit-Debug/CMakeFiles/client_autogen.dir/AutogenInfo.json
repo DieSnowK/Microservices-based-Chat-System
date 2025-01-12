@@ -402,6 +402,30 @@
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsAdditionalTargetInfo.cmake",
 		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6WebSockets/Qt6WebSocketsVersionlessAliasTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersion.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfigVersionImpl.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaDependencies.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaMacros.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaPlugins.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QFFmpegMediaPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginConfig.cmake",
+		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeFindDependencyMacro.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets-debug.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets-relwithdebinfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginAdditionalTargetInfo.cmake",
+		"E:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6Multimedia/Qt6MultimediaVersionlessAliasTargets.cmake",
 		"E:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/GNUInstallDirs.cmake",
 		"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/resource.qrc"
 	],
@@ -562,6 +586,12 @@
 			null
 		],
 		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/soundrecorder.h",
+			"MU",
+			"EWIEGA46WW/moc_soundrecorder.cpp",
+			null
+		],
+		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/toast.h",
 			"MU",
 			"EWIEGA46WW/moc_toast.cpp",
@@ -587,6 +617,7 @@
 	[
 		"QT_CORE_LIB",
 		"QT_GUI_LIB",
+		"QT_MULTIMEDIA_LIB",
 		"QT_NETWORK_LIB",
 		"QT_PROTOBUF_LIB",
 		"QT_WEBSOCKETS_LIB",
@@ -615,7 +646,8 @@
 		"E:/Qt/6.8.0/msvc2022_64/include/QtWidgets",
 		"E:/Qt/6.8.0/msvc2022_64/include/QtGui",
 		"E:/Qt/6.8.0/msvc2022_64/include/QtNetwork",
-		"E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets"
+		"E:/Qt/6.8.0/msvc2022_64/include/QtWebSockets",
+		"E:/Qt/6.8.0/msvc2022_64/include/QtMultimedia"
 	],
 	"MOC_MACRO_NAMES" : 
 	[
@@ -771,6 +803,11 @@
 		],
 		[
 			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/sessionfriendarea.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/soundrecorder.cpp",
 			"MU",
 			null
 		],

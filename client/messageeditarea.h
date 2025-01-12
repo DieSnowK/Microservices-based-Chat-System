@@ -33,12 +33,12 @@ public:
     void SendSpeech(const QString& path);
 
 private:
+    QPushButton* sendTextBtn;
     QPushButton* sendImageBtn;
     QPushButton* sendFileBtn;
     QPushButton* sendSpeechBtn;
     QPushButton* showHistoryBtn;
     QPlainTextEdit* textEdit;
-    QPushButton* sendTextBtn;
     QLabel* tipLabel;
 
 signals:
