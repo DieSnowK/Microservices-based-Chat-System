@@ -106,6 +106,8 @@ namespace model
 
         void GetSingleFileAsync(const QString& fileId);
 
+        void SpeechConvertTextAsync(const QString& fileId, const QByteArray& content);
+
         //////////////////////////////////////////////////////////////////
         /// Helper functions
         //////////////////////////////////////////////////////////////////

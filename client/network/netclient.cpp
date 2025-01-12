@@ -1101,4 +1101,34 @@ namespace network
         });
     }
 
+    void NetClient::SpeechConvertText(const QString &loginSessionId, const QString &fileId, const QByteArray &content)
+    {
+        SnowK::SpeechRecognitionReq pbReq;
+        pbReq.setRequestId(MakeRequestId());
+        pbReq.setSessionId(loginSessionId);
+        pbReq.setSpeechContent(content);
+        QByteArray body = pbReq.serialize(&serializer);
+
+        LOG() << "[SpeechConvertText] Send a request, requestId = "
+              << pbReq.requestId() << ", loginSessonId=" << pbReq.sessionId();
+
+        QNetworkReply* resp = this->SendHttpRequest("/service/speech/recognition", body);
+
+        connect(resp, &QNetworkReply::finished, this, [=]()
+        {
+            bool ok = false;
+            QString reason;
+            auto pbResp = this->HandleHttpResponse<SnowK::SpeechRecognitionRsp>(resp, &ok, &reason);
+
+            if (!ok)
+            {
+                LOG() << "[SpeechConvertText] Error, reason=" << reason;
+                return;
+            }
+
+            emit dataCenter->SpeechConvertTextDone(fileId, pbResp->recognitionResult());
+
+            LOG() << "[SpeechConvertText] Process the response done, requestId = " << pbResp->requestId();
+        });
+    }
 } // end of namespace network

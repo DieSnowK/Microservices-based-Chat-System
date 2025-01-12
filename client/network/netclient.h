@@ -117,6 +117,7 @@ namespace network
         void PhoneLogin(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
         void PhoneRegister(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
         void GetSingleFile(const QString& loginSessionId, const QString& fileId);
+        void SpeechConvertText(const QString& loginSessionId, const QString& fileId, const QByteArray& content);
 
     private:
         model::DataCenter* dataCenter;

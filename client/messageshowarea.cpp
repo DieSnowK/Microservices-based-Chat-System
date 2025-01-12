@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <QMenu>
 #include "messageshowarea.h"
 #include "debug.hpp"
 #include "mainwidget.h"
@@ -412,12 +413,40 @@ void MessageContentLabel::PlayDone()
 
 void MessageContentLabel::contextMenuEvent(QContextMenuEvent *event)
 {
+    (void) event;
+    if (msgType != model::MessageType::SPEECH_TYPE)
+    {
+        LOG() << "Non-voice messages do not currently support right-click menus";
+        return;
+    }
 
+    QMenu* menu = new QMenu(this);
+    QAction* action = menu->addAction("Speech to text");
+    menu->setStyleSheet("QMenu { color: rgb(0, 0, 0); }");
+
+    connect(action, &QAction::triggered, this, [=]()
+    {
+        DataCenter* dataCenter = DataCenter::GetInstance();
+        connect(dataCenter, &DataCenter::SpeechConvertTextDone, this,
+                &MessageContentLabel::SpeechConvertTextDone, Qt::UniqueConnection);
+        dataCenter->SpeechConvertTextAsync(this->fileId, this->content);
+    });
+
+    // A "modal dialog" pops up here to display the menu/menu items
+    menu->exec(event->globalPos());
+
+    delete menu;
 }
 
 void MessageContentLabel::SpeechConvertTextDone(const QString &fileId, const QString &text)
 {
+    if (this->fileId != fileId)
+    {
+        return;
+    }
 
+    this->label->setText("[Speech to text] " + text);
+    this->update();
 }
 
 ////////////////////////////////////////////////////////

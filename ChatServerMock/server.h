@@ -58,6 +58,8 @@ public:
     QHttpServerResponse PhoneLogin(const QHttpServerRequest& req);
     QHttpServerResponse PhoneRegister(const QHttpServerRequest& req);
     QHttpServerResponse GetSingleFile(const QHttpServerRequest& req);
+    QHttpServerResponse Recognition(const QHttpServerRequest& req);
+
 private:
     HttpServer() {}
     static HttpServer* instance;

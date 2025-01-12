@@ -287,6 +287,10 @@ bool HttpServer::Init()
         return this->GetSingleFile(req);
     });
 
+    httpServer.route("/service/speech/recognition", [=](const QHttpServerRequest& req) {
+        return this->Recognition(req);
+    });
+
     return tcpServer.listen(QHostAddress::Any, 9000) && httpServer.bind(&tcpServer);
 }
 
@@ -957,6 +961,28 @@ QHttpServerResponse HttpServer::GetSingleFile(const QHttpServerRequest &req)
         pbResp.setErrmsg("fileId is not the expected test fileId");
     }
     pbResp.setFileData(fileDownloadData);
+
+    QByteArray body = pbResp.serialize(&serializer);
+    QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);
+
+    QHttpHeaders httpHeader;
+    httpHeader.append(QHttpHeaders::WellKnownHeader::ContentType, "application/x-protobuf");
+    httpResp.setHeaders(httpHeader);
+
+    return httpResp;
+}
+
+QHttpServerResponse HttpServer::Recognition(const QHttpServerRequest &req)
+{
+    SnowK::SpeechRecognitionReq pbReq;
+    pbReq.deserialize(&serializer, req.body());
+    LOG() << "[REQ Recognition] requestId=" << pbReq.requestId() << ", loginSessionId=" << pbReq.sessionId();
+
+    SnowK::SpeechRecognitionRsp pbResp;
+    pbResp.setRequestId(pbReq.requestId());
+    pbResp.setSuccess(true);
+    pbResp.setErrmsg("");
+    pbResp.setRecognitionResult("Test SpeechConvertTextDone");
 
     QByteArray body = pbResp.serialize(&serializer);
     QHttpServerResponse httpResp(body, QHttpServerResponse::StatusCode::Ok);

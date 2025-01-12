@@ -583,6 +583,11 @@ namespace model
         netClient.GetSingleFile(loginSessionId, fileId);
     }
 
+    void DataCenter::SpeechConvertTextAsync(const QString &fileId, const QByteArray &content)
+    {
+        netClient.SpeechConvertText(loginSessionId, fileId, content);
+    }
+
     //////////////////////////////////////////////////////////////////
     /// Helper functions
     //////////////////////////////////////////////////////////////////
