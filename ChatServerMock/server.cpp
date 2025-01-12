@@ -1034,7 +1034,7 @@ bool WebsocketServer::Init()
                 return;
             }
 
-            QByteArray avatar = Util::LoadFileToByteArray(":/resouce/image/defaultAvatar.png");
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
             SnowK::MessageInfo messageInfo = MakeTextMessageInfo(this->messageIndex++, "2000", avatar);
 
             SnowK::NotifyNewMessage notifyNewMessage;
@@ -1059,7 +1059,7 @@ bool WebsocketServer::Init()
                 return;
             }
 
-            QByteArray avatar = Util::LoadFileToByteArray(":/resouce/image/defaultAvatar.png");
+            QByteArray avatar = Util::LoadFileToByteArray(":/resource/image/defaultAvatar.png");
             SnowK::MessageInfo messageInfo = MakeImageMessageInfo(this->messageIndex++, "2000", avatar);
 
             SnowK::NotifyNewMessage notifyNewMessage;

@@ -209,7 +209,9 @@ QWidget *MessageItem::MakeImageMessageItem(bool isLeft, const QString &fileId, c
 
 QWidget *MessageItem::MakeFileMessageItem(bool isLeft, const Message &message)
 {
-    return nullptr;
+    MessageContentLabel* messageContentLabel = new MessageContentLabel("[File] " + message.fileName, isLeft, message.msgType,
+                                                                       message.fileId, message.content);
+    return messageContentLabel;
 }
 
 QWidget *MessageItem::MakeSpeechMessageItem(bool isLeft, const Message &message)
@@ -402,7 +404,7 @@ void MessageContentLabel::PlayDone()
 
 }
 
-void MessageContentLabel::ContextMenuEvent(QContextMenuEvent *event)
+void MessageContentLabel::contextMenuEvent(QContextMenuEvent *event)
 {
 
 }
