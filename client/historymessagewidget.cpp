@@ -268,3 +268,38 @@ void HistoryMessageWidget::InitScrollArea(QGridLayout *layout)
 }
 
 
+
+ImageButton::ImageButton(const QString &fileId, const QByteArray &content)
+{
+
+}
+
+void ImageButton::UpdateUI(const QString &fileId, const QByteArray &content)
+{
+
+}
+
+void FileLabel::GetContentDone(const QString &fileId, const QByteArray &fileContent)
+{
+
+}
+
+void FileLabel::mousePressEvent(QMouseEvent *event)
+{
+
+}
+
+SpeechLabel::SpeechLabel(const QString &fileId)
+{
+
+}
+
+void SpeechLabel::GetContentDone(const QString &fileId, const QByteArray &content)
+{
+
+}
+
+void SpeechLabel::mousePressEvent(QMouseEvent *event)
+{
+
+}

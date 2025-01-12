@@ -62,4 +62,55 @@ private:
     QDateTimeEdit* endTimeEdit;
 };
 
+////////////////////////////////////////////////////////////////////
+/// ImageButton
+////////////////////////////////////////////////////////////////////
+
+class ImageButton : public QPushButton
+{
+public:
+    ImageButton(const QString& fileId, const QByteArray& content);
+    void UpdateUI(const QString& fileId, const QByteArray& content);
+
+private:
+    QString fileId;
+};
+
+////////////////////////////////////////////////////////////////////
+/// FileLabel
+////////////////////////////////////////////////////////////////////
+
+class FileLabel : public QLabel
+{
+public:
+    FileLabel(const QString& fileId, const QString& fileName);
+
+    void GetContentDone(const QString& fileId, const QByteArray& fileContent);
+    void mousePressEvent(QMouseEvent* event) override;
+
+private:
+    QString fileId;
+    QByteArray content;
+    QString fileName;
+    bool loadDone = false;
+};
+
+////////////////////////////////////////////////////////////////////
+/// SpeechLabel
+////////////////////////////////////////////////////////////////////
+
+class SpeechLabel : public QLabel
+{
+public:
+    SpeechLabel(const QString& fileId);
+
+    void GetContentDone(const QString& fileId, const QByteArray& content);
+    void mousePressEvent(QMouseEvent* event) override;
+
+private:
+    QString fileId;
+    QByteArray content;
+    bool loadDone = false;
+};
+
 #endif // HISTORYMESSAGEWIDGET_H
