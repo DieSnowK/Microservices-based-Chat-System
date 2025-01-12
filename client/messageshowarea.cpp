@@ -201,7 +201,8 @@ QWidget *MessageItem::MakeTextMessageItem(bool isLeft, const QString &text)
 
 QWidget *MessageItem::MakeImageMessageItem(bool isLeft, const QString &fileId, const QByteArray &content)
 {
-    return nullptr;
+    MessageImageLabel* msgImageLabel = new MessageImageLabel(fileId, content, isLeft);
+    return msgImageLabel;
 }
 
 QWidget *MessageItem::MakeFileMessageItem(bool isLeft, const Message &message)
@@ -402,7 +403,7 @@ void MessageImageLabel::paintEvent(QPaintEvent *event)
         image.loadFromData(content); // Automatic recognition
     }
 
-    // 3. Zoom to image.
+    // 3.Zoom to image.
     int height = 0;
     if (image.width() > width)
     {
@@ -415,18 +416,18 @@ void MessageImageLabel::paintEvent(QPaintEvent *event)
         height = image.height();
     }
 
-    // pixmap 只是一个中间变量. QImage 不能直接转成 QIcon, 需要 QPixmap 中转一下
+    // QImage cannot be directly converted into QIcon. QPixmap is required to convert it.
     QPixmap pixmap = QPixmap::fromImage(image);
-    // imageBtn->setFixedSize(width, height);
     imageBtn->setIconSize(QSize(width, height));
     imageBtn->setIcon(QIcon(pixmap));
 
-    // 4. 由于图片高度是计算算出来的. 该元素的父对象的高度, 能够容纳下当前的元素.
-    //    此处 + 50 是为了能够容纳下 上方的 "名字" 部分. 同时留下一点 冗余 空间.
+    // 4.Since the height of the image is calculated, the height of the
+        // parent object of the element can accommodate the current element.
+    // The + 50 here is to accommodate the "name" part above.
+        // At the same time, it leaves a little redundant space.
     parent->setFixedHeight(height + 50);
 
-    // 5. 确定按钮所在的位置.
-    //    左侧消息, 和右侧消息, 要显示的位置是不同的.
+    // 5.Determine where the button is.
     if (isLeft)
     {
         imageBtn->setGeometry(10, 0, width, height);
