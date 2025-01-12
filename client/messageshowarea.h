@@ -74,7 +74,15 @@ public:
                         const QString& fileId, const QByteArray& content);
 
     void paintEvent(QPaintEvent* event) override;
-    // void mousePressEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+
+    void UpdateUI(const QString& fileId, const QByteArray& fileContent);
+    void SaveAsFile(const QByteArray& content);
+
+    void PlayDone();
+
+    void contextMenuEvent(QContextMenuEvent* event) override;
+    void SpeechConvertTextDone(const QString& fileId, const QString& text);
 
 private:
     bool isLeft;

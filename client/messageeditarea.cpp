@@ -189,7 +189,32 @@ void MessageEditArea::ClickSendImageBtn()
 
 void MessageEditArea::ClickSendFileBtn()
 {
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    if (dataCenter->GetCurrentChatSessionId().isEmpty())
+    {
+        Toast::ShowMessage("You haven't selected any sessions yet");
+        return;
+    }
 
+    QString filter = "*";
+    QString path = QFileDialog::getOpenFileName(this, "Select file", QDir::homePath(), filter);
+    if (path.isEmpty())
+    {
+        LOG() << "User deselects file";
+        return;
+    }
+
+    // 1.Read the file content. Large files are not considered here for the time being.
+        // If it is for large files, write a special network communication interface
+            // interface to achieve the "slice transmission" effect
+    QByteArray content = model::Util::LoadFileToByteArray(path);
+
+    // 2.Get the file name
+    QFileInfo fileInfo(path);
+    const QString& fileName = fileInfo.fileName();
+
+    // 3.Send message
+    dataCenter->SendFileMessageAsync(dataCenter->GetCurrentChatSessionId(), fileName, content);
 }
 
 void MessageEditArea::SoundRecordPressed()

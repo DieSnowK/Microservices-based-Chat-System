@@ -1,3 +1,4 @@
+#include <QFileDialog>
 #include "messageshowarea.h"
 #include "debug.hpp"
 #include "mainwidget.h"
@@ -5,6 +6,7 @@
 #include "model/data.hpp"
 
 using model::DataCenter;
+using model::MessageType;
 
 ////////////////////////////////////////////////////////
 /// MessageShowArea
@@ -239,22 +241,22 @@ MessageContentLabel::MessageContentLabel(const QString &text, bool isLeft, Messa
     this->label->setWordWrap(true);
     this->label->setStyleSheet("QLabel { padding: 0 10px; line-height: 1.2; background-color: transparent; }");
 
-    // if (msgType == MessageType::TEXT_TYPE)
-    // {
-    //     return;
-    // }
+    if (msgType == MessageType::TEXT_TYPE)
+    {
+        return;
+    }
 
-    // if (this->content.isEmpty())
-    // {
-    //     DataCenter* dataCenter = DataCenter::getInstance();
-    //     connect(dataCenter, &DataCenter::getSingleFileDone, this, &MessageContentLabel::updateUI);
-    //     dataCenter->getSingleFileAsync(this->fileId);
-    // }
-    // else
-    // {
-    //     // content 不为空, 说明当前的这个数据就是已经现成. 直接就把 表示加载状态的变量设为 true
-    //     this->loadContentDone = true;
-    // }
+    // For file messages, and when content is empty, load data through the network
+    if (this->content.isEmpty())
+    {
+        DataCenter* dataCenter = DataCenter::GetInstance();
+        connect(dataCenter, &DataCenter::GetSingleFileDone, this, &MessageContentLabel::UpdateUI);
+        dataCenter->GetSingleFileAsync(this->fileId);
+    }
+    else
+    {
+        this->loadContentDone = true;
+    }
 }
 
 // TODO
@@ -336,6 +338,78 @@ void MessageContentLabel::paintEvent(QPaintEvent *event)
     // Attention: The height should cover the height of the label before
         // the name and time, as well as leave some space for redundancy
     parent->setFixedHeight(height + 50);
+}
+
+void MessageContentLabel::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        if (this->msgType == MessageType::FILE_TYPE)
+        {
+            if (!this->loadContentDone)
+            {
+                Toast::ShowMessage("The data has not been loaded successfully, pls try again later.");
+                return;
+            }
+
+            SaveAsFile(this->content);
+        }
+        // else if (this->msgType == MessageType::SPEECH_TYPE)
+        // {
+        //     if (!this->loadContentDone)
+        //     {
+        //         Toast::ShowMessage("The data has not been loaded successfully, pls try again later.");
+        //         return;
+        //     }
+
+        //     SoundRecorder* soundRecorder = SoundRecorder::getInstance();
+        //     this->label->setText("Playing...");
+        //     connect(soundRecorder, &SoundRecorder::soundPlayDone, this, &MessageContentLabel::PlayDone, Qt::UniqueConnection);
+        //     soundRecorder->startPlay(this->content);
+        // }
+        // else
+        // {}
+    }
+}
+
+void MessageContentLabel::UpdateUI(const QString &fileId, const QByteArray &fileContent)
+{
+    if (fileId != this->fileId)
+    {
+        return;
+    }
+
+    this->content = fileContent;
+    this->loadContentDone = true;
+
+    this->update(); // It’s okay if you don’t have it
+}
+
+void MessageContentLabel::SaveAsFile(const QByteArray &content)
+{
+    QString filePath = QFileDialog::getSaveFileName(this, "Save as", QDir::homePath(), "*");
+    if (filePath.isEmpty())
+    {
+        LOG() << "User canceled file save as";
+        return;
+    }
+
+    model::Util::WriteByteArrayToFile(filePath, content);
+}
+
+void MessageContentLabel::PlayDone()
+{
+
+}
+
+void MessageContentLabel::ContextMenuEvent(QContextMenuEvent *event)
+{
+
+}
+
+void MessageContentLabel::SpeechConvertTextDone(const QString &fileId, const QString &text)
+{
+
 }
 
 ////////////////////////////////////////////////////////
