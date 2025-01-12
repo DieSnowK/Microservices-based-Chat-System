@@ -256,7 +256,15 @@ void MessageEditArea::SoundRecordReleased()
 
 void MessageEditArea::SendSpeech(const QString &path)
 {
+    QByteArray content = model::Util::LoadFileToByteArray(path);
+    if (content.isEmpty())
+    {
+        LOG() << "Failed to load voice file";
+        return;
+    }
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    dataCenter->SendSpeechMessageAsync(dataCenter->GetCurrentChatSessionId(), content);
 }
 
 

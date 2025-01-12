@@ -191,3 +191,7 @@
 141	2824	7583724949802390	CMakeFiles/ChatServerMock.dir/widget.cpp.obj	ca211ad2936b001f
 138	3394	7583724955467797	CMakeFiles/ChatServerMock.dir/server.cpp.obj	9f0f170ca4978e8e
 3394	4113	7583724961980974	ChatServerMock.exe	e91a477d188b3344
+6	132	7583845034576891	ChatServerMock_autogen/EWIEGA46WW/qrc_resource.cpp	a96c4f67eaf672e9
+6	132	7583845034576891	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/ChatServerMock/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/ChatServerMock_autogen/EWIEGA46WW/qrc_resource.cpp	a96c4f67eaf672e9
+132	919	7583845042494280	CMakeFiles/ChatServerMock.dir/ChatServerMock_autogen/EWIEGA46WW/qrc_resource.cpp.obj	1e9ff9e3d272cb1e
+919	1534	7583845047956635	ChatServerMock.exe	e91a477d188b3344

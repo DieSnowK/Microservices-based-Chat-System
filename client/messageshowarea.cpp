@@ -4,6 +4,7 @@
 #include "mainwidget.h"
 #include "model/datacenter.h"
 #include "model/data.hpp"
+#include "soundrecorder.h"
 
 using model::DataCenter;
 using model::MessageType;
@@ -216,7 +217,9 @@ QWidget *MessageItem::MakeFileMessageItem(bool isLeft, const Message &message)
 
 QWidget *MessageItem::MakeSpeechMessageItem(bool isLeft, const Message &message)
 {
-    return nullptr;
+    MessageContentLabel* messageContentLabel = new MessageContentLabel("[Speech]", isLeft, message.msgType,
+                                                                       message.fileId, message.content);
+    return messageContentLabel;
 }
 
 ////////////////////////////////////////////////////////
@@ -356,21 +359,21 @@ void MessageContentLabel::mousePressEvent(QMouseEvent *event)
 
             SaveAsFile(this->content);
         }
-        // else if (this->msgType == MessageType::SPEECH_TYPE)
-        // {
-        //     if (!this->loadContentDone)
-        //     {
-        //         Toast::ShowMessage("The data has not been loaded successfully, pls try again later.");
-        //         return;
-        //     }
+        else if (this->msgType == MessageType::SPEECH_TYPE)
+        {
+            if (!this->loadContentDone)
+            {
+                Toast::ShowMessage("The data has not been loaded successfully, pls try again later.");
+                return;
+            }
 
-        //     SoundRecorder* soundRecorder = SoundRecorder::getInstance();
-        //     this->label->setText("Playing...");
-        //     connect(soundRecorder, &SoundRecorder::soundPlayDone, this, &MessageContentLabel::PlayDone, Qt::UniqueConnection);
-        //     soundRecorder->startPlay(this->content);
-        // }
-        // else
-        // {}
+            SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
+            this->label->setText("Playing...");
+            connect(soundRecorder, &SoundRecorder::SoundPlayDone, this, &MessageContentLabel::PlayDone, Qt::UniqueConnection);
+            soundRecorder->StartPlay(this->content);
+        }
+        else
+        {}
     }
 }
 
@@ -401,7 +404,10 @@ void MessageContentLabel::SaveAsFile(const QByteArray &content)
 
 void MessageContentLabel::PlayDone()
 {
-
+    if (this->label->text() == "Playing...")
+    {
+        this->label->setText("[Speech]");
+    }
 }
 
 void MessageContentLabel::contextMenuEvent(QContextMenuEvent *event)
