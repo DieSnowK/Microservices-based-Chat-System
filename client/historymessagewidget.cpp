@@ -1,3 +1,4 @@
+#include <QFileDialog>
 #include "historymessagewidget.h"
 #include "debug.hpp"
 #include "model/datacenter.h"
@@ -320,18 +321,48 @@ void ImageButton::UpdateUI(const QString &fileId, const QByteArray &content)
 ////////////////////////////////////////////////////////////////////
 
 FileLabel::FileLabel(const QString &fileId, const QString &fileName)
+    : fileId(fileId)
+    , fileName(fileName)
 {
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->setText("[File] " + fileName);
+    this->setWordWrap(true);
+    this->adjustSize(); // Automatically adjust the size to display the text content
+    this->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::GetSingleFileDone, this, &FileLabel::GetContentDone);
+    dataCenter->GetSingleFileAsync(this->fileId);
 }
 
 void FileLabel::GetContentDone(const QString &fileId, const QByteArray &fileContent)
 {
+    if (fileId != this->fileId)
+    {
+        return;
+    }
 
+    this->content = fileContent;
+    this->loadDone = true;
 }
 
 void FileLabel::mousePressEvent(QMouseEvent *event)
 {
+    (void) event;
+    if (!this->loadDone)
+    {
+        Toast::ShowMessage("File content is loading, please try later");
+        return;
+    }
 
+    QString filePath = QFileDialog::getSaveFileName(this, "Save as", QDir::homePath(), "*");
+    if (filePath.isEmpty())
+    {
+        LOG() << "User canceled save";
+        return;
+    }
+
+    model::Util::WriteByteArrayToFile(filePath, content);
 }
 
 ////////////////////////////////////////////////////////////////////

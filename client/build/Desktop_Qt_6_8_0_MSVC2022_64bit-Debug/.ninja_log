@@ -238,3 +238,10 @@
 133	2548	7584532411602645	CMakeFiles/client.dir/historymessagewidget.cpp.obj	876134f8f891392d
 131	2814	7584532414303646	CMakeFiles/client.dir/mainwidget.cpp.obj	ede932784ece4a8b
 2815	3209	7584532417598948	client.exe	743011b7a0ca44ef
+9	140	7584544685537652	client_autogen/timestamp	d7b7435b614a47b9
+9	140	7584544685537652	client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+9	140	7584544685537652	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/timestamp	d7b7435b614a47b9
+9	140	7584544685537652	C:/Users/w1752/Desktop/My_Repository/Microservices-based-Chat-System/client/build/Desktop_Qt_6_8_0_MSVC2022_64bit-Debug/client_autogen/mocs_compilation.cpp	d7b7435b614a47b9
+146	3017	7584544863300144	CMakeFiles/client.dir/historymessagewidget.cpp.obj	876134f8f891392d
+144	3176	7584544864871795	CMakeFiles/client.dir/mainwidget.cpp.obj	ede932784ece4a8b
+3177	3657	7584544868826025	client.exe	743011b7a0ca44ef
