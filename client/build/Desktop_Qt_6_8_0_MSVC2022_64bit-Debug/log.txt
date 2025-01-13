@@ -1,0 +1,71 @@
+Available HW decoding frameworks:
+     d3d11va
+     dxva2
+     d3d12va
+Available HW encoding frameworks:
+     d3d11va
+     dxva2
+     d3d12va
+[netclient.cpp:220] [GetMyself] Send a request, requestId =  R32a80fbc4a57 , loginSessionId =  testLoginSessionId
+[netclient.cpp:251] [GetFriendList] Send a request, requestId =  R58af8fe3b282 , loginSessionId= testLoginSessionId
+[netclient.cpp:282] [GetChatSessionList] Send a request, requestId =  Rf4cfdebe5429 , loginSessionId =  testLoginSessionId
+[netclient.cpp:314] [GetApplyList] Send a request, requestId =  R9d9e40296d6c , loginSessionId =  testLoginSessionId
+[netclient.cpp:24] The websocket connection is successful
+[netclient.cpp:207] [WS Authentication] requestId =  Rf59d4aa51047 , loginSessionId =  testLoginSessionId
+[netclient.cpp:194] The content of the response:  Pong
+[netclient.cpp:334] [GetApplyList] Process the response done, requestId= R9d9e40296d6c
+[netclient.cpp:302] [GetChatSessionList] Process the response done, requestId= Rf4cfdebe5429
+[netclient.cpp:240] [GetMyself] Process the response done, requestId =  R32a80fbc4a57
+[netclient.cpp:271] [GetFriendList] Process the response done, requestId =  R58af8fe3b282
+[sessionfriendarea.cpp:227] Active SessionItem, chatSessionId =  2000
+[netclient.cpp:348] [GetRecentMessageList] Send a request, requestId =  Rd74a8698de9a , loginSessionId =  testLoginSessionId , chatSessionId =  2000
+[netclient.cpp:377] [GetRecentMessageList] Process the response done, requestId= Rd74a8698de9a
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  Rf66c58c60f14 , fileId= testSpeech
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  R3ceee05f453a , fileId= testFile
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  R1c7f7e479138 , fileId= testImage
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  Rf66c58c60f14
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  R3ceee05f453a
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  R1c7f7e479138
+[soundrecorder.cpp:80] ActiveState
+QFile::setFileName: File (C:/Users/w1752/AppData/Roaming/client/sound/tmpPlay.pcm) already open
+[soundrecorder.cpp:84] StoppedState
+[soundrecorder.cpp:80] ActiveState
+[soundrecorder.cpp:74] IdleState
+[soundrecorder.cpp:84] StoppedState
+[messageshowarea.cpp:399] User canceled file save as
+[netclient.cpp:874] [SearchMessage] Send a request, requestId =  R26ef22ab280a , loginSessionId= testLoginSessionId , chatSessionId= 2000 , searchKey= 6666
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  R304281b6ea58 , fileId= testImage
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  R60c16ff41a1b , fileId= testFile
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  Rce984ac5ea2e , fileId= testSpeech
+[netclient.cpp:895] [SearchMessage] Process the response done, requestId =  R26ef22ab280a
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  R304281b6ea58
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  R60c16ff41a1b
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  Rce984ac5ea2e
+[sessionfriendarea.cpp:227] Active SessionItem, chatSessionId =  2003
+[netclient.cpp:348] [GetRecentMessageList] Send a request, requestId =  R825b75822f3d , loginSessionId =  testLoginSessionId , chatSessionId =  2003
+[netclient.cpp:377] [GetRecentMessageList] Process the response done, requestId= R825b75822f3d
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  R8375945de53d , fileId= testSpeech
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  Red1ccf61d71a , fileId= testFile
+[netclient.cpp:1080] [GetSingleFile] Send a request, requestId =  Rad6ce0b22013 , fileId= testImage
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  R8375945de53d
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  Red1ccf61d71a
+[netclient.cpp:1100] [GetSingleFile] Process the response done, requestId =  Rad6ce0b22013
+Available HW decoding frameworks:
+     d3d11va
+     dxva2
+     d3d12va
+Available HW encoding frameworks:
+     d3d11va
+     dxva2
+     d3d12va
+[netclient.cpp:220] [GetMyself] Send a request, requestId =  R7797bc112fa2 , loginSessionId =  testLoginSessionId
+[netclient.cpp:251] [GetFriendList] Send a request, requestId =  R1036b5bc14e1 , loginSessionId= testLoginSessionId
+[netclient.cpp:282] [GetChatSessionList] Send a request, requestId =  Rf432fbeb493e , loginSessionId =  testLoginSessionId
+[netclient.cpp:314] [GetApplyList] Send a request, requestId =  R250cee044bf2 , loginSessionId =  testLoginSessionId
+[netclient.cpp:30] The websocket connection is dropped
+[netclient.cpp:35] There was an error with the websocket connection:  QAbstractSocket::ConnectionRefusedError
+[netclient.cpp:188] The HTTP request failed:  Connection refused
+[netclient.cpp:233] [GetMyself] Error, requestId =  R7797bc112fa2 reason =  Connection refused
+[netclient.cpp:264] [GetFriendList] Error, requestId =  R1036b5bc14e1 , reason =  Connection refused
+[netclient.cpp:295] [GetChatSessionList] Error, reason= Connection refused
+[netclient.cpp:327] [GetApplyList] Error, reason:  Connection refused

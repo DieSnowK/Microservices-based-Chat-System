@@ -6,5 +6,6 @@
 #define TEST_SKIP_LOGIN 1
 #define TEST_TOAST 0
 #define TEST_NETWORK 1
+#define DEPLOY 1
 
 #endif // DEBUG_HPP
