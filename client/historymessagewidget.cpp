@@ -44,16 +44,17 @@ HistoryItem *HistoryItem::MakeHistoryItem(const Message &message)
     }
     else if (message.msgType == MessageType::IMAGE_TYPE)
     {
-        // contentWidget = new ImageButton(message.fileId, message.content);
+        contentWidget = new ImageButton(message.fileId, message.content);
     }
     else if (message.msgType == MessageType::FILE_TYPE)
     {
-        // contentWidget = new FileLabel(message.fileId, message.fileName);
+        contentWidget = new FileLabel(message.fileId, message.fileName);
     }
     else if (message.msgType == MessageType::SPEECH_TYPE)
     {
-        // contentWidget = new SpeechLabel(message.fileId);
-    } else
+        contentWidget = new SpeechLabel(message.fileId);
+    }
+    else
     {
         LOG() << "Error Message Type, messageType = " << (int)message.msgType;
     }
@@ -267,14 +268,58 @@ void HistoryMessageWidget::InitScrollArea(QGridLayout *layout)
     layout->addWidget(scrollArea, 2, 0, 1, 9);
 }
 
-
+////////////////////////////////////////////////////////////////////
+/// ImageButton
+////////////////////////////////////////////////////////////////////
 
 ImageButton::ImageButton(const QString &fileId, const QByteArray &content)
 {
+    this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    this->setStyleSheet("QPushButton { border: none; }");
 
+    if (!content.isEmpty())
+    {
+        this->UpdateUI(fileId, content);
+    }
+    else
+    {
+        DataCenter* dataCenter = DataCenter::GetInstance();
+        connect(dataCenter, &DataCenter::GetSingleFileDone, this, &ImageButton::UpdateUI);
+        dataCenter->GetSingleFileAsync(fileId);
+    }
 }
 
 void ImageButton::UpdateUI(const QString &fileId, const QByteArray &content)
+{
+    // TODO Bug
+    if (this->fileId != fileId)
+    {
+        return;
+    }
+
+    QImage image;
+    image.loadFromData(content);
+    int width = image.width();
+    int height = image.height();
+
+    // If the image size is large, it needs to be scaled
+    if (image.width() >= 300)
+    {
+        width = 300;
+        height = ((double)image.height() / image.width()) * width;
+    }
+
+    this->resize(width, height);
+    this->setIconSize(QSize(width, height));
+    QPixmap pixmap = QPixmap::fromImage(image);
+    this->setIcon(QIcon(pixmap));
+}
+
+////////////////////////////////////////////////////////////////////
+/// FileLabel
+////////////////////////////////////////////////////////////////////
+
+FileLabel::FileLabel(const QString &fileId, const QString &fileName)
 {
 
 }
@@ -288,6 +333,10 @@ void FileLabel::mousePressEvent(QMouseEvent *event)
 {
 
 }
+
+////////////////////////////////////////////////////////////////////
+/// SpeechLabel
+////////////////////////////////////////////////////////////////////
 
 SpeechLabel::SpeechLabel(const QString &fileId)
 {
