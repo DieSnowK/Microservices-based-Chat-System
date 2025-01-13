@@ -273,6 +273,7 @@ void HistoryMessageWidget::InitScrollArea(QGridLayout *layout)
 ////////////////////////////////////////////////////////////////////
 
 ImageButton::ImageButton(const QString &fileId, const QByteArray &content)
+    : fileId(fileId)
 {
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     this->setStyleSheet("QPushButton { border: none; }");
@@ -291,7 +292,6 @@ ImageButton::ImageButton(const QString &fileId, const QByteArray &content)
 
 void ImageButton::UpdateUI(const QString &fileId, const QByteArray &content)
 {
-    // TODO Bug
     if (this->fileId != fileId)
     {
         return;
