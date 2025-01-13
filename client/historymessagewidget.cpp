@@ -3,6 +3,7 @@
 #include "debug.hpp"
 #include "model/datacenter.h"
 #include "toast.h"
+#include "soundrecorder.h"
 
 using model::DataCenter;
 
@@ -370,16 +371,39 @@ void FileLabel::mousePressEvent(QMouseEvent *event)
 ////////////////////////////////////////////////////////////////////
 
 SpeechLabel::SpeechLabel(const QString &fileId)
+    : fileId(fileId)
 {
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->setText("[Speech]");
+    this->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    this->setWordWrap(true);
+    this->adjustSize();
 
+    DataCenter* dataCenter = DataCenter::GetInstance();
+    connect(dataCenter, &DataCenter::GetSingleFileDone, this, &SpeechLabel::GetContentDone);
+    dataCenter->GetSingleFileAsync(fileId);
 }
 
 void SpeechLabel::GetContentDone(const QString &fileId, const QByteArray &content)
 {
+    if (fileId != this->fileId)
+    {
+        return;
+    }
 
+    this->content = content;
+    this->loadDone = true;
 }
 
 void SpeechLabel::mousePressEvent(QMouseEvent *event)
 {
+    (void) event;
+    if (!this->loadDone)
+    {
+        Toast::ShowMessage("File content is loading, please try later");
+        return;
+    }
 
+    SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
+    soundRecorder->StartPlay(this->content);
 }
