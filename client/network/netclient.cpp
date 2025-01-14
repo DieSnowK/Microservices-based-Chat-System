@@ -1,6 +1,6 @@
 #include "netclient.h"
-#include "../model/data.hpp"
-#include "../model/datacenter.h"
+#include "data.hpp"
+#include "datacenter.h"
 
 using namespace model;
 

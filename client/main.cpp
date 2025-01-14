@@ -1,9 +1,13 @@
-#include "mainwidget.h"
-#include "loginwidget.h"
-#include "model/datacenter.h"
-#include "network/netclient.h"
-#include "debug.hpp"
 #include <QApplication>
+
+#include "debug.h"
+#include "login_widget.h"
+
+#if DEPLOY == 0
+    #include "datacenter.h"
+    #include "netclient.h"
+    #include "mainwidget.h"
+#endif
 
 FILE* output = nullptr;
 void MsgHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)

@@ -5,7 +5,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-#include "../debug.hpp"
+#include "debug.h"
 
 namespace model
 {

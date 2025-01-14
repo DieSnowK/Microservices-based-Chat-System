@@ -7,7 +7,7 @@
 #include <QProtobufSerializer>
 #include <QNetworkReply>
 
-#include "../model/data.hpp"
+#include "data.hpp"
 
 using model::MessageType;
 

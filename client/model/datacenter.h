@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "data.hpp"
-#include "../network/netclient.h"
+#include "netclient.h"
 
 namespace model
 {
