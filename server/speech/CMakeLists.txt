@@ -36,7 +36,7 @@ add_executable(${TARGET} ${SRC_FILES} ${PROTO_SRCS})
 target_link_libraries(${TARGET} 
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    /usr/local/lib/libjsoncpp.so.19
 )
 
 # set(TEST_CLIENT "speech_client")
@@ -46,7 +46,7 @@ target_link_libraries(${TARGET}
 # target_link_libraries(${TEST_CLIENT} 
 #     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto
 #     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl
-#     /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+#     /usr/local/lib/libjsoncpp.so.19
 # )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

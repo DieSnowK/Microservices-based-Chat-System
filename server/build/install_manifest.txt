@@ -1,0 +1,11 @@
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/message_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/message_client
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/user_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/file_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/speech_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/transmite_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/transmite_client
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/trans_user_client
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/friend_server
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/friend_client
+/home/snowk/repository/Microservices-based-Chat-System/server/build/bin/gateway_server

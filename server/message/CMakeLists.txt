@@ -60,7 +60,7 @@ target_link_libraries(${TARGET}
     -lprotobuf -lleveldb -letcd-cpp-api 
     -lcpprest -lcurl -lodb-mysql -lodb -lodb-boost
     -lcpr -lelasticlient -lamqpcpp -lev
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    /usr/local/lib/libjsoncpp.so.19
 )
 
 set(TEST_CLIENT "message_client")
@@ -71,7 +71,7 @@ target_link_libraries(${TEST_CLIENT}
     -pthread -lgtest -lgflags -lspdlog -lfmt 
     -lbrpc -lssl -lcrypto -lprotobuf 
     -lleveldb -letcd-cpp-api -lcpprest -lcurl 
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    /usr/local/lib/libjsoncpp.so.19
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

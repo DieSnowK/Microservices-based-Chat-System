@@ -68,7 +68,7 @@ add_executable(${TRANSMITE_CLIENT} ${TRANSMITE_FILES} ${PROTO_SRCS})
 target_link_libraries(${TRANSMITE_CLIENT} 
     -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl 
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    /usr/local/lib/libjsoncpp.so.19
 )
 
 set(TRANS_USER_CLIENT "trans_user_client")
@@ -77,7 +77,7 @@ add_executable(${TRANS_USER_CLIENT} ${TRANS_USER_FILES} ${PROTO_SRCS})
 target_link_libraries(${TRANS_USER_CLIENT} 
     -pthread -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest 
-    -lcurl /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    -lcurl /usr/local/lib/libjsoncpp.so.19
 )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

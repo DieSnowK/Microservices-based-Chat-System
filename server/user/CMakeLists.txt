@@ -61,7 +61,7 @@ target_link_libraries(${TARGET}
     -lcpprest -lcurl -lodb-mysql -lodb -lodb-boost
     -lhiredis -lredis++
     -lalibabacloud-sdk-core -lcpr -lelasticlient
-    /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+    /usr/local/lib/libjsoncpp.so.19
 )
 
 # set(TEST_CLIENT "user_client")
@@ -71,7 +71,7 @@ target_link_libraries(${TARGET}
 # target_link_libraries(${TEST_CLIENT} 
 #     -lgtest -lgflags -lspdlog -lfmt -lbrpc -lssl -lcrypto 
 #     -lprotobuf -lleveldb -letcd-cpp-api -lcpprest -lcurl 
-#     /usr/lib/x86_64-linux-gnu/libjsoncpp.so.19
+#     /usr/local/lib/libjsoncpp.so.19
 # )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
