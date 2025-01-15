@@ -231,16 +231,16 @@ namespace SnowK
             _redis_status->Remove(uid);
             _connections->Remove(conn);
 
-            LOG_DEBUG("{} {} {} If the persistent connection is disconnected, \
+            LOG_DEBUG("{} {} {} the persistent connection is disconnected, \
                       the cache data will be cleared", ssid, uid, (size_t)conn.get());
         }
 
+        // Very important, very easy to ignore
         void KeepAlive(server_t::connection_ptr conn)
         {
             if (!conn || conn->get_state() != websocketpp::session::state::value::open)
             {
-                LOG_WARN("If the connection is abnormal, the connection \
-                          will be kept alive when the connection is terminated");
+                LOG_WARN("Abnormal connection status, end connection keep-alive");
                 return;
             }
 

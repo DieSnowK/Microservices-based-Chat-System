@@ -13,9 +13,9 @@ DEFINE_int32(listen_port, 10001, "The RPC server listens on the port");
 DEFINE_int32(rpc_timeout, -1, "RPC call timeout period");
 DEFINE_int32(rpc_threads, 1, "The number of I/O threads of the rpc");
 
-DEFINE_string(app_id, "60694095", "Speech platform app ID");
-DEFINE_string(api_key, "PWn6zlsxym8VwpBW8Or4PPGe", "Speech platform API key");
-DEFINE_string(secret_key, "Bl0mn74iyAkr3FzCo5TZV7lBq7NYoms9", "Speech platform secret key");
+DEFINE_string(app_id, "115680523", "Speech platform app ID");
+DEFINE_string(api_key, "NZ5oucBN0wWQ6uXZLt7c4TXx", "Speech platform API key");
+DEFINE_string(secret_key, "8YcwL4DegU2Um0D6WNPO4CBcaLgiDgnQ", "Speech platform secret key");
 
 int main(int argc, char *argv[])
 {

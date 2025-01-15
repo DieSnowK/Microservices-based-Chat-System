@@ -114,7 +114,7 @@ namespace SnowK
             {
                 odb::transaction trans(_db->begin());
 
-                // TODO 能否更优雅？
+                // TODO Could it be more elegant?
                 std::stringstream ss;
                 ss << "user_id in (";
                 for (const auto &id : id_list)

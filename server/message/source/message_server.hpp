@@ -249,7 +249,7 @@ namespace SnowK
             return;
         } // end of GetRecentMsg
 
-        // Message search for keywords – for text messages only
+        // Message search for keywords - for text messages only
         virtual void MsgSearch(::google::protobuf::RpcController *controller,
                                const ::SnowK::MsgSearchReq *request,
                                ::SnowK::MsgSearchRsp *response,
