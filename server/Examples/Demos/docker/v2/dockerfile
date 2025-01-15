@@ -1,0 +1,10 @@
+# DNS needs to be configured on the host machine (Maybe)
+FROM ubuntu:24.04
+
+WORKDIR /SnowK
+
+COPY ./main .
+COPY ./libgflags.so.2.2 /lib/x86_64-linux-gnu/libgflags.so.2.2
+
+# Set the default command to be executed when the container starts
+CMD "./main"

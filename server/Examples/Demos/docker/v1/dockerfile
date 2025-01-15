@@ -1,0 +1,12 @@
+# DNS needs to be configured on the host machine (Maybe)
+FROM ubuntu:24.04
+
+WORKDIR /SnowK
+
+COPY ./main.cc .
+RUN apt update -y &&\
+    apt install g++ -y &&\
+    g++ main.cc -o main
+
+# Set the default command to be executed when the container starts
+CMD "./main"
