@@ -1,0 +1,189 @@
+version: "3.8"
+
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.3.25
+    container_name: etcd-service
+    environment:
+      - ETCD_NAME=etcd-s1
+      - ETCD_DATA_DIR=/var/lib/etcd
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+    volumes:
+      - ./middle/data/etcd:/var/lib/etcd:rw
+    ports:
+      - 2379:2379
+    restart: always
+
+  mysql:
+    image: mysql:8.0.39
+    container_name: mysql-service
+    environment:
+      - MYSQL_ROOT_PASSWORD=SnowK8989
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d/:rw # Tools provided by docker to initialize mysql dababases and tables
+      - ./middle/data/mysql:/var/lib/mysql:rw
+    ports:
+      - 3306:3306
+    restart: always
+
+  redis:
+    image: redis:6.0.16
+    container_name: redis-service
+    volumes:
+      - ./middle/data/redis:/var/lib/redis:rw
+    ports:
+      - 6379:6379
+    restart: always
+
+  elasticsearch:
+    image: elasticsearch:7.17.21
+    container_name: elasticsearch-service
+    environment:
+      - "discovery.type=single-node"
+    volumes:
+      - ./middle/data/elasticsearch:/data:rw
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.9.13
+    container_name: rabbitmq-service
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=SnowK8989
+    volumes:
+      - ./middle/data/rabbitmq:/var/lib/rabbitmq:rw
+    ports:
+      - 5672:5672
+    restart: always
+
+#############################################################################################################
+
+  file_server:
+    build: ./file
+    #image: file-server:v1
+    container_name: file_server-service
+    volumes:
+      - ./conf/file_server.conf:/SnowK/conf/file_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10002:10002
+    restart: always
+    entrypoint: # replace CMD in dockerfile
+      # Similar to CMD in dockerfile, they are the default operations after the container is started 
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379 -c "/SnowK/bin/file_server -flagfile=/SnowK/conf/file_server.conf"
+    depends_on:
+      - etcd
+
+  friend_server:
+    build: ./friend
+    container_name: friend_server-service
+    volumes:
+      - ./conf/friend_server.conf:/SnowK/conf/friend_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10006:10006
+    restart: always
+    depends_on:
+      - etcd
+      - mysql
+      - elasticsearch
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,9200 -c "/SnowK/bin/friend_server -flagfile=/SnowK/conf/friend_server.conf"
+
+  gateway_server:
+    build: ./gateway
+    container_name: gateway_server-service
+    volumes:
+      - ./conf/gateway_server.conf:/SnowK/conf/gateway_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 9000:9000
+      - 9001:9001
+    restart: always
+    depends_on:
+      - etcd
+      - redis
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,6379 -c "/SnowK/bin/gateway_server -flagfile=/SnowK/conf/gateway_server.conf"
+
+  message_server:
+    build: ./message
+    container_name: message_server-service
+    volumes:
+      - ./conf/message_server.conf:/SnowK/conf/message_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10005:10005
+    restart: always
+    depends_on:
+      - etcd
+      - mysql
+      - elasticsearch
+      - rabbitmq
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,9200,5672 -c "/SnowK/bin/message_server -flagfile=/SnowK/conf/message_server.conf"
+
+  speech_server:
+    build: ./speech
+    container_name: speech_server-service
+    volumes:
+      - ./conf/speech_server.conf:/SnowK/conf/speech_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10001:10001
+    restart: always
+    depends_on:
+      - etcd
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379 -c "/SnowK/bin/speech_server -flagfile=/SnowK/conf/speech_server.conf"
+
+  transmite_server:
+    build: ./transmite
+    container_name: transmite_server-service
+    volumes:
+      - ./conf/transmite_server.conf:/SnowK/conf/transmite_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10004:10004
+    restart: always
+    depends_on:
+      - etcd
+      - mysql
+      - rabbitmq
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,5672 -c "/SnowK/bin/transmite_server -flagfile=/SnowK/conf/transmite_server.conf"
+
+  user_server:
+    build: ./user
+    container_name: user_server-service
+    volumes:
+      - ./conf/user_server.conf:/SnowK/conf/user_server.conf
+      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/data/data:/SnowK/data:rw
+      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+    ports:
+      - 10003:10003
+    restart: always
+    depends_on:
+      - etcd
+      - mysql
+      - redis
+      - elasticsearch
+    entrypoint:
+      /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,5672,9200 -c "/SnowK/bin/user_server -flagfile=/SnowK/conf/user_server.conf"

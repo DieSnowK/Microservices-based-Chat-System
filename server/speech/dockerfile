@@ -9,6 +9,6 @@ RUN mkdir -p logs &&\
 
 COPY ./build/speech_server bin/
 COPY ./depends/ /lib/x86_64-linux-gnu/
-# COPY ./nc /bin/
+COPY ./nc /bin/
 
 CMD bin/speech_server -flagfile=conf/speech_server.conf

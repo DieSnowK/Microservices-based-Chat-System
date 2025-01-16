@@ -9,6 +9,6 @@ RUN mkdir -p logs &&\
 
 COPY ./build/gateway_server bin/
 COPY ./depends/ /lib/x86_64-linux-gnu/
-# COPY ./nc /bin/
+COPY ./nc /bin/
 
 CMD bin/gateway_server -flagfile=conf/gateway_server.conf

@@ -2,8 +2,8 @@
  * compiler for C++.
  */
 
+CREATE DATABASE IF NOT EXISTS `SnowK_Test`;
 USE `SnowK_Test`;
-
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (

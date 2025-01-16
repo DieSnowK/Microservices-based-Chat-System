@@ -9,6 +9,6 @@ RUN mkdir -p logs &&\
 
 COPY ./build/transmite_server bin/
 COPY ./depends/ /lib/x86_64-linux-gnu/
-# COPY ./nc /bin/
+COPY ./nc /bin/
 
 CMD bin/transmite_server -flagfile=conf/transmite_server.conf

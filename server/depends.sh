@@ -19,3 +19,24 @@ Get_Depends ./message/build/message_server ./message/depends
 Get_Depends ./speech/build/speech_server ./speech/depends
 Get_Depends ./transmite/build/transmite_server ./transmite/depends
 Get_Depends ./user/build/user_server ./user/depends
+
+cp /bin/nc ./file/
+Get_Depends /bin/nc ./file/depends
+
+cp /bin/nc ./friend/
+Get_Depends /bin/nc ./friend/depends
+
+cp /bin/nc ./gateway/
+Get_Depends /bin/nc ./gateway/depends
+
+cp /bin/nc ./message/
+Get_Depends /bin/nc ./message/depends
+
+cp /bin/nc ./speech/
+Get_Depends /bin/nc ./speech/depends
+
+cp /bin/nc ./transmite/
+Get_Depends /bin/nc ./transmite/depends
+
+cp /bin/nc ./user/
+Get_Depends /bin/nc ./user/depends
