@@ -4,7 +4,6 @@ DEFINE_bool(mode, false, "true: Release, false: Debug");
 DEFINE_string(log_file, "", "In Release, specify the output file of the log");
 DEFINE_int32(log_level, 0, "In Release, specify the log output level");
 
-
 DEFINE_string(registry_host, "http://127.0.0.1:2379", "Service registry address");
 DEFINE_string(access_host, "127.0.0.1:10005", "The external access address of the current instance");
 
@@ -28,7 +27,7 @@ DEFINE_string(mysql_cset, "utf8", "MySQL client character set");
 DEFINE_int32(mysql_pool_count, 4, "The maximum number of connections in a MySQL connection pool");
 
 DEFINE_string(mq_user, "root", "The Message Queuing server access username");
-DEFINE_string(mq_pswd, "SnowK8989", "Message Queuing server access password");
+DEFINE_string(mq_pwd, "SnowK8989", "Message Queuing server access password");
 DEFINE_string(mq_host, "127.0.0.1:5672", "The address of the Message Queuing server");
 DEFINE_string(mq_msg_exchange, "msg_exchange", "The name of the issuing switch for the persistent message");
 DEFINE_string(mq_msg_queue, "msg_queue", "The name of the publishing queue for the persistence message");
@@ -40,7 +39,7 @@ int main(int argc, char *argv[])
     SnowK::InitLogger(FLAGS_mode, FLAGS_log_file, FLAGS_log_level);
 
     SnowK::MessageServerBuilder msb;
-    msb.Make_Mq_Object(FLAGS_mq_user, FLAGS_mq_pswd, FLAGS_mq_host,
+    msb.Make_Mq_Object(FLAGS_mq_user, FLAGS_mq_pwd, FLAGS_mq_host,
                        FLAGS_mq_msg_exchange, FLAGS_mq_msg_queue, FLAGS_mq_msg_binding_key);
     msb.Make_Es_Object({FLAGS_es_host});
     msb.Make_MySQL_Object(FLAGS_mysql_user, FLAGS_mysql_pwd, FLAGS_mysql_host,
