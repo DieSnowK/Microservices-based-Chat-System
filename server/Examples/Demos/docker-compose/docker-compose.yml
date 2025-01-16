@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  test-v1:
+    image: test:v1
+    container_name: test-v1
+    depends_on:
+      - test-v2
+  test-v2:
+    image: test:v2
+    container_name: test-v2
+    depends_on:
+      - test-v3
+  test-v3:
+    build: ../docker/v2/ # Build a new image each time
+    container_name: test-v3
+
