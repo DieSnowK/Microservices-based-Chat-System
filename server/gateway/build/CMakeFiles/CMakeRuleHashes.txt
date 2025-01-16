@@ -1,0 +1,10 @@
+# Hashes of file build rules.
+4f17577c8fb3f65ecac67443b2771abe base.pb.cc
+fb07d9c53dc06304c712996745ebe2af file.pb.cc
+31726a375bb7821ef79777bc76b2e8fb friend.pb.cc
+f31f359e278f5d26b6dfb9e602158222 gateway.pb.cc
+e5f519e51e15f406a579e81edca68433 message.pb.cc
+f53180babbc394e980c9669cd5d6edb3 notify.pb.cc
+51adaea0ba756856d496ee738e58c2f0 speech.pb.cc
+9403b74e28e8d63655cb7902aa24f2ae transmite.pb.cc
+f2e1194842018f08ec1893ab705c044e user.pb.cc

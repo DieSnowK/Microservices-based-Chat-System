@@ -1,0 +1,14 @@
+FROM ubuntu:24.04
+
+WORKDIR /SnowK
+
+RUN mkdir -p logs &&\
+    mkdir -p data &&\
+    mkdir -p conf &&\
+    mkdir -p bin
+
+COPY ./build/user_server bin/
+COPY ./depends/ /lib/x86_64-linux-gnu/
+# COPY ./nc /bin/
+
+CMD bin/user_server -flagfile=conf/user_server.conf

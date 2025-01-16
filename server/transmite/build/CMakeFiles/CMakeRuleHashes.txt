@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+8a0b44f862374124b749c1fac24f185e base.pb.cc
+885b24ef987275a7c92330cf691e0f69 chat_session_member-odb.cxx
+6e6fb9a31026473e6e3317875bb24cdd transmite.pb.cc
+cb128fa94923ca1ca457e8130230e23f user.pb.cc
