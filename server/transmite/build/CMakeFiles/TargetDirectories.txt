@@ -1,9 +1,0 @@
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/transmite_server.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/transmite_client.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/trans_user_client.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/edit_cache.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/rebuild_cache.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/list_install_components.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/install.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/install/local.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/transmite/build/CMakeFiles/install/strip.dir

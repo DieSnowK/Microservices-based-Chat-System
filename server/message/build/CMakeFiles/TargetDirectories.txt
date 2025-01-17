@@ -1,8 +1,0 @@
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/message_server.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/message_client.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/edit_cache.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/rebuild_cache.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/list_install_components.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/install.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/install/local.dir
-/home/snowk/repository/Microservices-based-Chat-System/server/message/build/CMakeFiles/install/strip.dir
