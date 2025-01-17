@@ -2,7 +2,7 @@
 
 declare depends
 declare SVR_DIR
-SVR_DIR=$(pwd)/..
+SVR_DIR=$(dirname $(realpath $0))/..
 
 Get_Depends()
 {

@@ -21,7 +21,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=SnowK8989
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d/:rw # Tools provided by docker to initialize mysql dababases and tables
+      - ./src/sql:/docker-entrypoint-initdb.d/:rw # Tools provided by docker to initialize mysql dababases and tables
       - ./middle/data/mysql:/var/lib/mysql:rw
     ports:
       - 3306:3306
@@ -63,14 +63,14 @@ services:
 #############################################################################################################
 
   file_server:
-    build: ./file
+    build: ./core/file
     #image: file-server:v1
     container_name: file_server-service
     volumes:
       - ./conf/file_server.conf:/SnowK/conf/file_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10002:10002
     restart: always
@@ -81,13 +81,13 @@ services:
       - etcd
 
   friend_server:
-    build: ./friend
+    build: ./core/friend
     container_name: friend_server-service
     volumes:
       - ./conf/friend_server.conf:/SnowK/conf/friend_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10006:10006
     restart: always
@@ -99,13 +99,13 @@ services:
       /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,9200 -c "/SnowK/bin/friend_server -flagfile=/SnowK/conf/friend_server.conf"
 
   gateway_server:
-    build: ./gateway
+    build: ./core/gateway
     container_name: gateway_server-service
     volumes:
       - ./conf/gateway_server.conf:/SnowK/conf/gateway_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 9000:9000
       - 9001:9001
@@ -117,13 +117,13 @@ services:
       /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,6379 -c "/SnowK/bin/gateway_server -flagfile=/SnowK/conf/gateway_server.conf"
 
   message_server:
-    build: ./message
+    build: ./core/message
     container_name: message_server-service
     volumes:
       - ./conf/message_server.conf:/SnowK/conf/message_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10005:10005
     restart: always
@@ -136,13 +136,13 @@ services:
       /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,9200,5672 -c "/SnowK/bin/message_server -flagfile=/SnowK/conf/message_server.conf"
 
   speech_server:
-    build: ./speech
+    build: ./core/speech
     container_name: speech_server-service
     volumes:
       - ./conf/speech_server.conf:/SnowK/conf/speech_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10001:10001
     restart: always
@@ -152,13 +152,13 @@ services:
       /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379 -c "/SnowK/bin/speech_server -flagfile=/SnowK/conf/speech_server.conf"
 
   transmite_server:
-    build: ./transmite
+    build: ./core/transmite
     container_name: transmite_server-service
     volumes:
       - ./conf/transmite_server.conf:/SnowK/conf/transmite_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10004:10004
     restart: always
@@ -170,13 +170,13 @@ services:
       /SnowK/bin/entrypoint.sh -h 192.168.2.10 -p 2379,3306,5672 -c "/SnowK/bin/transmite_server -flagfile=/SnowK/conf/transmite_server.conf"
 
   user_server:
-    build: ./user
+    build: ./core/user
     container_name: user_server-service
     volumes:
       - ./conf/user_server.conf:/SnowK/conf/user_server.conf
-      - ./middle/data/logs:/SnowK/logs:rw
+      - ./middle/logs:/SnowK/logs:rw
       - ./middle/data/data:/SnowK/data:rw
-      - ./entrypoint.sh:/SnowK/bin/entrypoint.sh
+      - ./scripts/entrypoint.sh:/SnowK/bin/entrypoint.sh
     ports:
       - 10003:10003
     restart: always
