@@ -7,7 +7,7 @@ message UserInfo
 {
     string user_id = 1;     // 用户ID
     string nickname = 2;    // 昵称
-    string description = 3; //个人签名/描述
+    string description = 3; // 个人签名/描述
     string phone = 4;       // 绑定手机号
     bytes  avatar = 5;      // 头像照片，文件内容使用二进制
 }
@@ -48,7 +48,7 @@ message ImageMessageInfo
 
 message FileMessageInfo 
 {
-    optional string file_id = 1;    // 文件id,客户端发送的时候不用设置
+    optional string file_id = 1;    // 文件id, 客户端发送的时候不用设置
     optional int64 file_size = 2;   // 文件大小
     optional string file_name = 3;  // 文件名称
     // 文件数据，在ES中存储消息的时候只要id和元信息，不要文件数据, 服务端转发的时候也不需要填充

@@ -8,8 +8,20 @@
 
 namespace SnowK
 {
+    // RPC -> Remote Interface
     class FileServiceImpl : public SnowK::FileService
     {
+    private:
+        template <class T>
+        void Err_Response(T *response, const std::string &rid, const std::string &errmsg)
+        {
+            response->set_request_id(rid);
+            response->set_success(false);
+            response->set_errmsg(errmsg);
+
+            LOG_ERROR("{} - {}", rid, errmsg);
+        }
+
     public:
         FileServiceImpl(const std::string &storage_path) 
             : _storage_path(storage_path)
@@ -24,37 +36,36 @@ namespace SnowK
 
         ~FileServiceImpl() {}
 
-        void GetSingleFile(google::protobuf::RpcController *controller,
+        virtual void GetSingleFile(google::protobuf::RpcController *controller,
                            const ::SnowK::GetSingleFileReq *request,
                            ::SnowK::GetSingleFileRsp *response,
                            ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            response->set_request_id(request->request_id());
+            std::string rid = request->request_id();
 
             std::string fid = request->file_id();
             std::string filename = _storage_path + fid;
             std::string body;
             if (ReadFile(filename, body) == false)
             {
-                response->set_success(false);
-                response->set_errmsg("Failed to read file data");
-                LOG_ERROR("{} failed to read file data", request->request_id());
-                return;
+                return Err_Response<::SnowK::GetSingleFileRsp>(response, rid,
+                        "Failed to read file data");
             }
 
+            response->set_request_id(rid);
             response->set_success(true);
             response->mutable_file_data()->set_file_id(fid);
             response->mutable_file_data()->set_file_content(body);
         }
 
-        void GetMultiFile(google::protobuf::RpcController *controller,
-                          const ::SnowK::GetMultiFileReq *request,
-                          ::SnowK::GetMultiFileRsp *response,
-                          ::google::protobuf::Closure *done)
+        virtual void GetMultiFile(google::protobuf::RpcController *controller,
+                                    const ::SnowK::GetMultiFileReq *request,
+                                    ::SnowK::GetMultiFileRsp *response,
+                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            response->set_request_id(request->request_id());
+            std::string rid = request->request_id();
 
             for (int i = 0; i < request->file_id_list_size(); i++)
             {
@@ -63,10 +74,8 @@ namespace SnowK
                 std::string body;
                 if (ReadFile(filename, body) == false)
                 {
-                    response->set_success(false);
-                    response->set_errmsg("Failed to read file data");
-                    LOG_ERROR("{} failed to read file data", request->request_id());
-                    return;
+                    return Err_Response<::SnowK::GetMultiFileRsp>(response, rid,
+                        "Failed to read file data");
                 }
 
                 FileDownloadData data;
@@ -74,41 +83,42 @@ namespace SnowK
                 data.set_file_content(body);
                 response->mutable_file_data()->insert({fid, data});
             }
-            
+
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
-        void PutSingleFile(google::protobuf::RpcController *controller,
-                           const ::SnowK::PutSingleFileReq *request,
-                           ::SnowK::PutSingleFileRsp *response,
-                           ::google::protobuf::Closure *done)
+        virtual void PutSingleFile(google::protobuf::RpcController *controller,
+                                    const ::SnowK::PutSingleFileReq *request,
+                                    ::SnowK::PutSingleFileRsp *response,
+                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            response->set_request_id(request->request_id());
+            std::string rid = request->request_id();
+            
 
             std::string fid = UUID();
             std::string filename = _storage_path + fid;
             if (WriteFile(filename, request->file_data().file_content()) == false)
             {
-                response->set_success(false);
-                response->set_errmsg("Failed to write file data");
-                LOG_ERROR("{} failed to write file data", request->request_id());
-                return;
+                return Err_Response<::SnowK::PutSingleFileRsp>(response, rid,
+                        "Failed to write file data");
             }
 
+            response->set_request_id(rid);
             response->set_success(true);
             response->mutable_file_info()->set_file_id(fid);
             response->mutable_file_info()->set_file_size(request->file_data().file_size());
             response->mutable_file_info()->set_file_name(request->file_data().file_name());
         }
 
-        void PutMultiFile(google::protobuf::RpcController *controller,
-                          const ::SnowK::PutMultiFileReq *request,
-                          ::SnowK::PutMultiFileRsp *response,
-                          ::google::protobuf::Closure *done)
+        virtual void PutMultiFile(google::protobuf::RpcController *controller,
+                                    const ::SnowK::PutMultiFileReq *request,
+                                    ::SnowK::PutMultiFileRsp *response,
+                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            response->set_request_id(request->request_id());
+            std::string rid = request->request_id();
 
             for (int i = 0; i < request->file_data_size(); i++)
             {
@@ -116,10 +126,8 @@ namespace SnowK
                 std::string filename = _storage_path + fid;
                 if (WriteFile(filename, request->file_data(i).file_content()) == false)
                 {
-                    response->set_success(false);
-                    response->set_errmsg("Failed to write file data");
-                    LOG_ERROR("{} failed to write file data", request->request_id());
-                    return;
+                    return Err_Response<::SnowK::PutMultiFileRsp>(response, rid,
+                            "Failed to write file data");
                 }
 
                 SnowK::FileMessageInfo *info = response->add_file_info();
@@ -127,7 +135,8 @@ namespace SnowK
                 info->set_file_size(request->file_data(i).file_size());
                 info->set_file_name(request->file_data(i).file_name());
             }
-            
+
+            response->set_request_id(rid);
             response->set_success(true);
         }
 

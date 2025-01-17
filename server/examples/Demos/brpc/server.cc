@@ -48,9 +48,9 @@ int main(int argc, char* argv[])
     // 3.启动服务器
     brpc::ServerOptions options;
     options.idle_timeout_sec = -1; // 连接空闲超时时间, 超时后连接被关闭
-    options.num_threads = 1; // IO线程数量
+    options.num_threads = 1;       // IO线程数量
 
-    if(server.Start(3366, &options) == -1)
+    if(server.Start(3366, &options) == -1) // 开始监听 IP:PORT
     {
         std::cout << "启动服务器失败" << std::endl;
         return -1;

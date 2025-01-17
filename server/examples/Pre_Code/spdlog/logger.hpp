@@ -30,7 +30,7 @@ namespace SnowK
     }
 
     // __VA_ARGS__: Extract variadics
-    // ##: Make sure that no extra commas are generated when there are no variadas to avoid syntax errors
+    // ##: Make sure that no extra [,] are generated when there are no variadas to avoid syntax errors
     #define LOG_TRACE(format, ...) SnowK::g_logger->trace(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
     #define LOG_DEBUG(format, ...) SnowK::g_logger->debug(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
     #define LOG_INFO(format, ...) SnowK::g_logger->info(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)

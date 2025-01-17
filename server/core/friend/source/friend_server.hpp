@@ -21,6 +21,17 @@ namespace SnowK
 {
     class FriendServiceImpl : public SnowK::FriendService
     {
+    private:
+        template<class T>
+        void Err_Response(T* response, const std::string &rid, const std::string &errmsg)
+        {
+            response->set_request_id(rid);
+            response->set_success(false);
+            response->set_errmsg(errmsg);
+
+            LOG_ERROR("{} - {}", rid, errmsg);
+        }
+
     public:
         FriendServiceImpl(const std::shared_ptr<elasticlient::Client> &es_client,
                           const std::shared_ptr<odb::core::database> &mysql_client,
@@ -39,19 +50,11 @@ namespace SnowK
         ~FriendServiceImpl() {}
 
         virtual void GetFriendList(::google::protobuf::RpcController *controller,
-                                   const ::SnowK::GetFriendListReq *request,
-                                   ::SnowK::GetFriendListRsp *response,
-                                   ::google::protobuf::Closure *done)
+                                    const ::SnowK::GetFriendListReq *request,
+                                    ::SnowK::GetFriendListRsp *response,
+                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -66,8 +69,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_list;
             if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
-                return Err_Response(rid, "Failed to obtain user information in batches");
+                return Err_Response<::SnowK::GetFriendListRsp>(response, rid, 
+                        "Failed to obtain user information in batches");
             }
 
             response->set_request_id(rid);
@@ -80,19 +83,11 @@ namespace SnowK
         }
 
         virtual void FriendRemove(::google::protobuf::RpcController *controller,
-                                  const ::SnowK::FriendRemoveReq *request,
-                                  ::SnowK::FriendRemoveRsp *response,
-                                  ::google::protobuf::Closure *done)
+                                    const ::SnowK::FriendRemoveReq *request,
+                                    ::SnowK::FriendRemoveRsp *response,
+                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -100,14 +95,14 @@ namespace SnowK
             
             if (_mysql_relation->Remove(uid, pid) == false)
             {
-                LOG_ERROR("{} - Failed to delete friend information from the database", rid);
-                return Err_Response(rid, "Failed to delete friend information from the database");
+                return Err_Response<::SnowK::FriendRemoveRsp>(response, rid, 
+                        "Failed to delete friend information from the database");
             }
 
             if (_mysql_chat_session->Remove(uid, pid) == false)
             {
-                LOG_ERROR("{}- Failed to delete friend session information from the database", rid);
-                return Err_Response(rid, "Failed to delete friend session information from the database");
+                return Err_Response<::SnowK::FriendRemoveRsp>(response, rid, 
+                        "Failed to delete friend session information from the database");
             }
 
             response->set_request_id(rid);
@@ -120,14 +115,6 @@ namespace SnowK
                                ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -135,24 +122,22 @@ namespace SnowK
 
             if (_mysql_relation->Exists(uid, pid) == true)
             {
-                LOG_ERROR("{} - Failed to apply for friends, {}-{} is already a friend", 
-                          rid, uid, pid);
-                return Err_Response(rid, "The two are already friends!");
+                return Err_Response<::SnowK::FriendAddRsp>(response, rid,
+                        "The two are already friends");
             }
 
             if (_mysql_apply->Exists(uid, pid) == true)
             {
-                LOG_ERROR("{} - Failed to apply for a friend, have already applied \
-                          for a friend of the other party", rid, uid, pid);
-                return Err_Response(rid, "have already applied for a friend of the other party");
+                return Err_Response<::SnowK::FriendAddRsp>(response, rid,
+                        "Have already applied for a friend of the other party");
             }
 
             std::string eid = UUID();
             FriendApply ev(eid, uid, pid);
             if (_mysql_apply->Insert(ev) == false)
             {
-                LOG_ERROR("{} - Failed to add a friend event to the database", rid);
-                return Err_Response(rid, "Failed to add a friend event to the database");
+                return Err_Response<::SnowK::FriendAddRsp>(response, rid,
+                        "Failed to add a friend event to the database");
             }
 
             response->set_request_id(rid);
@@ -166,14 +151,6 @@ namespace SnowK
                                       ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string eid = request->notify_event_id();
@@ -182,15 +159,14 @@ namespace SnowK
 
             if (_mysql_apply->Exists(pid, uid) == false)
             {
-                LOG_ERROR("{} - No friend request events were found for {}-{}", 
-                          rid, pid, uid);
-                return Err_Response(rid, "No friend request event found");
+                return Err_Response<::SnowK::FriendAddProcessRsp>(response, rid,
+                        "No friend request event found");
             }
 
             if (_mysql_apply->Remove(pid, uid) == false)
             {
-                LOG_ERROR("{} - Failed to delete request event {}-{} from the database", rid, pid, uid);
-                return Err_Response(rid, "Failed to delete request event from the database");
+                return Err_Response<::SnowK::FriendAddProcessRsp>(response, rid,
+                        "Failed to delete request event from the database");
             }
 
             std::string cssid;
@@ -198,17 +174,16 @@ namespace SnowK
             {
                 if (_mysql_relation->Insert(uid, pid) == false)
                 {
-                    LOG_ERROR("{} - Failed to add friend relationship information: {}-{}", 
-                              rid, uid, pid);
-                    return Err_Response(rid, "Failed to add friend relationship information");
+                    return Err_Response<::SnowK::FriendAddProcessRsp>(response, rid,
+                            "Failed to add friend relationship information");
                 }
 
                 cssid = UUID();
                 ChatSession cs(cssid, "", ChatSessionType::SINGLE);
                 if (_mysql_chat_session->Insert(cs) == false)
                 {
-                    LOG_ERROR("{} - Failed to add one-to-one chat session information: {}", rid, cssid);
-                    return Err_Response(rid, "Failed to add one-to-one chat session information");
+                    return Err_Response<::SnowK::FriendAddProcessRsp>(response, rid,
+                            "Failed to add one-to-one chat session information");
                 }
 
                 ChatSessionMember csm1(cssid, uid);
@@ -216,8 +191,8 @@ namespace SnowK
                 std::vector<ChatSessionMember> mlist = {csm1, csm2};
                 if (_mysql_chat_session_member->Append(mlist) == false)
                 {
-                    LOG_ERROR("{} - Failed to insert session member: {}-{}", rid, pid, uid);
-                    return Err_Response(rid, "Inserting session member failed");
+                    return Err_Response<::SnowK::FriendAddProcessRsp>(response, rid,
+                            "Inserting session member failed");
                 }
             }
 
@@ -232,14 +207,6 @@ namespace SnowK
                                   ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -258,8 +225,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_list;
             if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
-                return Err_Response(rid, "Failed to obtain user information in batches");
+                return Err_Response<::SnowK::FriendSearchRsp>(response, rid,
+                        "Failed to obtain user information in batches");
             }
 
             response->set_request_id(rid);
@@ -277,14 +244,6 @@ namespace SnowK
                                                ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -299,8 +258,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_list;
             if (GetUserInfo(rid, user_id_lists, user_list) == false)
             {
-                LOG_ERROR("{} - Failed to obtain user information in batches", rid);
-                return Err_Response(rid, "Failed to obtain user information in batches");
+                return Err_Response<::SnowK::GetPendingFriendEventListRsp>(response, rid,
+                        "Failed to obtain user information in batches");
             }
 
             response->set_request_id(rid);
@@ -320,14 +279,6 @@ namespace SnowK
                                         ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -342,8 +293,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_list;
             if (GetUserInfo(rid, users_id_list, user_list) == false)
             {
-                LOG_ERROR("{} - Failed to get user information in bulk", rid);
-                return Err_Response(rid, "Failed to get user information in bulk");
+                return Err_Response<::SnowK::GetChatSessionListRsp>(response, rid,
+                        "Failed to get user information in bulk");
             }
 
             for (const auto &f : sf_list)
@@ -388,14 +339,6 @@ namespace SnowK
                                        ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -405,8 +348,8 @@ namespace SnowK
             ChatSession cs(cssid, cssname, ChatSessionType::GROUP);
             if (_mysql_chat_session->Insert(cs) == false)
             {
-                LOG_ERROR("{} - Failed to add session information to the database: {}", rid, cssname);
-                return Err_Response(rid, "Failed to add session information to the database");
+                return Err_Response<::SnowK::ChatSessionCreateRsp>(response, rid,
+                        "Failed to add session information to the database");
             }
 
             std::vector<ChatSessionMember> member_list;
@@ -418,9 +361,8 @@ namespace SnowK
 
             if (_mysql_chat_session_member->Append(member_list) == false)
             {
-                LOG_ERROR("{} - Failed to add session member information to the database: {}", 
-                          rid, cssname);
-                return Err_Response(rid, "Failed to add session member information to the database");
+                return Err_Response<::SnowK::ChatSessionCreateRsp>(response, rid,
+                        "Failed to add session member information to the database");
             }
 
             response->set_request_id(rid);
@@ -436,14 +378,6 @@ namespace SnowK
                                           ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -459,8 +393,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_list;
             if (GetUserInfo(rid, uid_list, user_list) == false)
             {
-                LOG_ERROR("{} - Failed to get user information from user subservice", rid);
-                return Err_Response(rid, "Failed to get user information from user subservice");
+                return Err_Response<::SnowK::GetChatSessionMemberRsp>(response, rid,
+                        "Failed to get user information from user subservice");
             }
 
             response->set_request_id(rid);
