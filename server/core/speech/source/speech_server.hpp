@@ -32,7 +32,7 @@ namespace SnowK
 
                 response->set_request_id(request->request_id());
                 response->set_success(false);
-                response->set_errmsg("speech recognition failed:" + err);
+                response->set_errmsg("Speech recognition failed: " + err);
 
                 return;
             }
@@ -46,17 +46,14 @@ namespace SnowK
         ASRClient::ptr _asr_client;
     }; // end of SpeechServiceImpl
 
-    // TODO 考虑是否维护这么多成员变量
     class SpeechServer
     {
     public:
         using ptr = std::shared_ptr<SpeechServer>;
 
-        SpeechServer(const ASRClient::ptr &asr_client,
-                     const Registry::ptr &reg_client,
+        SpeechServer(const Registry::ptr &reg_client,
                      const std::shared_ptr<brpc::Server> &server)
-            : _asr_client(asr_client)
-            , _reg_client(reg_client)
+            : _reg_client(reg_client)
             , _rpc_server(server) 
         {}
         
@@ -68,13 +65,12 @@ namespace SnowK
         }
 
     private:
-        ASRClient::ptr _asr_client;
         Registry::ptr _reg_client;
         std::shared_ptr<brpc::Server> _rpc_server;
     }; // end of SpeechServer
 
     // Builder Pattern
-    // SpeechServer构造依赖一定次序
+    // SpeechServer structure relies on a certain order
     class SpeechServerBuilder
     {
     public:
@@ -122,11 +118,6 @@ namespace SnowK
 
         SpeechServer::ptr Build()
         {
-            if (!_asr_client)
-            {
-                LOG_ERROR("The speech recognition module has not been initialized");
-                abort();
-            }
             if (!_reg_client)
             {
                 LOG_ERROR("The service registration module has not been initialized");
@@ -138,9 +129,7 @@ namespace SnowK
                 abort();
             }
 
-            SpeechServer::ptr server = std::make_shared<SpeechServer>(
-                _asr_client, _reg_client, _rpc_server);
-
+            SpeechServer::ptr server = std::make_shared<SpeechServer>(_reg_client, _rpc_server);
             return server;
         }
 

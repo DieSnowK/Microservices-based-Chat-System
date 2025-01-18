@@ -9,7 +9,6 @@
 
 namespace SnowK
 {
-    // TODO 研究随机化
     // 生成一个由16位随机字符组成的字符串作为唯一ID
     std::string UUID()
     {
@@ -46,7 +45,6 @@ namespace SnowK
         return ss.str();
     }
 
-    // TODO 研究流输入输出
     bool ReadFile(const std::string &filename, std::string &body)
     {
         std::ifstream ifs(filename, std::ios::binary | std::ios::in);

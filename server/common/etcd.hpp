@@ -30,7 +30,8 @@ namespace SnowK
             auto resp = _client->put(key, val, _lease_id).get();
             if (resp.is_ok() == false)
             {
-                LOG_ERROR("Registration data failed: {}", resp.error_message());
+                LOG_ERROR("Failed to register data: {}", resp.error_message());
+
                 return false;
             }
 

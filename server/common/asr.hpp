@@ -8,6 +8,7 @@ namespace SnowK
     {
     public:
         using ptr = std::shared_ptr<ASRClient>;
+
         ASRClient(const std::string &app_id, const std::string &api_key, const std::string &secret_key)
             : _client(app_id, api_key, secret_key)
         {}
@@ -18,8 +19,8 @@ namespace SnowK
 
             if (result["err_no"].asInt() != 0)
             {
-                LOG_ERROR("Faild to recognize: {}", result["err_msg"].asString());
                 err = result["err_msg"].asString();
+                LOG_ERROR("Faild to recognize: {}", err);
 
                 return std::string();
             }
