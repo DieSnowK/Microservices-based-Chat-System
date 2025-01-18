@@ -43,9 +43,10 @@ namespace SnowK
             , _mysql_chat_session(std::make_shared<ChatSessionTable>(mysql_client))
             , _mysql_chat_session_member(std::make_shared<ChatSessionMemeberTable>(mysql_client))
             , _mysql_relation(std::make_shared<RelationTable>(mysql_client))
+            , _svrmgr_channels(channel_manager)
             , _user_service_name(user_service_name)
             , _message_service_name(message_service_name)
-            , _svrmgr_channels(channel_manager) 
+             
         {}
         ~FriendServiceImpl() {}
 
