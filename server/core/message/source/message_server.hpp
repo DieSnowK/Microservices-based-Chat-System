@@ -19,6 +19,17 @@ namespace SnowK
 {
     class MessageServiceImpl : public SnowK::MsgStorageService
     {
+    private:
+        template <class T>
+        void Err_Response(T *response, const std::string &rid, const std::string &errmsg)
+        {
+            response->set_request_id(rid);
+            response->set_success(false);
+            response->set_errmsg(errmsg);
+
+            LOG_ERROR("{} - {}", rid, errmsg);
+        }
+
     public:
         MessageServiceImpl(const std::shared_ptr<elasticlient::Client> &es_client,
                            const std::shared_ptr<odb::core::database> &mysql_client,
@@ -42,14 +53,6 @@ namespace SnowK
                                    ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string chat_ssid = request->chat_session_id();
@@ -81,8 +84,8 @@ namespace SnowK
             std::unordered_map<std::string, std::string> file_data_lists;
             if (_GetFile(rid, file_id_lists, file_data_lists) == false)
             {
-                LOG_ERROR("{} - Failed to download batch file data", rid);
-                return Err_Response(rid, "Failed to download batch file data");
+                return Err_Response<::SnowK::GetHistoryMsgRsp>(response, rid,
+                        "Failed to download batch file data");
             }
 
             // Collects the sender user ID of all messages
@@ -96,8 +99,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_lists;
             if (_GetUser(rid, user_id_lists, user_lists) == false)
             {
-                LOG_ERROR("{} - Failed to obtain bulk user data", rid);
-                return Err_Response(rid, "Failed to obtain bulk user data");
+                return Err_Response<::SnowK::GetHistoryMsgRsp>(response, rid,
+                        "Failed to obtain bulk user data");
             }
 
             // Organize responses
@@ -149,14 +152,6 @@ namespace SnowK
                                   ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string chat_ssid = request->chat_session_id();
@@ -187,8 +182,8 @@ namespace SnowK
             std::unordered_map<std::string, std::string> file_data_lists;
             if (_GetFile(rid, file_id_lists, file_data_lists) == false)
             {
-                LOG_ERROR("{} - Failed to download batch file data", rid);
-                return Err_Response(rid, "Failed to download batch file data");
+                return Err_Response<::SnowK::GetRecentMsgRsp>(response, rid,
+                        "Failed to download batch file data");
             }
 
             // Collects the sender user ID of all messages
@@ -202,8 +197,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_lists;
             if (_GetUser(rid, user_id_lists, user_lists) == false)
             {
-                LOG_ERROR("{} - Failed to obtain bulk user data", rid);
-                return Err_Response(rid, "Failed to obtain bulk user data");
+                return Err_Response<::SnowK::GetRecentMsgRsp>(response, rid,
+                        "Failed to obtain bulk user data");
             }
 
             // Organize responses
@@ -256,14 +251,6 @@ namespace SnowK
                                ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string chat_ssid = request->chat_session_id();
@@ -288,8 +275,8 @@ namespace SnowK
             std::unordered_map<std::string, UserInfo> user_lists;
             if (_GetUser(rid, user_id_lists, user_lists) == false)
             {
-                LOG_ERROR("{} - Failed to obtain bulk user data", rid);
-                return Err_Response(rid, "Failed to obtain bulk user data");
+                return Err_Response<::SnowK::MsgSearchRsp>(response, rid,
+                        "Failed to obtain bulk user data");
             }
 
             // Organize responses

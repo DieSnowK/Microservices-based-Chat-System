@@ -14,6 +14,17 @@ namespace SnowK
 {
     class TransmiteServiceImpl : public SnowK::MsgTransmitService
     {
+    private:
+        template <class T>
+        void Err_Response(T *response, const std::string &rid, const std::string &errmsg)
+        {
+            response->set_request_id(rid);
+            response->set_success(false);
+            response->set_errmsg(errmsg);
+
+            LOG_ERROR("{} - {}", rid, errmsg);
+        }
+
     public:
         TransmiteServiceImpl(const std::string &user_service_name,
                              const ServiceManager::ptr &channels,
@@ -36,14 +47,6 @@ namespace SnowK
                                ::google::protobuf::Closure *done) override
         {
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
             std::string rid = request->request_id();
             std::string uid = request->user_id();
@@ -53,8 +56,8 @@ namespace SnowK
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{}-{} There are no user subservice nodes available for access", rid, _user_service_name);
-                return Err_Response(rid, "There are no user subservice nodes available for access");
+                return Err_Response<::SnowK::GetTransmitTargetRsp>(response, rid,
+                        "There are no user subservice nodes available for access");
             }
 
             // Get sender information
@@ -68,8 +71,8 @@ namespace SnowK
             stub.GetUserInfo(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed() == true || rsp.success() == false)
             {
-                LOG_ERROR("{} - User subservice call failed: {}", request->request_id(), cntl.ErrorText());
-                return Err_Response(request->request_id(), "User subservice call failed");
+                return Err_Response<::SnowK::GetTransmitTargetRsp>(response, rid,
+                        "User subservice call failed");
             }
 
             // Organize information
@@ -84,8 +87,8 @@ namespace SnowK
             // message queue and the message storage subservice is persisted
             if (_mq_client->Publish(_exchange_name, message.SerializeAsString(), _routing_key) == false)
             {
-                LOG_ERROR("{} - Failed to publish a persistent message: {}", request->request_id(), cntl.ErrorText());
-                return Err_Response(request->request_id(), "Failed to publish a persistent message");
+                return Err_Response<::SnowK::GetTransmitTargetRsp>(response, rid,
+                        "Failed to publish a persistent message");
             }
 
             // Obtain the list of users of the message forwarding client

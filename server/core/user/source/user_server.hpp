@@ -26,6 +26,17 @@ namespace SnowK
 {
     class UserServiceImpl : public SnowK::UserService
     {
+    private:
+        template <class T>
+        void Err_Response(T *response, const std::string &rid, const std::string &errmsg)
+        {
+            response->set_request_id(rid);
+            response->set_success(false);
+            response->set_errmsg(errmsg);
+
+            LOG_ERROR("{} - {}", rid, errmsg);
+        }
+
     public:
         UserServiceImpl(const DMSClient::ptr &dms_client,
                         const std::shared_ptr<elasticlient::Client> &es_client,
@@ -54,48 +65,43 @@ namespace SnowK
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
 
-            // Define an error handler that is called when an error occurs
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
-
+            std::string rid = request->request_id();
             std::string nickname = request->nickname();
             std::string password = request->password();
+
             if (Nickname_Check(nickname) == false)
             {
-                return Err_Response(request->request_id(), "The username length is invalid");
+                return Err_Response<::SnowK::UserRegisterRsp>(response, rid,
+                        "The username length is invalid");
             }
 
             if (Password_Check(password) == false)
             {
-                return Err_Response(request->request_id(), "The password format is invalid");
+                return Err_Response<::SnowK::UserRegisterRsp>(response, rid,
+                        "The password format is invalid");
             }
 
             if (_mysql_user->Select_By_Nickname(nickname))
             {
-                return Err_Response(request->request_id(), "The username is occupied");
+                return Err_Response<::SnowK::UserRegisterRsp>(response, rid,
+                        "The username is occupied");
             }
 
             std::string uid = UUID();
             auto user = std::make_shared<User>(uid, nickname, password);
             if (_mysql_user->Insert(user) == false)
             {
-                LOG_ERROR("{} - Failed to add data to MySQL database", request->request_id());
-                return Err_Response(request->request_id(), "Failed to add data to MySQL database");
+                return Err_Response<::SnowK::UserRegisterRsp>(response, rid,
+                        "Failed to add data to MySQL database");
             }
 
             if (_es_user->AppendData(uid, "", nickname, "", "") == false)
             {
-                LOG_ERROR("{} - ES search engine failed to add data", request->request_id());
-                return Err_Response(request->request_id(), "ES search engine failed to add data");
+                return Err_Response<::SnowK::UserRegisterRsp>(response, rid,
+                        "ES search engine failed to add data");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -106,27 +112,22 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string nickname = request->nickname();
             std::string password = request->password();
             
             auto user = _mysql_user->Select_By_Nickname(nickname);
             if (!user || password != user->Password())
             {
-                return Err_Response(request->request_id(), "Wrong username or password");
+                return Err_Response<::SnowK::UserLoginRsp>(response, rid,
+                        "Wrong username or password");
             }
 
             if (_redis_status->Exists(user->User_Id()))
             {
-                return Err_Response(request->request_id(), "The user is already logged in elsewhere");
+                return Err_Response<::SnowK::UserLoginRsp>(response, rid,
+                        "The user is already logged in elsewhere");
             }
 
             // Construct session ID, generate session key-value pairs, 
@@ -135,7 +136,7 @@ namespace SnowK
             _redis_session->Append(ssid, user->User_Id());
             _redis_status->Append(user->User_Id());
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_login_session_id(ssid);
             response->set_success(true);
         }
@@ -147,32 +148,26 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string phone = request->phone_number();
             if (Phone_Check(phone) == false)
             {
-                return Err_Response(request->request_id(), "The mobile phone number is in the wrong format");
+                return Err_Response<::SnowK::PhoneVerifyCodeRsp>(response, rid,
+                        "The mobile phone number is in the wrong format");
             }
 
             std::string code_id = UUID();
             std::string code = VerifyCode();
             if (_dms_client->Send(phone, code) == false)
             {
-                LOG_ERROR("{} - The SMS verification code failed to be sent - {}", request->request_id(), phone);
-                return Err_Response(request->request_id(), "The SMS verification code failed to be sent");
+                return Err_Response<::SnowK::PhoneVerifyCodeRsp>(response, rid,
+                        "The mobile phone number is in the wrong format");
             }
 
             _redis_codes->Append(code_id, code);
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
             response->set_verify_code_id(code_id);
         }
@@ -184,50 +179,46 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string phone = request->phone_number();
             std::string code_id = request->verify_code_id();
             std::string code = request->verify_code();
 
             if (Phone_Check(phone) == false)
             {
-                return Err_Response(request->request_id(), "The mobile phone number is in the wrong format");
+                return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
+                        "The mobile phone number is in the wrong format");
             }
 
             // TODO OptionalString?
             if (_redis_codes->Code(code_id) != code)
             {
-                return Err_Response(request->request_id(), "The verification code is incorrect");
+                return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
+                        "The verification code is incorrect");
             }
 
             if (_mysql_user->Select_By_Phone(phone))
             {
-                return Err_Response(request->request_id(), "The mobile phone number has already been registered as a user");
+                return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
+                        "The mobile phone number has already been registered as a user");
             }
 
             std::string uid = UUID();
             auto user = std::make_shared<User>(uid, phone);
             if (_mysql_user->Insert(user) == false)
             {
-                LOG_ERROR("{} - Failed to add user information to the database - {}", request->request_id(), phone);
-                return Err_Response(request->request_id(), "Failed to add user information to the database");
+                return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
+                        "Failed to add user information to the database");
             }
 
             if (_es_user->AppendData(uid, phone, uid, "", "") == false)
             {
-                LOG_ERROR("{} - Failed to add user information to the es server", request->request_id());
-                return Err_Response(request->request_id(), "Failed to add user information to the es server");
+                return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
+                        "Failed to add user information to the es server");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -238,45 +229,42 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string phone = request->phone_number();
             std::string code_id = request->verify_code_id();
             std::string code = request->verify_code();
             if (Phone_Check(phone) == false)
             {
-                return Err_Response(request->request_id(), "The mobile phone number is in the wrong format");
+                return Err_Response<::SnowK::PhoneLoginRsp>(response, rid,
+                        "The mobile phone number is in the wrong format");
             }
 
             auto user = _mysql_user->Select_By_Phone(phone);
             if (!user)
             {
-                return Err_Response(request->request_id(), "The mobile phone number is not a registered user");
+                return Err_Response<::SnowK::PhoneLoginRsp>(response, rid,
+                        "The mobile phone number is not a registered user");
             }
 
             if (_redis_codes->Code(code_id) != code)
             {
-                return Err_Response(request->request_id(), "The verification code is incorrect");
+                return Err_Response<::SnowK::PhoneLoginRsp>(response, rid,
+                        "The verification code is incorrect");
             }
             _redis_codes->Remove(code_id);
 
             if (_redis_status->Exists(user->User_Id()))
             {
-                return Err_Response(request->request_id(), "The user is already logged in elsewhere");
+                return Err_Response<::SnowK::PhoneLoginRsp>(response, rid,
+                        "The user is already logged in elsewhere");
             }
 
             std::string ssid = UUID();
             _redis_session->Append(ssid, user->User_Id());
             _redis_status->Append(user->User_Id());
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_login_session_id(ssid);
             response->set_success(true);
         }
@@ -288,20 +276,14 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string uid = request->user_id();
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
-                return Err_Response(request->request_id(), "User information not found");
+                return Err_Response<::SnowK::GetUserInfoRsp>(response, rid,
+                        "User information not found");
             }
 
             UserInfo *user_info = response->mutable_user_info();
@@ -315,9 +297,8 @@ namespace SnowK
                 auto channel = _svrmgr_channels->Choose(_file_service_name);
                 if (!channel)
                 {
-                    LOG_ERROR("{} - The File Management subservice node was not found - {} - {}",
-                              request->request_id(), _file_service_name, uid);
-                    return Err_Response(request->request_id(), "The File Management subservice node was not found");
+                    return Err_Response<::SnowK::GetUserInfoRsp>(response, rid,
+                            "The File Management subservice node was not found");
                 }
 
                 SnowK::FileService_Stub stub(channel.get());
@@ -330,13 +311,13 @@ namespace SnowK
                 stub.GetSingleFile(&cntl, &req, &rsp, nullptr);
                 if (cntl.Failed() == true || rsp.success() == false)
                 {
-                    LOG_ERROR("{} - File subservice call failed {}", request->request_id(), cntl.ErrorText());
-                    return Err_Response(request->request_id(), "File subservice call failed");
+                    return Err_Response<::SnowK::GetUserInfoRsp>(response, rid,
+                            "File subservice call failed");
                 }
                 user_info->set_avatar(rsp.file_data().file_content());
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -347,14 +328,8 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
+
+            std::string rid = request->request_id();
 
             std::vector<std::string> uid_lists;
             for (int i = 0; i < request->users_id_size(); i++)
@@ -365,18 +340,15 @@ namespace SnowK
             auto users = _mysql_user->Select_Multi_Users(uid_lists);
             if (users.size() != request->users_id_size())
             {
-                LOG_ERROR("{} - The number of user information looked up from the database is inconsistent {} - {}",
-                          request->request_id(), request->users_id_size(), users.size());
-                return Err_Response(request->request_id(), "The number of user information \
-                                    looked up from the database is inconsistent");
+                return Err_Response<::SnowK::GetMultiUserInfoRsp>(response, rid,
+                        "The number of user information looked up from the database is inconsistent");
             }
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} - The File Management subservice node was not found - {}", 
-                          request->request_id(), _file_service_name);
-                return Err_Response(request->request_id(), "The File Management subservice node was not found");
+                return Err_Response<::SnowK::GetMultiUserInfoRsp>(response, rid,
+                        "The File Management subservice node was not found");
             }
 
             SnowK::FileService_Stub stub(channel.get());
@@ -397,9 +369,8 @@ namespace SnowK
             stub.GetMultiFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed() == true || rsp.success() == false)
             {
-                LOG_ERROR("{} - File subservice call failed {} - {}", request->request_id(),
-                          _file_service_name, cntl.ErrorText());
-                return Err_Response(request->request_id(), "File subservice call failed");
+                return Err_Response<::SnowK::GetMultiUserInfoRsp>(response, rid,
+                        "File subservice call failed");
             }
 
             for (auto &user : users)
@@ -417,7 +388,7 @@ namespace SnowK
                 (*user_map)[user_info.user_id()] = user_info;
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -428,28 +399,21 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
-            
+
+            std::string rid = request->request_id();
             std::string uid = request->user_id();
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
-                return Err_Response(request->request_id(), "User information not found");
+                return Err_Response<::SnowK::SetUserAvatarRsp>(response, rid,
+                        "User information not found");
             }
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} - The File Management subservice node was not found - {}", 
-                          request->request_id(), _file_service_name);
-                return Err_Response(request->request_id(), "The File Management subservice node was not found");
+                return Err_Response<::SnowK::SetUserAvatarRsp>(response, rid,
+                        "The File Management subservice node was not found");
             }
 
             SnowK::FileService_Stub stub(channel.get());
@@ -464,26 +428,26 @@ namespace SnowK
             stub.PutSingleFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed() == true || rsp.success() == false)
             {
-                LOG_ERROR("{} - File subservice call failed {}", request->request_id(), cntl.ErrorText());
-                return Err_Response(request->request_id(), "File subservice call failed");
+                return Err_Response<::SnowK::SetUserAvatarRsp>(response, rid,
+                        "File subservice call failed");
             }
 
             std::string avatar_id = rsp.file_info().file_id();
             user->Avatar_Id(avatar_id);
             if (_mysql_user->Update(user) == false)
             {
-                LOG_ERROR("{} - Failed to update user avatar ID to database {}", request->request_id(), avatar_id);
-                return Err_Response(request->request_id(), "Failed to update user avatar ID to database");
+                return Err_Response<::SnowK::SetUserAvatarRsp>(response, rid,
+                        "Failed to update user avatar ID to database");
             }
 
             if (_es_user->AppendData(user->User_Id(), user->Phone(),
                                      user->Nickname(), user->Description(), user->Avatar_Id()) == false)
             {
-                LOG_ERROR("{} - Failed to update user avatar ID to search engine {}", request->request_id(), avatar_id);
-                return Err_Response(request->request_id(), "Failed to update user avatar ID to search engine");
+                return Err_Response<::SnowK::SetUserAvatarRsp>(response, rid,
+                        "Failed to update user avatar ID to search engine");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -494,43 +458,38 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string new_nickname = request->nickname();
             if (Nickname_Check(new_nickname) == false)
             {
-                return Err_Response(request->request_id(), "The username length is invalid");
+                return Err_Response<::SnowK::SetUserNicknameRsp>(response, rid,
+                        "The username length is invalid");
             }
 
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
-                return Err_Response(request->request_id(), "User information not found");
+                return Err_Response<::SnowK::SetUserNicknameRsp>(response, rid,
+                        "User information not found");
             }
 
             user->Nickname(new_nickname);
             if (_mysql_user->Update(user) == false)
             {
-                LOG_ERROR("{} - Failed to update user nickname to database {}", request->request_id(), new_nickname);
-                return Err_Response(request->request_id(), "Failed to update user nickname to database");
+                return Err_Response<::SnowK::SetUserNicknameRsp>(response, rid,
+                        "Failed to update user nickname to database");
             }
 
             if (_es_user->AppendData(user->User_Id(), user->Phone(),
                                      user->Nickname(), user->Description(), user->Avatar_Id()) == false)
             {
-                LOG_ERROR("{} - Failed to update user nickname to search engine {}", request->request_id(), new_nickname);
-                return Err_Response(request->request_id(), "Failed to update user nickname to search engine");
+                return Err_Response<::SnowK::SetUserNicknameRsp>(response, rid,
+                        "Failed to update user nickname to search engine");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -541,39 +500,33 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string new_description = request->description();
 
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
-                return Err_Response(request->request_id(), "User information not found");
+                return Err_Response<::SnowK::SetUserDescriptionRsp>(response, rid,
+                        "User information not found");
             }
 
             user->Description(new_description);
             if (_mysql_user->Update(user) == false)
             {
-                LOG_ERROR("{} - Failed to update user description to database {}", request->request_id(), new_description);
-                return Err_Response(request->request_id(), "Failed to update user description to database {}");
+                return Err_Response<::SnowK::SetUserDescriptionRsp>(response, rid,
+                        "Failed to update user description to database");
             }
 
             if (_es_user->AppendData(user->User_Id(), user->Phone(),
                                      user->Nickname(), user->Description(), user->Avatar_Id()) == false)
             {
-                LOG_ERROR("{} - Failed to update user description to search engine {}", request->request_id(), new_description);
-                return Err_Response(request->request_id(), "Failed to update user description to search engine");
+                return Err_Response<::SnowK::SetUserDescriptionRsp>(response, rid,
+                        "Failed to update user description to search engine");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
@@ -584,15 +537,8 @@ namespace SnowK
         {
             LOG_DEBUG("Received request");
             brpc::ClosureGuard rpc_guard(done);
-            auto Err_Response = [this, response](const std::string &rid,
-                                                 const std::string &errmsg) -> void
-            {
-                response->set_request_id(rid);
-                response->set_success(false);
-                response->set_errmsg(errmsg);
-                return;
-            };
 
+            std::string rid = request->request_id();
             std::string uid = request->user_id();
             std::string new_phone = request->phone_number();
             std::string code = request->phone_verify_code();
@@ -600,30 +546,32 @@ namespace SnowK
 
             if (_redis_codes->Code(code_id) != code)
             {
-                return Err_Response(request->request_id(), "The verification code is incorrect");
+                return Err_Response<::SnowK::SetUserPhoneNumberRsp>(response, rid,
+                        "The verification code is incorrect");
             }
 
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
             {
-                return Err_Response(request->request_id(), "User information not found");
+                return Err_Response<::SnowK::SetUserPhoneNumberRsp>(response, rid,
+                        "User information not found");
             }
 
             user->Phone(new_phone);
             if (_mysql_user->Update(user) == false)
             {
-                LOG_ERROR("{} - Failed to update user phone to database {}", request->request_id(), new_phone);
-                return Err_Response(request->request_id(), "Failed to update user phone to database");
+                return Err_Response<::SnowK::SetUserPhoneNumberRsp>(response, rid,
+                        "Failed to update user phone to database");
             }
 
             if (_es_user->AppendData(user->User_Id(), user->Phone(),
                                      user->Nickname(), user->Description(), user->Avatar_Id()) == false)
             {
-                LOG_ERROR("{} - Failed to update user phone to search engine {}", request->request_id(), new_phone);
-                return Err_Response(request->request_id(), "Failed to update user phone to search engine");
+                return Err_Response<::SnowK::SetUserPhoneNumberRsp>(response, rid,
+                        "Failed to update user phone to search engine");
             }
 
-            response->set_request_id(request->request_id());
+            response->set_request_id(rid);
             response->set_success(true);
         }
 
