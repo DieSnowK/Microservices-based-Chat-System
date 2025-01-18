@@ -209,13 +209,23 @@ namespace SnowK
         }
 
     private:
+        template <class T>
+        void Err_Response(T &rsp, httplib::Response &response, const std::string &errmsg)
+        {
+            rsp.set_success(false);
+            rsp.set_errmsg(errmsg);
+            response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
+
+            LOG_ERROR("{}", errmsg);
+        }
+
         void WsOnOpen(websocketpp::connection_hdl hdl)
         {
             LOG_DEBUG("A persistent websocket connection is established {}", 
                       (size_t)_ws_server.get_con_from_hdl(hdl).get());
         }
 
-        // Cleanup when a persistent connection is lost
+        // Clean up when a persistent connection is lost
         void WsOnClose(websocketpp::connection_hdl hdl)
         {
             auto conn = _ws_server.get_con_from_hdl(hdl);
@@ -235,7 +245,7 @@ namespace SnowK
                       the cache data will be cleared", ssid, uid, (size_t)conn.get());
         }
 
-        // Very important, very easy to ignore
+        // ※ Very important, very easy to ignore
         void KeepAlive(server_t::connection_ptr conn)
         {
             if (!conn || conn->get_state() != websocketpp::session::state::value::open)
@@ -285,24 +295,18 @@ namespace SnowK
         {
             PhoneVerifyCodeReq req;
             PhoneVerifyCodeRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the request body to obtain the SMS verification code");
-                return Err_Response("Failed to deserialize the request body to obtain the SMS verification code");
+                return Err_Response<PhoneVerifyCodeRsp>(rsp, response, 
+                    "Failed to deserialize the request body to obtain the SMS verification code");
             }
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<PhoneVerifyCodeRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -310,8 +314,8 @@ namespace SnowK
             stub.GetPhoneVerifyCode(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<PhoneVerifyCodeRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -321,24 +325,18 @@ namespace SnowK
         {
             UserRegisterReq req;
             UserRegisterRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the user name registration request body");
-                return Err_Response("Failed to deserialize the user name registration request body");
+                return Err_Response<UserRegisterRsp>(rsp, response,
+                        "Failed to deserialize the user name registration request body");
             }
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<UserRegisterRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -346,8 +344,8 @@ namespace SnowK
             stub.UserRegister(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<UserRegisterRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -357,24 +355,18 @@ namespace SnowK
         {
             UserLoginReq req;
             UserLoginRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize user login request body");
-                return Err_Response("Failed to deserialize user login request body");
+                return Err_Response<UserLoginRsp>(rsp, response,
+                        "Failed to deserialize user login request body");
             }
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<UserLoginRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -382,8 +374,8 @@ namespace SnowK
             stub.UserLogin(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<UserLoginRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -393,24 +385,18 @@ namespace SnowK
         {
             PhoneRegisterReq req;
             PhoneRegisterRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the mobile phone number registration request");
-                return Err_Response("Failed to deserialize the body of the mobile phone number registration request");
+                return Err_Response<PhoneRegisterRsp>(rsp, response,
+                        "Failed to deserialize the body of the mobile phone number registration request");
             }
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<PhoneRegisterRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -418,8 +404,8 @@ namespace SnowK
             stub.PhoneRegister(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed");
+                return Err_Response<PhoneRegisterRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -429,24 +415,18 @@ namespace SnowK
         {
             PhoneLoginReq req;
             PhoneLoginRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the mobile phone number login request");
-                return Err_Response("Failed to deserialize the body of the mobile phone number login request");
+                return Err_Response<PhoneLoginRsp>(rsp, response,
+                        "Failed to deserialize the body of the mobile phone number login request");
             }
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<PhoneLoginRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -454,8 +434,8 @@ namespace SnowK
             stub.PhoneLogin(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<PhoneLoginRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -466,17 +446,11 @@ namespace SnowK
         {
             GetUserInfoReq req;
             GetUserInfoRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the request to get user information");
-                return Err_Response("Failed to deserialize the body of the request to get user information");
+                return Err_Response<GetUserInfoRsp>(rsp, response,
+                        "Failed to deserialize the body of the request to get user information");
             }
 
             // Client Identification and Authentication
@@ -484,16 +458,16 @@ namespace SnowK
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetUserInfoRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<GetUserInfoRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -501,8 +475,8 @@ namespace SnowK
             stub.GetUserInfo(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<GetUserInfoRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -512,34 +486,28 @@ namespace SnowK
         {
             SetUserAvatarReq req;
             SetUserAvatarRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             bool ret = req.ParseFromString(request.body);
             if (ret == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the user avatar setting request");
-                return Err_Response("Failed to deserialize the body of the user avatar setting request");
+                return Err_Response<SetUserAvatarRsp>(rsp, response,
+                        "Failed to deserialize the body of the user avatar setting request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<SetUserAvatarRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<SetUserAvatarRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -547,8 +515,8 @@ namespace SnowK
             stub.SetUserAvatar(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<SetUserAvatarRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -558,33 +526,27 @@ namespace SnowK
         {
             SetUserNicknameReq req;
             SetUserNicknameRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of user nickname setting request");
-                return Err_Response("Failed to deserialize the body of user nickname setting request");
+                return Err_Response<SetUserNicknameRsp>(rsp, response,
+                        "Failed to deserialize the body of user nickname setting request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<SetUserNicknameRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<SetUserNicknameRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -592,8 +554,8 @@ namespace SnowK
             stub.SetUserNickname(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<SetUserNicknameRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -603,33 +565,27 @@ namespace SnowK
         {
             SetUserDescriptionReq req;
             SetUserDescriptionRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the user signature setting request");
-                return Err_Response("Failed to deserialize the body of the user signature setting request");
+                return Err_Response<SetUserDescriptionRsp>(rsp, response,
+                    "Failed to deserialize the body of the user signature setting request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<SetUserDescriptionRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<SetUserDescriptionRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -637,8 +593,8 @@ namespace SnowK
             stub.SetUserDescription(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<SetUserDescriptionRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -648,35 +604,27 @@ namespace SnowK
         {
             SetUserPhoneNumberReq req;
             SetUserPhoneNumberRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the request \
-                          for setting the user's mobile phone number");
-                return Err_Response("Failed to deserialize the body of the request \
-                          for setting the user's mobile phone number");
+                return Err_Response<SetUserPhoneNumberRsp>(rsp, response,
+                        "Failed to deserialize the body of the request for setting the user's mobile phone number");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<SetUserPhoneNumberRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_user_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<SetUserPhoneNumberRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -684,8 +632,8 @@ namespace SnowK
             stub.SetUserPhoneNumber(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} User sub-service call failed", req.request_id());
-                return Err_Response("User sub-service call failed!");
+                return Err_Response<SetUserPhoneNumberRsp>(rsp, response,
+                        "User sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -695,33 +643,27 @@ namespace SnowK
         {
             GetFriendListReq req;
             GetFriendListRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get friends list request");
-                return Err_Response("Failed to deserialize the body of the get friends list request");
+                return Err_Response<GetFriendListRsp>(rsp, response,
+                        "Failed to deserialize the body of the get friends list request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetFriendListRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<GetFriendListRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -729,8 +671,8 @@ namespace SnowK
             stub.GetFriendList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<GetFriendListRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -770,33 +712,27 @@ namespace SnowK
         {
             FriendAddReq req;
             FriendAddRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the add friend request");
-                return Err_Response("Failed to deserialize the body of the add friend request");
+                return Err_Response<FriendAddRsp>(rsp, response,
+                        "Failed to deserialize the body of the add friend request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<FriendAddRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<FriendAddRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -804,8 +740,8 @@ namespace SnowK
             stub.FriendAdd(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<FriendAddRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             // Notify the client
@@ -815,8 +751,8 @@ namespace SnowK
                 auto user_rsp = _GetUserInfo(req.request_id(), *uid);
                 if (!user_rsp)
                 {
-                    LOG_ERROR("{} Failed to get the current client user information", req.request_id());
-                    return Err_Response("Failed to get the current client user information");
+                    return Err_Response<FriendAddRsp>(rsp, response,
+                            "Failed to get the current client user information");
                 }
 
                 NotifyMessage notify;
@@ -833,34 +769,27 @@ namespace SnowK
         {
             FriendAddProcessReq req;
             FriendAddProcessRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the friend application processing request");
-                return Err_Response("Failed to deserialize the body \
-                                    of the friend application processing request");
+                return Err_Response<FriendAddProcessRsp>(rsp, response,
+                        "Failed to deserialize the body of the friend application processing request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<FriendAddProcessRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<FriendAddProcessRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -868,8 +797,8 @@ namespace SnowK
             stub.FriendAddProcess(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<FriendAddProcessRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             if (rsp.success())
@@ -878,8 +807,8 @@ namespace SnowK
                 auto apply_user_rsp = _GetUserInfo(req.request_id(), req.apply_user_id());
                 if (!process_user_rsp || !apply_user_rsp)
                 {
-                    LOG_ERROR("{} Failed to get the current client user information", req.request_id());
-                    return Err_Response("Failed to get the current client user information");
+                    return Err_Response<FriendAddProcessRsp>(rsp, response,
+                            "Friend sub-service call failed");
                 }
 
                 auto process_conn = _connections->GetConnection(*uid);
@@ -935,33 +864,27 @@ namespace SnowK
         {
             FriendRemoveReq req;
             FriendRemoveRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the delete a friend request");
-                return Err_Response("Failed to deserialize the body of the delete a friend request");
+                return Err_Response<FriendRemoveRsp>(rsp, response,
+                        "Failed to deserialize the body of the delete a friend request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<FriendRemoveRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No user sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No user sub-service node found to provide business processing");
+                return Err_Response<FriendRemoveRsp>(rsp, response,
+                        "No user sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -969,8 +892,8 @@ namespace SnowK
             stub.FriendRemove(&cntl, &req, &rsp, nullptr);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<FriendRemoveRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             auto conn = _connections->GetConnection(req.peer_id());
@@ -990,33 +913,27 @@ namespace SnowK
         {
             FriendSearchReq req;
             FriendSearchRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the user search request");
-                return Err_Response("Failed to deserialize the body of the user search request");
+                return Err_Response<FriendSearchRsp>(rsp, response,
+                        "Failed to deserialize the body of the user search request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<FriendSearchRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<FriendSearchRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1024,8 +941,8 @@ namespace SnowK
             stub.FriendSearch(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<FriendSearchRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1035,33 +952,27 @@ namespace SnowK
         {
             GetPendingFriendEventListReq req;
             GetPendingFriendEventListRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get pending friend request");
-                return Err_Response("Failed to deserialize the body of the get pending friend request");
+                return Err_Response<GetPendingFriendEventListRsp>(rsp, response,
+                        "Failed to deserialize the body of the get pending friend request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetPendingFriendEventListRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<GetPendingFriendEventListRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1069,8 +980,8 @@ namespace SnowK
             stub.GetPendingFriendEventList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<GetPendingFriendEventListRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1080,33 +991,27 @@ namespace SnowK
         {
             GetChatSessionListReq req;
             GetChatSessionListRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get chat session list request");
-                return Err_Response("Failed to deserialize the body of the get chat session list request");
+                return Err_Response<GetChatSessionListRsp>(rsp, response,
+                        "Failed to deserialize the body of the get chat session list request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetChatSessionListRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<GetChatSessionListRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1114,8 +1019,8 @@ namespace SnowK
             stub.GetChatSessionList(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<GetChatSessionListRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1125,33 +1030,27 @@ namespace SnowK
         {
             GetChatSessionMemberReq req;
             GetChatSessionMemberRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get chat session member request");
-                return Err_Response("Failed to deserialize the body of the get chat session member request");
+                return Err_Response<GetChatSessionMemberRsp>(rsp, response,
+                        "Failed to deserialize the body of the get chat session member request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetChatSessionMemberRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<GetChatSessionMemberRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1159,8 +1058,8 @@ namespace SnowK
             stub.GetChatSessionMember(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<GetChatSessionMemberRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1170,33 +1069,27 @@ namespace SnowK
         {
             ChatSessionCreateReq req;
             ChatSessionCreateRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the create chat session request");
-                return Err_Response("Failed to deserialize the body of the create chat session request");
+                return Err_Response<ChatSessionCreateRsp>(rsp, response,
+                        "Failed to deserialize the body of the create chat session request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<ChatSessionCreateRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_friend_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No friend sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No friend sub-service node found to provide business processing");
+                return Err_Response<ChatSessionCreateRsp>(rsp, response,
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1204,8 +1097,8 @@ namespace SnowK
             stub.ChatSessionCreate(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} friend sub-service call failed", req.request_id());
-                return Err_Response("friend sub-service call failed!");
+                return Err_Response<ChatSessionCreateRsp>(rsp, response,
+                        "Friend sub-service call failed");
             }
 
             if (rsp.success())
@@ -1235,33 +1128,27 @@ namespace SnowK
         {
             GetHistoryMsgReq req;
             GetHistoryMsgRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get interval message request");
-                return Err_Response("Failed to deserialize the body of the get interval message request");
+                return Err_Response<GetHistoryMsgRsp>(rsp, response,
+                        "Failed to deserialize the body of the get interval message request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetHistoryMsgRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No message sub-service node found to provide business processing");
+                return Err_Response<GetHistoryMsgRsp>(rsp, response,
+                        "No message sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1269,8 +1156,8 @@ namespace SnowK
             stub.GetHistoryMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} message sub-service call failed", req.request_id());
-                return Err_Response("message sub-service call failed!");
+                return Err_Response<GetHistoryMsgRsp>(rsp, response,
+                        "Message sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1280,33 +1167,27 @@ namespace SnowK
         {
             GetRecentMsgReq req;
             GetRecentMsgRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the get recent message request");
-                return Err_Response("Failed to deserialize the body of the get recent message request");
+                return Err_Response<GetRecentMsgRsp>(rsp, response,
+                        "Failed to deserialize the body of the get recent message request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetRecentMsgRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No message sub-service node found to provide business processing");
+                return Err_Response<GetRecentMsgRsp>(rsp, response,
+                        "No message sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1314,8 +1195,8 @@ namespace SnowK
             stub.GetRecentMsg(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} message sub-service call failed", req.request_id());
-                return Err_Response("message sub-service call failed!");
+                return Err_Response<GetRecentMsgRsp>(rsp, response,
+                        "Message sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1325,33 +1206,27 @@ namespace SnowK
         {
             MsgSearchReq req;
             MsgSearchRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the message search request");
-                return Err_Response("Failed to deserialize the body of the message search request");
+                return Err_Response<MsgSearchRsp>(rsp, response,
+                        "Failed to deserialize the body of the message search request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<MsgSearchRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_message_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No message sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No message sub-service node found to provide business processing");
+                return Err_Response<MsgSearchRsp>(rsp, response,
+                        "No message sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1359,8 +1234,8 @@ namespace SnowK
             stub.MsgSearch(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} message sub-service call failed", req.request_id());
-                return Err_Response("message sub-service call failed!");
+                return Err_Response<MsgSearchRsp>(rsp, response,
+                                                  "Message sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1370,33 +1245,27 @@ namespace SnowK
         {
             GetSingleFileReq req;
             GetSingleFileRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the single-file download request");
-                return Err_Response("Failed to deserialize the body of the single-file download request");
+                return Err_Response<GetSingleFileRsp>(rsp, response,
+                        "Failed to deserialize the body of the single-file download request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetSingleFileRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No file sub-service node found to provide business processing");
+                return Err_Response<GetSingleFileRsp>(rsp, response,
+                        "No file sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1404,8 +1273,8 @@ namespace SnowK
             stub.GetSingleFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} file sub-service call failed", req.request_id());
-                return Err_Response("file sub-service call failed!");
+                return Err_Response<GetSingleFileRsp>(rsp, response,
+                        "File sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1415,33 +1284,27 @@ namespace SnowK
         {
             GetMultiFileReq req;
             GetMultiFileRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the multi-file download request");
-                return Err_Response("Failed to deserialize the body of the multi-file download request");
+                return Err_Response<GetMultiFileRsp>(rsp, response,
+                        "Failed to deserialize the body of the multi-file download request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<GetMultiFileRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No file sub-service node found to provide business processing");
+                return Err_Response<GetMultiFileRsp>(rsp, response,
+                        "No file sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1449,8 +1312,8 @@ namespace SnowK
             stub.GetMultiFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} file sub-service call failed", req.request_id());
-                return Err_Response("file sub-service call failed!");
+                return Err_Response<GetMultiFileRsp>(rsp, response,
+                        "File sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1460,33 +1323,27 @@ namespace SnowK
         {
             PutSingleFileReq req;
             PutSingleFileRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the single-file upload request");
-                return Err_Response("Failed to deserialize the body of the single-file upload request");
+                return Err_Response<PutSingleFileRsp>(rsp, response,
+                        "Failed to deserialize the body of the single-file upload request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<PutSingleFileRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No file sub-service node found to provide business processing");
+                return Err_Response<PutSingleFileRsp>(rsp, response,
+                        "No file sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1494,8 +1351,8 @@ namespace SnowK
             stub.PutSingleFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} file sub-service call failed", req.request_id());
-                return Err_Response("file sub-service call failed!");
+                return Err_Response<PutSingleFileRsp>(rsp, response,
+                        "File sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1505,33 +1362,27 @@ namespace SnowK
         {
             PutMultiFileReq req;
             PutMultiFileRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the multi-file upload request");
-                return Err_Response("Failed to deserialize the body of the multi-file upload request");
+                return Err_Response<PutMultiFileRsp>(rsp, response,
+                        "Failed to deserialize the body of the multi-file upload request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<PutMultiFileRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_file_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No file sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No file sub-service node found to provide business processing");
+                return Err_Response<PutMultiFileRsp>(rsp, response,
+                        "No file sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1539,8 +1390,8 @@ namespace SnowK
             stub.PutMultiFile(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} file sub-service call failed", req.request_id());
-                return Err_Response("file sub-service call failed!");
+                return Err_Response<PutMultiFileRsp>(rsp, response,
+                        "File sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1550,33 +1401,27 @@ namespace SnowK
         {
             SpeechRecognitionReq req;
             SpeechRecognitionRsp rsp;
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the speech recognition request");
-                return Err_Response("Failed to deserialize the body of the speech recognition request");
+                return Err_Response<SpeechRecognitionRsp>(rsp, response,
+                        "Failed to deserialize the body of the speech recognition request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<SpeechRecognitionRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_speech_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No speech sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No speech sub-service node found to provide business processing");
+                return Err_Response<SpeechRecognitionRsp>(rsp, response,
+                        "No speech sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1584,8 +1429,8 @@ namespace SnowK
             stub.SpeechRecognition(&cntl, &req, &rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} speech sub-service call failed", req.request_id());
-                return Err_Response("speech sub-service call failed!");
+                return Err_Response<SpeechRecognitionRsp>(rsp, response,
+                        "Speech sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
@@ -1596,33 +1441,27 @@ namespace SnowK
             NewMessageReq req;
             NewMessageRsp rsp;               // Response to the client
             GetTransmitTargetRsp target_rsp; // Response to the subservice
-            auto Err_Response = [&req, &rsp, &response](const std::string &errmsg) -> void
-            {
-                rsp.set_success(false);
-                rsp.set_errmsg(errmsg);
-                response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
-            };
 
             if (req.ParseFromString(request.body) == false)
             {
-                LOG_ERROR("Failed to deserialize the body of the new message request");
-                return Err_Response("Failed to deserialize the body of the new message request");
+                return Err_Response<NewMessageRsp>(rsp, response,
+                        "Failed to deserialize the body of the new message request");
             }
 
             std::string ssid = req.session_id();
             auto uid = _redis_session->Uid(ssid);
             if (!uid)
             {
-                LOG_ERROR("{} Failed to get user information associated with login session", ssid);
-                return Err_Response("Failed to get user information associated with login session");
+                return Err_Response<NewMessageRsp>(rsp, response,
+                        "Failed to get user information associated with login session");
             }
             req.set_user_id(*uid);
 
             auto channel = _svrmgr_channels->Choose(_transmite_service_name);
             if (!channel)
             {
-                LOG_ERROR("{} No transmite sub-service node found to provide business processing", req.request_id());
-                return Err_Response("No transmite sub-service node found to provide business processing");
+                return Err_Response<NewMessageRsp>(rsp, response,
+                        "No transmite sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
@@ -1630,8 +1469,8 @@ namespace SnowK
             stub.GetTransmitTarget(&cntl, &req, &target_rsp, nullptr);
             if (cntl.Failed())
             {
-                LOG_ERROR("{} file transmite-service call failed", req.request_id());
-                return Err_Response("file transmite-service call failed!");
+                return Err_Response<NewMessageRsp>(rsp, response,
+                        "File transmite-service call failed");
             }
 
             if (target_rsp.success())
