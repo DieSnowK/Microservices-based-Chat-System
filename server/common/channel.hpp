@@ -6,9 +6,11 @@
 #include <brpc/channel.h>
 #include "logger.hpp"
 
+// TODO Think about why mutex?
 namespace SnowK
 {
     // A channel management class for a single service
+    // A service may be provided by multiple nodes, each node has its own channel
     class ServiceChannel
     {
     public:
@@ -35,7 +37,7 @@ namespace SnowK
             auto channel = std::make_shared<brpc::Channel>();
             if (channel->Init(host.c_str(), &options) == -1)
             {
-                LOG_ERROR("Failed to initialize {}-{} channel", _service_name, host);
+                LOG_ERROR("Failed to initialize {} - {} channel", _service_name, host);
                 return;
             }
 
@@ -52,7 +54,7 @@ namespace SnowK
             auto iter = _hosts.find(host);
             if(iter == _hosts.end())
             {
-                LOG_WARN("When node {}-{} deletes a channel, no channel information is found",
+                LOG_WARN("When node {} - {} deletes a channel, no channel information is found",
                          _service_name, host);
                 return;
             }
@@ -69,7 +71,7 @@ namespace SnowK
         }
 
         // Use the RR rotation policy to obtain a channel that 
-        // can be used to initiate an RPC call to the corresponding service
+            // can be used to initiate an RPC call to the corresponding service
         ChannelPtr Choose()
         {
             if(_channels.size() == 0)
@@ -79,17 +81,17 @@ namespace SnowK
             }
 
             std::unique_lock<std::mutex> lock(_mutex);
-            int32_t index = _index++ % _channels.size();
+            int32_t index = _index++ % _channels.size(); // RR
             
             return _channels[index];
         }
 
     private: 
         std::mutex _mutex;
-        int32_t _index; // current rotation index
+        int32_t _index;                                     // Current rotation index
         std::string _service_name;
-        std::vector<ChannelPtr> _channels; // set of channels corresponding to the current service
-        std::unordered_map<std::string, ChannelPtr> _hosts; // Host address to channel mapping
+        std::vector<ChannelPtr> _channels;                  // Set of channels corresponding to the current service
+        std::unordered_map<std::string, ChannelPtr> _hosts; // Host address to channel mapping, in order to delete
     }; // class ServiceChannel
 
     // All service channel management class
@@ -105,7 +107,7 @@ namespace SnowK
         {}
 
         // Declare the services that need to be managed
-        // Undeclared services don't need to be managed
+            // undeclared services don't need to be managed
         void Declare(const std::string &service_name)
         {
             std::unique_lock<std::mutex> lock(_mutex);
@@ -128,14 +130,14 @@ namespace SnowK
         }
 
         // The callback API that is called when 
-        // the service goes online manages the service nodes
+            // the service goes online, manages the service nodes
         void ServiceOnline(const std::string &service_instance, const std::string &host)
         {
             std::string service_name = GetServiceName(service_instance);
             auto fiter = _follow_services.find(service_name);
             if (fiter == _follow_services.end())
             {
-                LOG_DEBUG("Service {}-{} is online, but it doesn't care at the moment", service_name, host);
+                LOG_DEBUG("Service {} - {} is online, but it doesn't care at the moment", service_name, host);
                 return;
             }
 
@@ -143,8 +145,8 @@ namespace SnowK
             {
                 std::unique_lock<std::mutex> lock(_mutex);
 
-                // Obtain the management object first, create it
-                // if it doesn't have it, and add nodes if it has one
+                // Get the management object first, create it if 
+                    // it does not exist, and add the node if it exists.
                 auto siter = _services.find(service_name);
                 if(siter == _services.end())
                 {
@@ -168,18 +170,17 @@ namespace SnowK
         }
 
         // The callback API called when a service goes offline 
-        // deletes the specified node channel from the service channel management
+            // deletes the specified node channel from the service channel management
         void ServiceOffline(const std::string &service_instance, const std::string &host)
         {
             std::string service_name = GetServiceName(service_instance);
             auto fiter = _follow_services.find(service_name);
             if (fiter == _follow_services.end())
             {
-                LOG_DEBUG("Service {}-{} is offline, but it doesn't care at the moment", service_name, host);
+                LOG_DEBUG("Service {} - {} is offline, but it doesn't care at the moment", service_name, host);
                 return;
             }
 
-            // TODO Think about the problem of mutex granularity
             ServiceChannel::ptr service;
             {
                 std::unique_lock<std::mutex> lock(_mutex);
@@ -195,7 +196,7 @@ namespace SnowK
             }
 
             service->Remove(host);
-            LOG_DEBUG("{}-{} service offline node, delete this node", service_name, host);
+            LOG_DEBUG("{} - {} service offline node, delete this node", service_name, host);
         }
 
     private:

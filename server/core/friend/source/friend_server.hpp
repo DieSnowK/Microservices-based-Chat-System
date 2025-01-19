@@ -560,15 +560,17 @@ namespace SnowK
         {
             _user_service_name = user_service_name;
             _message_service_name = message_service_name;
+
             _svrmgr_channels = std::make_shared<ServiceManager>();
-            _svrmgr_channels->Declare(message_service_name);
             _svrmgr_channels->Declare(user_service_name);
+            _svrmgr_channels->Declare(message_service_name);
 
             LOG_DEBUG("Set the message sub-service as the sub-service to be added and managed: {}", message_service_name);
             LOG_DEBUG("Set the user sub-service as the sub-service to be added and managed: {}", user_service_name);
 
             auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::ServiceOffline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
@@ -599,9 +601,9 @@ namespace SnowK
             }
 
             _rpc_server = std::make_shared<brpc::Server>();
-
             FriendServiceImpl *friend_service = new FriendServiceImpl(_es_client, _mysql_client, _svrmgr_channels, 
                                                                       _user_service_name, _message_service_name);
+                                                                      
             if (_rpc_server->AddService(friend_service, brpc::ServiceOwnership::SERVER_OWNS_SERVICE) == -1)
             {
                 LOG_ERROR("Failed to add RPC service");

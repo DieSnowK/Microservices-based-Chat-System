@@ -14,6 +14,7 @@ namespace SnowK
     {
     public:
         using ptr = std::shared_ptr<DMSClient>;
+
         DMSClient(const std::string &access_key_id,
                   const std::string &access_key_secret)
         {
@@ -40,7 +41,7 @@ namespace SnowK
             request.setQueryParameter("SignName", "SnowK6");
             request.setQueryParameter("TemplateCode", "SMS_474020138");
             request.setQueryParameter("PhoneNumbers", phone);
-            std::string param_code = "{\"code\":\"" + code + "\"}";
+            std::string param_code = "{\"code\":\"" + code + "\"}"; // "code"
             request.setQueryParameter("TemplateParam", param_code);
 
             auto response = _client->commonResponse(request);

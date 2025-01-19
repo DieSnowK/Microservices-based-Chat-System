@@ -9,6 +9,9 @@
 
 namespace SnowK
 {
+    // Factory Pattern
+    // Generate an operation handle class to implement the 
+        // addition deletion query modification operations of the database
     class ODBFactory
     {
     public:
@@ -22,7 +25,6 @@ namespace SnowK
         {
             std::unique_ptr<odb::mysql::connection_pool_factory> cpf(
                 new odb::mysql::connection_pool_factory(conn_pool_count, 0));
-
 
             return std::make_shared<odb::mysql::database>(user, pwd, db, host, port,
                                                             "", cset, 0, std::move(cpf));
