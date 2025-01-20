@@ -5,9 +5,10 @@
 namespace SnowK
 {
     // The type of connection: server_t::connection_ptr
-    typedef websocketpp::server<websocketpp::config::asio> server_t;
+    using server_t = websocketpp::server<websocketpp::config::asio>;
 
-    class Connection
+    // websocket persistent connection management
+    class Connections
     {
     public:
         struct Client
@@ -21,10 +22,10 @@ namespace SnowK
             std::string ssid;
         };
 
-        using ptr = std::shared_ptr<Connection>;
+        using ptr = std::shared_ptr<Connections>;
 
-        Connection() {}
-        ~Connection() {}
+        Connections() {}
+        ~Connections() {}
 
         void Insert(const server_t::connection_ptr &conn,
                     const std::string &uid, const std::string &ssid)
@@ -34,8 +35,8 @@ namespace SnowK
             _uid_connections.insert(std::make_pair(uid, conn));
             _conn_clients.insert(std::make_pair(conn, Client(uid, ssid)));
 
-            LOG_DEBUG("New persistent connections user information:{}-{}-{}", 
-                     (size_t)conn.get(), uid, ssid);
+            LOG_DEBUG("New persistent connections user information:{} - {} - {}",
+                      (size_t)conn.get(), uid, ssid);
         }
 
         server_t::connection_ptr GetConnection(const std::string &uid)
@@ -95,5 +96,5 @@ namespace SnowK
         std::mutex _mutex;
         std::unordered_map<std::string, server_t::connection_ptr> _uid_connections;
         std::unordered_map<server_t::connection_ptr, Client> _conn_clients;
-    }; // end of class Connection
+    }; // end of class Connections
 }

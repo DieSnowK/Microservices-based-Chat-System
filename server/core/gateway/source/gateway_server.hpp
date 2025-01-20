@@ -3,7 +3,7 @@
 #include "etcd.hpp"
 #include "logger.hpp"
 #include "channel.hpp"
-#include "connection.hpp"
+#include "connections.hpp"
 #include "redis.hpp"
 
 #include "user.pb.h"
@@ -72,11 +72,11 @@ namespace SnowK
             , _message_service_name(message_service_name)
             , _transmite_service_name(transmite_service_name)
             , _friend_service_name(friend_service_name)
-            , _connections(std::make_shared<Connection>())
+            , _connections(std::make_shared<Connections>())
         {
-
             _ws_server.set_access_channels(websocketpp::log::alevel::none);
             _ws_server.init_asio();
+
             _ws_server.set_open_handler(std::bind(&GatewayServer::WsOnOpen, this, std::placeholders::_1));
             _ws_server.set_close_handler(std::bind(&GatewayServer::WsOnClose, this, std::placeholders::_1));
             _ws_server.set_message_handler(std::bind(&GatewayServer::WsOnMessage, this,
@@ -85,6 +85,7 @@ namespace SnowK
             _ws_server.listen(websocket_port);
             _ws_server.start_accept();
 
+            // Routings
             _http_server.Post(GET_PHONE_VERIFY_CODE,
                                 (httplib::Server::Handler)std::bind(
                                 &GatewayServer::GetPhoneVerifyCode, this,
@@ -219,6 +220,20 @@ namespace SnowK
             LOG_ERROR("{}", errmsg);
         }
 
+        // ※ Very important, very easy to ignore
+        void KeepAlive(server_t::connection_ptr conn)
+        {
+            if (!conn || conn->get_state() != websocketpp::session::state::value::open)
+            {
+                LOG_WARN("Abnormal connection status, end connection keep-alive");
+                return;
+            }
+
+            conn->ping("");
+            _ws_server.set_timer(60000, std::bind(&GatewayServer::KeepAlive, this, conn));
+        }
+
+        // TODO 是否这里改为WsOnMessage的功能?  等待客户端接口验证
         void WsOnOpen(websocketpp::connection_hdl hdl)
         {
             LOG_DEBUG("A persistent websocket connection is established {}", 
@@ -238,24 +253,11 @@ namespace SnowK
             }
 
             _redis_session->Remove(ssid);
-            _redis_status->Remove(uid);
+            _redis_status->Remove(uid); // TODO 好像没用到?
             _connections->Remove(conn);
 
             LOG_DEBUG("{} {} {} the persistent connection is disconnected, \
                       the cache data will be cleared", ssid, uid, (size_t)conn.get());
-        }
-
-        // ※ Very important, very easy to ignore
-        void KeepAlive(server_t::connection_ptr conn)
-        {
-            if (!conn || conn->get_state() != websocketpp::session::state::value::open)
-            {
-                LOG_WARN("Abnormal connection status, end connection keep-alive");
-                return;
-            }
-
-            conn->ping("");
-            _ws_server.set_timer(60000, std::bind(&GatewayServer::KeepAlive, this, conn));
         }
 
         // After receiving the first message, the client persists the 
@@ -288,7 +290,7 @@ namespace SnowK
             // If exists
             _connections->Insert(conn, *uid, ssid);
             KeepAlive(conn);
-            LOG_DEBUG("New Growth Connectivity Management: {}-{}-{}", ssid, *uid, (size_t)conn.get());
+            LOG_DEBUG("New Persistent connection: {} - {} - {}", ssid, *uid, (size_t)conn.get());
         }
 
         void GetPhoneVerifyCode(const httplib::Request &request, httplib::Response &response)
@@ -708,6 +710,7 @@ namespace SnowK
             // actually only creates a request event in the database
         // 2.What the gateway needs to do: When the friend sub-service completes the business 
             // processing, if the processing is successful, the applicant needs to be notified
+                // websocket is needed
         void FriendAdd(const httplib::Request &request, httplib::Response &response)
         {
             FriendAddReq req;
@@ -744,7 +747,7 @@ namespace SnowK
                         "Friend sub-service call failed");
             }
 
-            // Notify the client
+            // Notify the client -> websocket
             auto conn = _connections->GetConnection(req.respondent_id());
             if (rsp.success() && conn)
             {
@@ -814,7 +817,7 @@ namespace SnowK
                 auto process_conn = _connections->GetConnection(*uid);
                 auto apply_conn = _connections->GetConnection(req.apply_user_id());
 
-                // Notify the applicant
+                // Notify the applicant, what ever agree or not :P
                 if (apply_conn)
                 {
                     NotifyMessage notify;
@@ -823,8 +826,7 @@ namespace SnowK
                     process_result->mutable_user_info()->CopyFrom(process_user_rsp->user_info());
                     process_result->set_agree(req.agree());
                     
-                    apply_conn->send(notify.SerializeAsString(),
-                                     websocketpp::frame::opcode::value::binary);
+                    apply_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
 
                 // Notify both parties of the session creation
@@ -833,25 +835,29 @@ namespace SnowK
                 {
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_SESSION_CREATE_NOTIFY);
-                    auto chat_session = notify.mutable_new_chat_session_info();
-                    chat_session->mutable_chat_session_info()->set_single_chat_friend_id(*uid);
-                    chat_session->mutable_chat_session_info()->set_chat_session_id(rsp.new_session_id());
-                    chat_session->mutable_chat_session_info()->set_chat_session_name(process_user_rsp->user_info().nickname());
-                    chat_session->mutable_chat_session_info()->set_avatar(process_user_rsp->user_info().avatar());
+                    auto new_chat_session = notify.mutable_new_chat_session_info();
+                    auto chat_session_info = new_chat_session->mutable_chat_session_info();
+
+                    chat_session_info->set_single_chat_friend_id(*uid);
+                    chat_session_info->set_chat_session_id(rsp.new_session_id());
+                    chat_session_info->set_chat_session_name(process_user_rsp->user_info().nickname());
+                    chat_session_info->set_avatar(process_user_rsp->user_info().avatar());
 
                     apply_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
 
-                // Session information is applicant  information
+                // Session information is applicant information
                 if (req.agree() && process_conn)
                 {
                     NotifyMessage notify;
                     notify.set_notify_type(NotifyType::CHAT_SESSION_CREATE_NOTIFY);
-                    auto chat_session = notify.mutable_new_chat_session_info();
-                    chat_session->mutable_chat_session_info()->set_single_chat_friend_id(req.apply_user_id());
-                    chat_session->mutable_chat_session_info()->set_chat_session_id(rsp.new_session_id());
-                    chat_session->mutable_chat_session_info()->set_chat_session_name(apply_user_rsp->user_info().nickname());
-                    chat_session->mutable_chat_session_info()->set_avatar(apply_user_rsp->user_info().avatar());
+                    auto new_chat_session = notify.mutable_new_chat_session_info();
+                    auto chat_session_info = new_chat_session->mutable_chat_session_info();
+
+                    chat_session_info->set_single_chat_friend_id(req.apply_user_id());
+                    chat_session_info->set_chat_session_id(rsp.new_session_id());
+                    chat_session_info->set_chat_session_name(apply_user_rsp->user_info().nickname());
+                    chat_session_info->set_avatar(apply_user_rsp->user_info().avatar());
 
                     process_conn->send(notify.SerializeAsString(), websocketpp::frame::opcode::value::binary);
                 }
@@ -1515,10 +1521,11 @@ namespace SnowK
         std::string _message_service_name;
         std::string _transmite_service_name;
         std::string _friend_service_name;
+
         ServiceManager::ptr _svrmgr_channels;
         Discovery::ptr _service_discoverer;
 
-        Connection::ptr _connections;
+        Connections::ptr _connections;
 
         server_t _ws_server;
         httplib::Server _http_server;
@@ -1561,10 +1568,9 @@ namespace SnowK
             _svrmgr_channels->Declare(user_service_name);
             _svrmgr_channels->Declare(transmite_service_name);
 
-            auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), 
-                                    std::placeholders::_1, std::placeholders::_2);
-            auto del_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), 
-                                    std::placeholders::_1, std::placeholders::_2);
+            auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+            auto del_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
@@ -1613,6 +1619,7 @@ namespace SnowK
         std::string _friend_service_name;
         std::string _user_service_name;
         std::string _transmite_service_name;
+
         ServiceManager::ptr _svrmgr_channels;
         Discovery::ptr _service_discoverer;
     };

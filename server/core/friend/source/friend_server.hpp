@@ -61,19 +61,8 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto friend_id_lists = _mysql_relation->Friends(uid);
-            // std::unordered_set<std::string> user_id_lists;
-            // for (const auto &id : friend_id_lists)
-            // {
-            //     user_id_lists.insert(id);
-            // }
 
             std::unordered_map<std::string, UserInfo> user_list;
-            // if (GetUserInfo(rid, user_id_lists, user_list) == false)
-            // {
-            //     return Err_Response<::SnowK::GetFriendListRsp>(response, rid, 
-            //             "Failed to obtain user information in batches");
-            // }
-
             if (GetUserInfo(rid, friend_id_lists, user_list) == false)
             {
                 return Err_Response<::SnowK::GetFriendListRsp>(response, rid, 
@@ -223,13 +212,9 @@ namespace SnowK
             auto friend_id_lists = _mysql_relation->Friends(uid);
             friend_id_lists.push_back(uid); // Filter self out
 
-            // std::unordered_set<std::string> user_id_lists;
-            std::vector<std::string> user_id_lists;
             auto search_ret = _es_user->Search(skey, friend_id_lists);
-            // for (auto &it : search_ret)
-            // {
-            //     user_id_lists.insert(it.User_Id());
-            // }
+
+            std::vector<std::string> user_id_lists;
             for(auto& iter : search_ret)
             {
                 user_id_lists.push_back(iter.User_Id());
@@ -262,19 +247,8 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto ret = _mysql_apply->ApplyUsers(uid);
-            // std::unordered_set<std::string> user_id_lists;
-            // for (auto &id : ret)
-            // {
-            //     user_id_lists.insert(id);
-            // }
 
             std::unordered_map<std::string, UserInfo> user_list;
-            // if (GetUserInfo(rid, user_id_lists, user_list) == false)
-            // {
-            //     return Err_Response<::SnowK::GetPendingFriendEventListRsp>(response, rid,
-            //             "Failed to obtain user information in batches");
-            // }
-
             if (GetUserInfo(rid, ret, user_list) == false)
             {
                 return Err_Response<::SnowK::GetPendingFriendEventListRsp>(response, rid,
@@ -303,11 +277,6 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto sf_list = _mysql_chat_session->SingleChatSessions(uid);
-            // std::unordered_set<std::string> users_id_list;
-            // for (const auto &f : sf_list)
-            // {
-            //     users_id_list.insert(f.friend_id);
-            // }
 
             std::vector<std::string> users_id_list;
             for(const auto& f : sf_list)
@@ -409,20 +378,8 @@ namespace SnowK
             std::string cssid = request->chat_session_id();
 
             auto member_id_lists = _mysql_chat_session_member->Members(cssid);
-            // std::unordered_set<std::string> uid_list;
-            // for (const auto &id : member_id_lists)
-            // {
-            //     uid_list.insert(id);
-            // }
-            // std::vector<std::string> uid_list;
 
             std::unordered_map<std::string, UserInfo> user_list;
-            // if (GetUserInfo(rid, uid_list, user_list) == false)
-            // {
-            //     return Err_Response<::SnowK::GetChatSessionMemberRsp>(response, rid,
-            //             "Failed to get user information from user subservice");
-            // }
-
             if (GetUserInfo(rid, member_id_lists, user_list) == false)
             {
                 return Err_Response<::SnowK::GetChatSessionMemberRsp>(response, rid,
@@ -479,7 +436,6 @@ namespace SnowK
             return false;
         }
 
-        // TODO 修改set为vector Done
         bool GetUserInfo(const std::string &rid,
                          const std::vector<std::string> &uid_list,
                          std::unordered_map<std::string, UserInfo> &user_list)
@@ -542,13 +498,9 @@ namespace SnowK
         using ptr = std::shared_ptr<FriendServer>;
         FriendServer(const Discovery::ptr service_discoverer,
                      const Registry::ptr &reg_client,
-                     const std::shared_ptr<elasticlient::Client> &es_client,
-                     const std::shared_ptr<odb::core::database> &mysql_client,
-                     const std::shared_ptr<brpc::Server> &server) 
+                     const std::shared_ptr<brpc::Server> &server)
             : _service_discoverer(service_discoverer)
             , _registry_client(reg_client)
-            , _es_client(es_client)
-            , _mysql_client(mysql_client)
             , _rpc_server(server) 
         {}
         ~FriendServer() {}
@@ -559,10 +511,8 @@ namespace SnowK
         }
 
     private:
-        Discovery::ptr _service_discoverer;
         Registry::ptr _registry_client;
-        std::shared_ptr<elasticlient::Client> _es_client;
-        std::shared_ptr<odb::core::database> _mysql_client;
+        Discovery::ptr _service_discoverer;
         std::shared_ptr<brpc::Server> _rpc_server;
     };
     
@@ -672,14 +622,14 @@ namespace SnowK
             }
 
             FriendServer::ptr server = std::make_shared<FriendServer>(
-                _service_discoverer, _registry_client,
-                _es_client, _mysql_client, _rpc_server);
+                _service_discoverer, _registry_client, _rpc_server);
 
             return server;
         }
 
     private:
         Registry::ptr _registry_client;
+        Discovery::ptr _service_discoverer;
 
         std::shared_ptr<elasticlient::Client> _es_client;
         std::shared_ptr<odb::core::database> _mysql_client;
@@ -687,7 +637,6 @@ namespace SnowK
         std::string _user_service_name;
         std::string _message_service_name;
         ServiceManager::ptr _svrmgr_channels;
-        Discovery::ptr _service_discoverer;
 
         std::shared_ptr<brpc::Server> _rpc_server;
     }; // end of FriendServerBuilder

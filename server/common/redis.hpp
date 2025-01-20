@@ -3,6 +3,7 @@
 
 namespace SnowK
 {
+    // Factory Pattern
     class RedisClientFactory
     {
     public:

@@ -39,8 +39,6 @@ namespace SnowK
         bool Exists(const std::string &uid, const std::string &pid)
         {
             bool flag = false;
-            // typedef odb::query<FriendApply> query;
-            // typedef odb::result<FriendApply> result;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -58,7 +56,6 @@ namespace SnowK
 
         bool Remove(const std::string &uid, const std::string &pid)
         {
-            // typedef odb::query<FriendApply> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -78,8 +75,6 @@ namespace SnowK
         std::vector<std::string> ApplyUsers(const std::string &uid)
         {
             std::vector<std::string> ret;
-            // typedef odb::query<FriendApply> query;
-            // typedef odb::result<FriendApply> result;
             try
             {
                 odb::transaction trans(_db->begin());

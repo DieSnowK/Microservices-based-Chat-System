@@ -41,8 +41,6 @@ namespace SnowK
 
         bool Remove(const std::string &ssid)
         {
-            // typedef odb::query<ChatSession> query;
-            // typedef odb::query<ChatSessionMember> mquery;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -63,9 +61,6 @@ namespace SnowK
             // based on the two members of the one-on-one session
         bool Remove(const std::string &uid, const std::string &pid)
         {
-            // typedef odb::query<SingleChatSession> squery;
-            // typedef odb::query<ChatSession> cquery;
-            // typedef odb::query<ChatSessionMember> mquery;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -94,7 +89,6 @@ namespace SnowK
         std::shared_ptr<ChatSession> Select(const std::string &ssid)
         {
             std::shared_ptr<ChatSession> ret;
-            // typedef odb::query<ChatSession> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -112,8 +106,6 @@ namespace SnowK
         std::vector<SingleChatSession> SingleChatSessions(const std::string &uid)
         {
             std::vector<SingleChatSession> ret;
-            // typedef odb::query<SingleChatSession> query;
-            // typedef odb::result<SingleChatSession> result;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -141,8 +133,6 @@ namespace SnowK
         std::vector<GroupChatSession> GroupChatSessions(const std::string &uid)
         {
             std::vector<GroupChatSession> ret;
-            // typedef odb::query<GroupChatSession> query;
-            // typedef odb::result<GroupChatSession> result;
             try
             {
                 odb::transaction trans(_db->begin());
