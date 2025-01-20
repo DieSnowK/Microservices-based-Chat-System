@@ -5,7 +5,7 @@
 
 namespace SnowK
 {
-        #pragma db object table("friend_apply")
+    #pragma db object table("friend_apply")
     class FriendApply
     {
     public:

@@ -7,6 +7,9 @@ namespace SnowK
 {
     class FriendApplyTable
     {
+        using query = odb::query<FriendApply>;
+        using result = odb::result<FriendApply>;
+
     public:
         using ptr = std::shared_ptr<FriendApplyTable>;
         
@@ -24,7 +27,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("The application for a new friend event failed {}-{}:{}",
+                LOG_ERROR("The application for a new friend event failed {} - {}: {}",
                           ev.User_Id(), ev.Peer_Id(), e.what());
                 return false;
             }
@@ -32,11 +35,12 @@ namespace SnowK
             return true;
         }
 
+        // TODO flag can be cancled ?
         bool Exists(const std::string &uid, const std::string &pid)
         {
             bool flag = false;
-            typedef odb::query<FriendApply> query;
-            typedef odb::result<FriendApply> result;
+            // typedef odb::query<FriendApply> query;
+            // typedef odb::result<FriendApply> result;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -46,7 +50,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Faild to check whether the friend application event:{}-{}-{}", uid, pid, e.what());
+                LOG_ERROR("Faild to check whether the friend application event:{} - {}: {}", uid, pid, e.what());
             }
 
             return flag;
@@ -54,7 +58,7 @@ namespace SnowK
 
         bool Remove(const std::string &uid, const std::string &pid)
         {
-            typedef odb::query<FriendApply> query;
+            // typedef odb::query<FriendApply> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -63,7 +67,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to delete a friend request{}-{}:{}", uid, pid, e.what());
+                LOG_ERROR("Failed to delete a friend request{} - {}: {}", uid, pid, e.what());
                 return false;
             }
 
@@ -74,23 +78,23 @@ namespace SnowK
         std::vector<std::string> ApplyUsers(const std::string &uid)
         {
             std::vector<std::string> ret;
-            typedef odb::query<FriendApply> query;
-            typedef odb::result<FriendApply> result;
+            // typedef odb::query<FriendApply> query;
+            // typedef odb::result<FriendApply> result;
             try
             {
                 odb::transaction trans(_db->begin());
 
                 result r(_db->query<FriendApply>(query::peer_id == uid));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(i->User_Id());
+                    ret.push_back(iter->User_Id());
                 }
 
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get the friend applicant list of user {}", uid, e.what());
+                LOG_ERROR("Failed to get the friend applicant list of user {}: {}", uid, e.what());
             }
 
             return ret;

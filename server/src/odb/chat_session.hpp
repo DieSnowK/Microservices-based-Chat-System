@@ -75,8 +75,8 @@ namespace SnowK
     {
         #pragma db column(css::_chat_session_id)
         std::string chat_session_id;
-        #pragma db column(csm2::_user_id)
-        std::string friend_id;
+        #pragma db column(csm2::_user_id) 
+        std::string friend_id; // TODO
     };
 
     // TODO

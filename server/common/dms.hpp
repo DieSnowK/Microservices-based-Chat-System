@@ -41,7 +41,7 @@ namespace SnowK
             request.setQueryParameter("SignName", "SnowK6");
             request.setQueryParameter("TemplateCode", "SMS_474020138");
             request.setQueryParameter("PhoneNumbers", phone);
-            std::string param_code = "{\"code\":\"" + code + "\"}"; // "code"
+            std::string param_code = "{\"code\":\"" + code + "\"}"; // {"code": "$(code)"}
             request.setQueryParameter("TemplateParam", param_code);
 
             auto response = _client->commonResponse(request);

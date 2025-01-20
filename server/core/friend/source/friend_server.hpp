@@ -61,14 +61,20 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto friend_id_lists = _mysql_relation->Friends(uid);
-            std::unordered_set<std::string> user_id_lists;
-            for (auto &id : friend_id_lists)
-            {
-                user_id_lists.insert(id);
-            }
+            // std::unordered_set<std::string> user_id_lists;
+            // for (const auto &id : friend_id_lists)
+            // {
+            //     user_id_lists.insert(id);
+            // }
 
             std::unordered_map<std::string, UserInfo> user_list;
-            if (GetUserInfo(rid, user_id_lists, user_list) == false)
+            // if (GetUserInfo(rid, user_id_lists, user_list) == false)
+            // {
+            //     return Err_Response<::SnowK::GetFriendListRsp>(response, rid, 
+            //             "Failed to obtain user information in batches");
+            // }
+
+            if (GetUserInfo(rid, friend_id_lists, user_list) == false)
             {
                 return Err_Response<::SnowK::GetFriendListRsp>(response, rid, 
                         "Failed to obtain user information in batches");
@@ -121,18 +127,19 @@ namespace SnowK
             std::string uid = request->user_id();
             std::string pid = request->respondent_id();
 
-            if (_mysql_relation->Exists(uid, pid) == true)
+            if (_mysql_relation->Exists(uid, pid))
             {
                 return Err_Response<::SnowK::FriendAddRsp>(response, rid,
                         "The two are already friends");
             }
 
-            if (_mysql_apply->Exists(uid, pid) == true)
+            if (_mysql_apply->Exists(uid, pid))
             {
                 return Err_Response<::SnowK::FriendAddRsp>(response, rid,
-                        "Have already applied for a friend of the other party");
+                        "Already sent a friend request to the other party");
             }
 
+            // TODO MYSQL部分接口统一?
             std::string eid = UUID();
             FriendApply ev(eid, uid, pid);
             if (_mysql_apply->Insert(ev) == false)
@@ -171,7 +178,7 @@ namespace SnowK
             }
 
             std::string cssid;
-            if (request->agree() == true)
+            if (request->agree())
             {
                 if (_mysql_relation->Insert(uid, pid) == false)
                 {
@@ -216,11 +223,16 @@ namespace SnowK
             auto friend_id_lists = _mysql_relation->Friends(uid);
             friend_id_lists.push_back(uid); // Filter self out
 
-            std::unordered_set<std::string> user_id_lists;
+            // std::unordered_set<std::string> user_id_lists;
+            std::vector<std::string> user_id_lists;
             auto search_ret = _es_user->Search(skey, friend_id_lists);
-            for (auto &it : search_ret)
+            // for (auto &it : search_ret)
+            // {
+            //     user_id_lists.insert(it.User_Id());
+            // }
+            for(auto& iter : search_ret)
             {
-                user_id_lists.insert(it.User_Id());
+                user_id_lists.push_back(iter.User_Id());
             }
 
             std::unordered_map<std::string, UserInfo> user_list;
@@ -250,14 +262,20 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto ret = _mysql_apply->ApplyUsers(uid);
-            std::unordered_set<std::string> user_id_lists;
-            for (auto &id : ret)
-            {
-                user_id_lists.insert(id);
-            }
+            // std::unordered_set<std::string> user_id_lists;
+            // for (auto &id : ret)
+            // {
+            //     user_id_lists.insert(id);
+            // }
 
             std::unordered_map<std::string, UserInfo> user_list;
-            if (GetUserInfo(rid, user_id_lists, user_list) == false)
+            // if (GetUserInfo(rid, user_id_lists, user_list) == false)
+            // {
+            //     return Err_Response<::SnowK::GetPendingFriendEventListRsp>(response, rid,
+            //             "Failed to obtain user information in batches");
+            // }
+
+            if (GetUserInfo(rid, ret, user_list) == false)
             {
                 return Err_Response<::SnowK::GetPendingFriendEventListRsp>(response, rid,
                         "Failed to obtain user information in batches");
@@ -273,7 +291,7 @@ namespace SnowK
         }
 
         // Function of obtaining chat sessions: After a user successfully logs in, 
-        // he or she can display his or her historical chat information
+            // he can display his historical chat information
         virtual void GetChatSessionList(::google::protobuf::RpcController *controller,
                                         const ::SnowK::GetChatSessionListReq *request,
                                         ::SnowK::GetChatSessionListRsp *response,
@@ -285,10 +303,16 @@ namespace SnowK
             std::string uid = request->user_id();
 
             auto sf_list = _mysql_chat_session->SingleChatSessions(uid);
-            std::unordered_set<std::string> users_id_list;
-            for (const auto &f : sf_list)
+            // std::unordered_set<std::string> users_id_list;
+            // for (const auto &f : sf_list)
+            // {
+            //     users_id_list.insert(f.friend_id);
+            // }
+
+            std::vector<std::string> users_id_list;
+            for(const auto& f : sf_list)
             {
-                users_id_list.insert(f.friend_id);
+                users_id_list.push_back(f.friend_id);
             }
 
             std::unordered_map<std::string, UserInfo> user_list;
@@ -333,7 +357,7 @@ namespace SnowK
             response->set_success(true);
         }
 
-        // Creating a session is actually for users to create a group chat session
+        // Creating a session, actually for users to create a group chat session
         virtual void ChatSessionCreate(::google::protobuf::RpcController *controller,
                                        const ::SnowK::ChatSessionCreateReq *request,
                                        ::SnowK::ChatSessionCreateRsp *response,
@@ -385,14 +409,21 @@ namespace SnowK
             std::string cssid = request->chat_session_id();
 
             auto member_id_lists = _mysql_chat_session_member->Members(cssid);
-            std::unordered_set<std::string> uid_list;
-            for (const auto &id : member_id_lists)
-            {
-                uid_list.insert(id);
-            }
+            // std::unordered_set<std::string> uid_list;
+            // for (const auto &id : member_id_lists)
+            // {
+            //     uid_list.insert(id);
+            // }
+            // std::vector<std::string> uid_list;
 
             std::unordered_map<std::string, UserInfo> user_list;
-            if (GetUserInfo(rid, uid_list, user_list) == false)
+            // if (GetUserInfo(rid, uid_list, user_list) == false)
+            // {
+            //     return Err_Response<::SnowK::GetChatSessionMemberRsp>(response, rid,
+            //             "Failed to get user information from user subservice");
+            // }
+
+            if (GetUserInfo(rid, member_id_lists, user_list) == false)
             {
                 return Err_Response<::SnowK::GetChatSessionMemberRsp>(response, rid,
                         "Failed to get user information from user subservice");
@@ -427,7 +458,7 @@ namespace SnowK
 
             SnowK::MsgStorageService_Stub stub(channel.get());
             stub.GetRecentMsg(&cntl, &req, &rsp, nullptr);
-            if (cntl.Failed() == true)
+            if (cntl.Failed())
             {
                 LOG_ERROR("{} - The message subservice call failed: {}",
                           rid, cntl.ErrorText());
@@ -448,8 +479,9 @@ namespace SnowK
             return false;
         }
 
+        // TODO 修改set为vector Done
         bool GetUserInfo(const std::string &rid,
-                         const std::unordered_set<std::string> &uid_list,
+                         const std::vector<std::string> &uid_list,
                          std::unordered_map<std::string, UserInfo> &user_list)
         {
             auto channel = _svrmgr_channels->Choose(_user_service_name);
@@ -463,14 +495,15 @@ namespace SnowK
             GetMultiUserInfoReq req;
             GetMultiUserInfoRsp rsp;
             req.set_request_id(rid);
-            for (auto &id : uid_list)
+
+            for (const auto &id : uid_list)
             {
                 req.add_users_id(id);
             }
 
             SnowK::UserService_Stub stub(channel.get());
             stub.GetMultiUserInfo(&cntl, &req, &rsp, nullptr);
-            if (cntl.Failed() == true)
+            if (cntl.Failed())
             {
                 LOG_ERROR("{} - The file subservice call failed: {}", rid, cntl.ErrorText());
                 return false;

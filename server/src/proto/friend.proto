@@ -56,7 +56,7 @@ message FriendAddRsp
     string request_id = 1;
     bool success = 2;
     string errmsg = 3; 
-    string notify_event_id = 4; // 通知事件id
+    string notify_event_id = 4;     // 通知事件id
 }
 //--------------------------------------
 // 好友申请的处理
@@ -89,7 +89,7 @@ message GetPendingFriendEventListReq
 
 message FriendEvent 
 {
-    optional string event_id = 1;
+    optional string event_id = 1; // 弃用 (Maybe)
     UserInfo sender = 3;
 }
 message GetPendingFriendEventListRsp 
@@ -105,7 +105,7 @@ message GetPendingFriendEventListRsp
 message FriendSearchReq 
 {
     string request_id = 1;
-    string search_key = 2; // 就是名称模糊匹配关键字
+    string search_key = 2;          // 就是名称模糊匹配关键字
     optional string session_id = 3;
     optional string user_id = 4;
 }

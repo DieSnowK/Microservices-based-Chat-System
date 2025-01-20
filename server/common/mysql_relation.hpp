@@ -7,6 +7,9 @@ namespace SnowK
 {
     class RelationTable
     {
+        using query = odb::query<Relation>;
+        using result = odb::result<Relation>;
+
     public:
         using ptr = std::shared_ptr<RelationTable>;
 
@@ -20,6 +23,7 @@ namespace SnowK
             {
                 Relation r1(uid, pid);
                 Relation r2(pid, uid);
+
                 odb::transaction trans(_db->begin());
                 _db->persist(r1);
                 _db->persist(r2);
@@ -27,7 +31,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add the user's friend relationship information {}-{}:{}", 
+                LOG_ERROR("Failed to add the user's friend relationship information {} - {}: {}", 
                           uid, pid, e.what());
                 return false;
             }
@@ -37,7 +41,6 @@ namespace SnowK
 
         bool Remove(const std::string &uid, const std::string &pid)
         {
-            typedef odb::query<Relation> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -47,7 +50,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to delete friend relationship information {}-{}:{}",
+                LOG_ERROR("Failed to delete friend relationship information {} - {}: {}",
                           uid, pid, e.what());
                 return false;
             }
@@ -55,23 +58,21 @@ namespace SnowK
             return true;
         }
 
+        // TODO flag can be cancled?
         bool Exists(const std::string &uid, const std::string &pid)
         {
-            typedef odb::query<Relation> query;
-            typedef odb::result<Relation> result;
-            result r;
+            result ret;
             bool flag = false;
             try
             {
                 odb::transaction trans(_db->begin());
-                r = _db->query<Relation>(query::user_id == uid && query::peer_id == pid);
-                flag = !r.empty();
+                ret = _db->query<Relation>(query::user_id == uid && query::peer_id == pid);
+                flag = !ret.empty();
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get the user's friend relationship:{}-{}-{}",
-                          uid, pid, e.what());
+                LOG_ERROR("Failed to get the user's friend relationship:{} - {}: {}", uid, pid, e.what());
             }
 
             return flag;
@@ -79,24 +80,22 @@ namespace SnowK
 
         std::vector<std::string> Friends(const std::string &uid)
         {
-            typedef odb::query<Relation> query;
-            typedef odb::result<Relation> result;
             std::vector<std::string> ret;
             try
             {
                 odb::transaction trans(_db->begin());
                 
                 result r(_db->query<Relation>(query::user_id == uid));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(i->Peer_Id());
+                    ret.push_back(iter->Peer_Id());
                 }
 
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get all friend IDs of user {}", uid, e.what());
+                LOG_ERROR("Failed to get all friend IDs of user {}: {}", uid, e.what());
             }
 
             return ret;

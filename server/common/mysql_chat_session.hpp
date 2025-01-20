@@ -8,6 +8,13 @@ namespace SnowK
 {
     class ChatSessionTable
     {
+        using cquery = odb::query<ChatSession>;
+        using mquery = odb::query<ChatSessionMember>;
+        using squery = odb::query<SingleChatSession>;
+        using sresult = odb::result<SingleChatSession>;
+        using gquery = odb::query<GroupChatSession>;
+        using gresult = odb::result<GroupChatSession>;
+
     public:
         using ptr = std::shared_ptr<ChatSessionTable>;
 
@@ -25,8 +32,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add a new session {}:{}",
-                          cs.Chat_Session_Name(), e.what());
+                LOG_ERROR("Failed to add a new session {}: {}", cs.Chat_Session_Name(), e.what());
                 return false;
             }
 
@@ -35,12 +41,12 @@ namespace SnowK
 
         bool Remove(const std::string &ssid)
         {
-            typedef odb::query<ChatSession> query;
-            typedef odb::query<ChatSessionMember> mquery;
+            // typedef odb::query<ChatSession> query;
+            // typedef odb::query<ChatSessionMember> mquery;
             try
             {
                 odb::transaction trans(_db->begin());
-                _db->erase_query<ChatSession>(query::chat_session_id == ssid);
+                _db->erase_query<ChatSession>(cquery::chat_session_id == ssid);
                 _db->erase_query<ChatSessionMember>(mquery::session_id == ssid);
                 trans.commit();
             }
@@ -49,24 +55,25 @@ namespace SnowK
                 LOG_ERROR("Failed to delete the session {}:{}", ssid, e.what());
                 return false;
             }
+
             return true;
         }
 
         // Deletion of a one-on-one session,
-        // -- based on the two members of the one-on-one session
+            // based on the two members of the one-on-one session
         bool Remove(const std::string &uid, const std::string &pid)
         {
-            typedef odb::query<SingleChatSession> query;
-            typedef odb::query<ChatSession> cquery;
-            typedef odb::query<ChatSessionMember> mquery;
+            // typedef odb::query<SingleChatSession> squery;
+            // typedef odb::query<ChatSession> cquery;
+            // typedef odb::query<ChatSessionMember> mquery;
             try
             {
                 odb::transaction trans(_db->begin());
 
                 auto ret = _db->query_one<SingleChatSession>(
-                    query::csm1::user_id == uid &&
-                    query::csm2::user_id == pid &&
-                    query::css::chat_session_type == ChatSessionType::SINGLE);
+                    squery::csm1::user_id == uid &&
+                    squery::csm2::user_id == pid &&
+                    squery::css::chat_session_type == ChatSessionType::SINGLE); // query((?))
 
                 std::string cssid = ret->chat_session_id;
                 _db->erase_query<ChatSession>(cquery::chat_session_id == cssid);
@@ -83,20 +90,20 @@ namespace SnowK
             return true;
         }
 
+        // TODO
         std::shared_ptr<ChatSession> Select(const std::string &ssid)
         {
             std::shared_ptr<ChatSession> ret;
-            typedef odb::query<ChatSession> query;
+            // typedef odb::query<ChatSession> query;
             try
             {
                 odb::transaction trans(_db->begin());
-                ret.reset(_db->query_one<ChatSession>(query::chat_session_id == ssid));
+                ret.reset(_db->query_one<ChatSession>(cquery::chat_session_id == ssid));
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to obtain session information by session ID {}:{}", 
-                          ssid, e.what());
+                LOG_ERROR("Failed to obtain session information by session ID {}: {}", ssid, e.what());
             }
 
             return ret;
@@ -105,28 +112,27 @@ namespace SnowK
         std::vector<SingleChatSession> SingleChatSessions(const std::string &uid)
         {
             std::vector<SingleChatSession> ret;
-            typedef odb::query<SingleChatSession> query;
-            typedef odb::result<SingleChatSession> result;
+            // typedef odb::query<SingleChatSession> query;
+            // typedef odb::result<SingleChatSession> result;
             try
             {
                 odb::transaction trans(_db->begin());
 
                 // TODO Why?
-                result r(_db->query<SingleChatSession>(
-                    query::css::chat_session_type == ChatSessionType::SINGLE &&
-                    query::csm1::user_id == uid &&
-                    query::csm2::user_id != query::csm1::user_id));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                sresult r(_db->query<SingleChatSession>(
+                    squery::css::chat_session_type == ChatSessionType::SINGLE &&
+                    squery::csm1::user_id == uid &&
+                    squery::csm2::user_id != squery::csm1::user_id));
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(*i);
+                    ret.push_back(*iter);
                 }
 
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get a {}'s one-to-one chat session: {}", 
-                          uid, e.what());
+                LOG_ERROR("Failed to get a {}'s one-to-one chat session: {}", uid, e.what());
             }
 
             return ret;
@@ -135,25 +141,25 @@ namespace SnowK
         std::vector<GroupChatSession> GroupChatSessions(const std::string &uid)
         {
             std::vector<GroupChatSession> ret;
-            typedef odb::query<GroupChatSession> query;
-            typedef odb::result<GroupChatSession> result;
+            // typedef odb::query<GroupChatSession> query;
+            // typedef odb::result<GroupChatSession> result;
             try
             {
                 odb::transaction trans(_db->begin());
                 
-                result r(_db->query<GroupChatSession>(
-                    query::css::chat_session_type == ChatSessionType::GROUP &&
-                    query::csm::user_id == uid));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                gresult r(_db->query<GroupChatSession>(
+                            gquery::css::chat_session_type == ChatSessionType::GROUP &&
+                            gquery::csm::user_id == uid));
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(*i);
+                    ret.push_back(*iter);
                 }
 
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get the group chat session for user {} : {}", 
+                LOG_ERROR("Failed to get the group chat session for user {}: {}", 
                           uid, e.what());
             }
             

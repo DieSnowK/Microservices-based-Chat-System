@@ -25,7 +25,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add a single session member {}-{}:{}",
+                LOG_ERROR("Failed to add a single session member {} - {}: {}",
                           csm.Session_Id(), csm.User_Id(), e.what());
                 return false;
             }
@@ -47,7 +47,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add multiple session members {}-{}:{}",
+                LOG_ERROR("Failed to add multiple session members {} - {}: {}",
                           csm_lists[0].Session_Id(), csm_lists.size(), e.what());
                 return false;
             }
@@ -68,7 +68,7 @@ namespace SnowK
             }
             catch (std::exception &e)
             {
-                LOG_ERROR("Failed to remove a single session member {}-{}:{}",
+                LOG_ERROR("Failed to remove a single session member {} - {}: {}",
                           csm.Session_Id(), csm.User_Id(), e.what());
                 return false;
             }
@@ -87,7 +87,7 @@ namespace SnowK
             }
             catch (std::exception &e)
             {
-                LOG_ERROR("Failed to remove a single session member {}:{}", ssid, e.what());
+                LOG_ERROR("Failed to remove a single session member {}: {}", ssid, e.what());
                 return false;
             }
 
@@ -111,7 +111,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get session members: {}-{}", ssid, e.what());
+                LOG_ERROR("Failed to get session members: {} - {}", ssid, e.what());
             }
 
             return ret;
