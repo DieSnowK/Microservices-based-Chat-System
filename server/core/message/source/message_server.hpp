@@ -89,7 +89,7 @@ namespace SnowK
             }
 
             // Collects the sender user ID of all messages
-            std::unordered_set<std::string> user_id_lists;
+            std::unordered_set<std::string> user_id_lists; // Remove duplicates
             for (const auto &msg : msg_lists)
             {
                 user_id_lists.insert(msg.User_Id());
@@ -114,36 +114,35 @@ namespace SnowK
                 message_info->set_timestamp(boost::posix_time::to_time_t(msg.Create_Time()));
                 message_info->mutable_sender()->CopyFrom(user_lists[msg.User_Id()]);
 
+                auto message = message_info->mutable_message();
                 switch (msg.Message_Type())
                 {
                 case MessageType::STRING:
-                    message_info->mutable_message()->set_message_type(MessageType::STRING);
-                    message_info->mutable_message()->mutable_string_message()->set_content(msg.Content());
+                    message->set_message_type(MessageType::STRING);
+                    message->mutable_string_message()->set_content(msg.Content());
                     break;
                 case MessageType::IMAGE:
-                    message_info->mutable_message()->set_message_type(MessageType::IMAGE);
-                    message_info->mutable_message()->mutable_image_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_image_message()->set_image_content(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::IMAGE);
+                    message->mutable_image_message()->set_file_id(msg.File_Id());
+                    message->mutable_image_message()->set_image_content(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::FILE:
-                    message_info->mutable_message()->set_message_type(MessageType::FILE);
-                    message_info->mutable_message()->mutable_file_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_file_message()->set_file_size(msg.File_Size());
-                    message_info->mutable_message()->mutable_file_message()->set_file_name(msg.File_Name());
-                    message_info->mutable_message()->mutable_file_message()->set_file_contents(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::FILE);
+                    message->mutable_file_message()->set_file_id(msg.File_Id());
+                    message->mutable_file_message()->set_file_size(msg.File_Size());
+                    message->mutable_file_message()->set_file_name(msg.File_Name());
+                    message->mutable_file_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::SPEECH:
-                    message_info->mutable_message()->set_message_type(MessageType::SPEECH);
-                    message_info->mutable_message()->mutable_speech_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_speech_message()->set_file_contents(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::SPEECH);
+                    message->mutable_speech_message()->set_file_id(msg.File_Id());
+                    message->mutable_speech_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 default:
                     LOG_ERROR("The message type is incorrect");
                     return;
                 }
             }
-
-            return;
         } // end of GetHistoryMsg()
 
         virtual void GetRecentMsg(::google::protobuf::RpcController *controller,
@@ -212,36 +211,35 @@ namespace SnowK
                 message_info->set_timestamp(boost::posix_time::to_time_t(msg.Create_Time()));
                 message_info->mutable_sender()->CopyFrom(user_lists[msg.User_Id()]);
 
+                auto message = message_info->mutable_message();
                 switch (msg.Message_Type())
                 {
                 case MessageType::STRING:
-                    message_info->mutable_message()->set_message_type(MessageType::STRING);
-                    message_info->mutable_message()->mutable_string_message()->set_content(msg.Content());
+                    message->set_message_type(MessageType::STRING);
+                    message->mutable_string_message()->set_content(msg.Content());
                     break;
                 case MessageType::IMAGE:
-                    message_info->mutable_message()->set_message_type(MessageType::IMAGE);
-                    message_info->mutable_message()->mutable_image_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_image_message()->set_image_content(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::IMAGE);
+                    message->mutable_image_message()->set_file_id(msg.File_Id());
+                    message->mutable_image_message()->set_image_content(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::FILE:
-                    message_info->mutable_message()->set_message_type(MessageType::FILE);
-                    message_info->mutable_message()->mutable_file_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_file_message()->set_file_size(msg.File_Size());
-                    message_info->mutable_message()->mutable_file_message()->set_file_name(msg.File_Name());
-                    message_info->mutable_message()->mutable_file_message()->set_file_contents(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::FILE);
+                    message->mutable_file_message()->set_file_id(msg.File_Id());
+                    message->mutable_file_message()->set_file_size(msg.File_Size());
+                    message->mutable_file_message()->set_file_name(msg.File_Name());
+                    message->mutable_file_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 case MessageType::SPEECH:
-                    message_info->mutable_message()->set_message_type(MessageType::SPEECH);
-                    message_info->mutable_message()->mutable_speech_message()->set_file_id(msg.File_Id());
-                    message_info->mutable_message()->mutable_speech_message()->set_file_contents(file_data_lists[msg.File_Id()]);
+                    message->set_message_type(MessageType::SPEECH);
+                    message->mutable_speech_message()->set_file_id(msg.File_Id());
+                    message->mutable_speech_message()->set_file_contents(file_data_lists[msg.File_Id()]);
                     break;
                 default:
                     LOG_ERROR("The message type is incorrect");
                     return;
                 }
             }
-
-            return;
         } // end of GetRecentMsg
 
         // Message search for keywords - for text messages only
@@ -296,6 +294,7 @@ namespace SnowK
             return;
         }
 
+        // CallBack for RabbitMq, in order to store message
         void OnMessage(const char *body, size_t sz)
         {
             SnowK::MessageInfo message;
@@ -310,7 +309,7 @@ namespace SnowK
             int64_t file_size;
             switch (message.message().message_type())
             {
-            // If it is a text message, the meta information is stored in Elasticsearch data
+            // If it is a text message, the meta information is needed to store in Elasticsearch data
             case MessageType::STRING:
                 content = message.message().string_message().content();
                 if (_es_message->AppendData(message.sender().user_id(), message.message_id(),
@@ -415,7 +414,6 @@ namespace SnowK
             return true;
         }
 
-        // TODO why unordered_map?
         bool _GetFile(const std::string &rid,
                       const std::unordered_set<std::string> &file_id_lists,
                       std::unordered_map<std::string, std::string> &file_data_lists)
@@ -501,16 +499,12 @@ namespace SnowK
         using ptr = std::shared_ptr<MessageServer>;
         
         MessageServer(const MQClient::ptr &mq_client,
-                      const Discovery::ptr service_discoverer,
                       const Registry::ptr &reg_client,
-                      const std::shared_ptr<elasticlient::Client> &es_client,
-                      const std::shared_ptr<odb::core::database> &mysql_client,
+                      const Discovery::ptr service_discoverer,
                       const std::shared_ptr<brpc::Server> &server) 
             : _mq_client(mq_client)
             , _service_discoverer(service_discoverer)
             , _registry_client(reg_client)
-            , _es_client(es_client)
-            , _mysql_client(mysql_client)
             , _rpc_server(server) 
         {}
         ~MessageServer() {}
@@ -521,12 +515,11 @@ namespace SnowK
         }
 
     private:
-        Discovery::ptr _service_discoverer;
         Registry::ptr _registry_client;
-        MQClient::ptr _mq_client;
-        std::shared_ptr<elasticlient::Client> _es_client;
-        std::shared_ptr<odb::core::database> _mysql_client;
+        Discovery::ptr _service_discoverer;
         std::shared_ptr<brpc::Server> _rpc_server;
+
+        MQClient::ptr _mq_client;
     }; // end of MessageServer
 
     // Builder Pattern
@@ -585,7 +578,6 @@ namespace SnowK
                             const std::string &queue_name,
                             const std::string &binding_key)
         {
-            _exchange_name = exchange_name;
             _queue_name = queue_name;
             _mq_client = std::make_shared<MQClient>(user, pwd, host);
             _mq_client->DeclareComponents(exchange_name, queue_name, binding_key);
@@ -656,8 +648,7 @@ namespace SnowK
             }
 
             MessageServer::ptr server = std::make_shared<MessageServer>(
-                _mq_client, _service_discoverer, _registry_client,
-                _es_client, _mysql_client, _rpc_server);
+                _mq_client, _registry_client, _service_discoverer, _rpc_server);
 
             return server;
         }
@@ -673,7 +664,6 @@ namespace SnowK
         std::string _file_service_name;
         ServiceManager::ptr _svrmgr_channels;
 
-        std::string _exchange_name;
         std::string _queue_name;
         MQClient::ptr _mq_client;
 
