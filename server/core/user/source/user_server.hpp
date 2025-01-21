@@ -87,7 +87,7 @@ namespace SnowK
                         "The username is occupied");
             }
 
-            std::string uid = UUID();
+            std::string uid = Utils::UUID();
             auto user = std::make_shared<User>(uid, nickname, password);
             if (_mysql_user->Insert(user) == false)
             {
@@ -132,7 +132,7 @@ namespace SnowK
 
             // Construct session ID, generate session key-value pairs, 
             // add session information and login token information to Redis
-            std::string ssid = UUID();
+            std::string ssid = Utils::UUID();
             _redis_session->Append(ssid, user->User_Id());
             _redis_status->Append(user->User_Id());
 
@@ -157,8 +157,8 @@ namespace SnowK
                         "The mobile phone number is in the wrong format");
             }
 
-            std::string code_id = UUID();
-            std::string code = VerifyCode();
+            std::string code_id = Utils::UUID();
+            std::string code = Utils::VerifyCode();
             if (_dms_client->Send(phone, code) == false)
             {
                 return Err_Response<::SnowK::PhoneVerifyCodeRsp>(response, rid,
@@ -204,7 +204,7 @@ namespace SnowK
                         "The mobile phone number has already been registered as a user");
             }
 
-            std::string uid = UUID();
+            std::string uid = Utils::UUID();
             auto user = std::make_shared<User>(uid, phone);
             if (_mysql_user->Insert(user) == false)
             {
@@ -260,7 +260,7 @@ namespace SnowK
                         "The user is already logged in elsewhere");
             }
 
-            std::string ssid = UUID();
+            std::string ssid = Utils::UUID();
             _redis_session->Append(ssid, user->User_Id());
             _redis_status->Append(user->User_Id());
 

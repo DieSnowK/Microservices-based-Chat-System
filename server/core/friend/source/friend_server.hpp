@@ -129,7 +129,7 @@ namespace SnowK
             }
 
             // TODO MYSQL部分接口统一?
-            std::string eid = UUID();
+            std::string eid = Utils::UUID();
             FriendApply ev(eid, uid, pid);
             if (_mysql_apply->Insert(ev) == false)
             {
@@ -175,7 +175,7 @@ namespace SnowK
                             "Failed to add friend relationship information");
                 }
 
-                cssid = UUID();
+                cssid = Utils::UUID();
                 ChatSession cs(cssid, "", ChatSessionType::SINGLE);
                 if (_mysql_chat_session->Insert(cs) == false)
                 {
@@ -338,7 +338,7 @@ namespace SnowK
             std::string uid = request->user_id();
             std::string cssname = request->chat_session_name();
 
-            std::string cssid = UUID();
+            std::string cssid = Utils::UUID();
             ChatSession cs(cssid, cssname, ChatSessionType::GROUP);
             if (_mysql_chat_session->Insert(cs) == false)
             {

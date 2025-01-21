@@ -6,6 +6,9 @@ namespace SnowK
 {
     class MessageTable
     {
+        using query = odb::query<Message>;
+        using result = odb::result<Message>;
+
     public:
         using ptr = std::shared_ptr<MessageTable>;
 
@@ -24,7 +27,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to add a new message {}:{}", msg.Message_Id(), e.what());
+                LOG_ERROR("Failed to add a new message {}: {}", msg.Message_Id(), e.what());
                 return false;
             }
 
@@ -33,7 +36,6 @@ namespace SnowK
 
         bool Remove(const std::string &ssid)
         {
-            typedef odb::query<Message> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -42,7 +44,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to delete all messages in the conversation {}:{}", ssid, e.what());
+                LOG_ERROR("Failed to delete all messages in the conversation {}: {}", ssid, e.what());
                 return false;
             }
 
@@ -51,9 +53,6 @@ namespace SnowK
 
         std::vector<Message> Recent(const std::string &ssid, int count)
         {
-            typedef odb::query<Message> query;
-            typedef odb::result<Message> result;
-
             std::vector<Message> ret;
             try
             {
@@ -63,9 +62,9 @@ namespace SnowK
                 cond << "session_id='" << ssid << "' order by create_time desc limit " << count;
 
                 result r(_db->query<Message>(cond.str()));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(*i);
+                    ret.push_back(*iter);
                 }
 
                 std::reverse(ret.begin(), ret.end());
@@ -73,7 +72,7 @@ namespace SnowK
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get recent messages:{}-{}-{}", ssid, count, e.what());
+                LOG_ERROR("Failed to get recent messages:{} - {}: {}", ssid, count, e.what());
             }
 
             return ret;
@@ -84,27 +83,23 @@ namespace SnowK
                                    boost::posix_time::ptime &stime,
                                    boost::posix_time::ptime &etime)
         {
-            typedef odb::query<Message> query;
-            typedef odb::result<Message> result;
-
             std::vector<Message> ret;
             try
             {
                 odb::transaction trans(_db->begin());
 
                 result r(_db->query<Message>(query::session_id == ssid &&
-                                             query::create_time >= stime &&
-                                             query::create_time <= etime));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                                             query::create_time >= stime && query::create_time <= etime));
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(*i);
+                    ret.push_back(*iter);
                 }
 
                 trans.commit();
             }
             catch (const std::exception &e)
             {
-                LOG_ERROR("Failed to get interval messages:{}-{}:{}-{}", ssid,
+                LOG_ERROR("Failed to get interval messages:{} - {} - {}: {}", ssid,
                           boost::posix_time::to_simple_string(stime),
                           boost::posix_time::to_simple_string(etime), e.what());
             }

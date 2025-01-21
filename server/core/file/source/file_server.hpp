@@ -47,7 +47,7 @@ namespace SnowK
             std::string fid = request->file_id();
             std::string filename = _storage_path + fid;
             std::string body;
-            if (ReadFile(filename, body) == false)
+            if (Utils::ReadFile(filename, body) == false)
             {
                 return Err_Response<::SnowK::GetSingleFileRsp>(response, rid,
                         "Failed to read file data");
@@ -72,7 +72,7 @@ namespace SnowK
                 std::string fid = request->file_id_list(i);
                 std::string filename = _storage_path + fid;
                 std::string body;
-                if (ReadFile(filename, body) == false)
+                if (Utils::ReadFile(filename, body) == false)
                 {
                     return Err_Response<::SnowK::GetMultiFileRsp>(response, rid,
                         "Failed to read file data");
@@ -95,11 +95,10 @@ namespace SnowK
         {
             brpc::ClosureGuard rpc_guard(done);
             std::string rid = request->request_id();
-            
 
-            std::string fid = UUID();
+            std::string fid = Utils::UUID();
             std::string filename = _storage_path + fid;
-            if (WriteFile(filename, request->file_data().file_content()) == false)
+            if (Utils::WriteFile(filename, request->file_data().file_content()) == false)
             {
                 return Err_Response<::SnowK::PutSingleFileRsp>(response, rid,
                         "Failed to write file data");
@@ -122,9 +121,9 @@ namespace SnowK
 
             for (int i = 0; i < request->file_data_size(); i++)
             {
-                std::string fid = UUID();
+                std::string fid = Utils::UUID();
                 std::string filename = _storage_path + fid;
-                if (WriteFile(filename, request->file_data(i).file_content()) == false)
+                if (Utils::WriteFile(filename, request->file_data(i).file_content()) == false)
                 {
                     return Err_Response<::SnowK::PutMultiFileRsp>(response, rid,
                             "Failed to write file data");

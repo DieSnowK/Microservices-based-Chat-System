@@ -50,7 +50,7 @@ int main()
         .onSuccess([]()
                  { std::cout << "test-exchange - test-queue 绑定成功"; });
 
-    // 8.订阅消息对垒 -> 设置消息处理回调函数
+    // 8.订阅消息队列 -> 设置消息处理回调函数
     auto callback = std::bind(MessageCB, &channel, std::placeholders::_1, 
                               std::placeholders::_2, std::placeholders::_3);
     channel.consume("test-queue", "consume-tag")

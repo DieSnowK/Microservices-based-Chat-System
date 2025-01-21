@@ -549,7 +549,6 @@ namespace SnowK
             _mysql_client = ODBFactory::Create(user, pwd, host, db, cset, port, conn_pool_count);
         }
 
-        // TODO
         void Make_Discovery_Object(const std::string &reg_host,
                                    const std::string &base_service_name,
                                    const std::string &file_service_name,
@@ -557,6 +556,7 @@ namespace SnowK
         {
             _user_service_name = user_service_name;
             _file_service_name = file_service_name;
+
             _svrmgr_channels = std::make_shared<ServiceManager>();
             _svrmgr_channels->Declare(file_service_name);
             _svrmgr_channels->Declare(user_service_name);
@@ -566,6 +566,7 @@ namespace SnowK
 
             auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::ServiceOffline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
@@ -607,9 +608,13 @@ namespace SnowK
                 LOG_ERROR("The channel management module has not been initialized");
                 abort();
             }
+            if (!_mq_client)
+            {
+                LOG_ERROR("The rabbitmq module has not been initialized");
+                abort();
+            }
 
             _rpc_server = std::make_shared<brpc::Server>();
-
             MessageServiceImpl *msg_service = new MessageServiceImpl(_es_client, _mysql_client, _svrmgr_channels, 
                                                                      _file_service_name, _user_service_name);
             if (_rpc_server->AddService(msg_service, brpc::ServiceOwnership::SERVER_OWNS_SERVICE) == -1)
@@ -659,6 +664,7 @@ namespace SnowK
 
     private:
         Registry::ptr _registry_client;
+        Discovery::ptr _service_discoverer;
 
         std::shared_ptr<elasticlient::Client> _es_client;
         std::shared_ptr<odb::core::database> _mysql_client;
@@ -666,7 +672,6 @@ namespace SnowK
         std::string _user_service_name;
         std::string _file_service_name;
         ServiceManager::ptr _svrmgr_channels;
-        Discovery::ptr _service_discoverer;
 
         std::string _exchange_name;
         std::string _queue_name;

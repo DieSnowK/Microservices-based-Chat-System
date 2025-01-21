@@ -77,7 +77,7 @@ namespace SnowK
 
             // Organize information
             MessageInfo message;
-            message.set_message_id(UUID());
+            message.set_message_id(Utils::UUID());
             message.set_chat_session_id(chat_ssid);
             message.set_timestamp(time(nullptr));
             message.mutable_sender()->CopyFrom(rsp.user_info());

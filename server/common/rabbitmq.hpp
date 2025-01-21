@@ -12,13 +12,12 @@ namespace SnowK
     {
     public:
         using ptr = std::shared_ptr<MQClient>;
-        using MessageCallback = std::function<void(const char *, size_t)>;
+        using MessageCallback = std::function<void(const char*, size_t)>;
         
         MQClient(const std::string &user, const std::string pwd, const std::string host)
         {
             _loop = EV_DEFAULT;
             _handler = std::make_unique<AMQP::LibEvHandler>(_loop);
-            // std::string url = "amqp://" + user + ":" + passwd + "@" + host + "/";
             AMQP::Address address("amqp://" + user + ":" + pwd + "@" + host + "/");
             _connection = std::make_unique<AMQP::TcpConnection>(_handler.get(), address);
             _channel = std::make_unique<AMQP::TcpChannel>(_connection.get());
@@ -93,18 +92,16 @@ namespace SnowK
             LOG_INFO("Start subscribing to {} queue messages", queue);
 
             _channel->consume(queue, "consume-tag")
-            .onReceived([this, cb](const AMQP::Message &message,
-                                   uint64_t deliveryTag,
-                                   bool redelivered)
-            {
+                .onReceived([this, cb](const AMQP::Message &message, uint64_t deliveryTag, bool redelivered)
+                {
                     cb(message.body(), message.bodySize());
                     _channel->ack(deliveryTag); 
-            })
-            .onError([&queue](const char *message)
-            {
-                LOG_ERROR("Failed to subscribe to {} queue messages: {}", queue, message);
-                exit(0); 
-            });
+                })
+                .onError([&queue](const char *message)
+                {
+                    LOG_ERROR("Failed to subscribe to {} queue messages: {}", queue, message);
+                    exit(0); 
+                });
         }
 
     private:
@@ -115,11 +112,12 @@ namespace SnowK
         }
 
     private:
-        struct ev_async _async_watcher;
         struct ev_loop *_loop;
         std::unique_ptr<AMQP::LibEvHandler> _handler;
         std::unique_ptr<AMQP::TcpConnection> _connection;
         std::unique_ptr<AMQP::TcpChannel> _channel;
+
+        struct ev_async _async_watcher;
         std::thread _loop_thread;
     };
 }
