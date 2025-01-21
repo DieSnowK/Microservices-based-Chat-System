@@ -41,10 +41,11 @@ namespace SnowK
         {}
         ~TransmiteServiceImpl() {}
 
-        void GetTransmitTarget(google::protobuf::RpcController *controller,
-                               const ::SnowK::NewMessageReq *request,
-                               ::SnowK::GetTransmitTargetRsp *response,
-                               ::google::protobuf::Closure *done) override
+        // TODO
+        virtual void GetTransmitTarget(google::protobuf::RpcController *controller,
+                                        const ::SnowK::NewMessageReq *request,
+                                        ::SnowK::GetTransmitTargetRsp *response,
+                                        ::google::protobuf::Closure *done)
         {
             brpc::ClosureGuard rpc_guard(done);
 
@@ -157,12 +158,12 @@ namespace SnowK
             _mysql_client = ODBFactory::Create(user, pwd, host, db, cset, port, conn_pool_count);
         }
 
-        // TODO
         void Make_Discovery_Object(const std::string &reg_host,
                                    const std::string &base_service_name,
                                    const std::string &user_service_name)
         {
             _user_service_name = user_service_name;
+
             _svrmgr_channels = std::make_shared<ServiceManager>();
             _svrmgr_channels->Declare(user_service_name);
 
@@ -170,6 +171,7 @@ namespace SnowK
 
             auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::ServiceOffline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
