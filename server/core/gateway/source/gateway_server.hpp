@@ -890,16 +890,16 @@ namespace SnowK
             if (!channel)
             {
                 return Err_Response<FriendRemoveRsp>(rsp, response,
-                        "No user sub-service node found to provide business processing");
+                        "No friend sub-service node found to provide business processing");
             }
 
             brpc::Controller cntl;
             SnowK::FriendService_Stub stub(channel.get());
             stub.FriendRemove(&cntl, &req, &rsp, nullptr);
-            if (!channel)
+            if (cntl.Failed())
             {
                 return Err_Response<FriendRemoveRsp>(rsp, response,
-                        "No friend sub-service node found to provide business processing");
+                        "Friend sub-service call failed");
             }
 
             auto conn = _connections->GetConnection(req.peer_id());
@@ -1241,7 +1241,7 @@ namespace SnowK
             if (cntl.Failed())
             {
                 return Err_Response<MsgSearchRsp>(rsp, response,
-                                                  "Message sub-service call failed");
+                        "Message sub-service call failed");
             }
 
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
