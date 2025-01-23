@@ -50,7 +50,6 @@ namespace SnowK
         std::shared_ptr<User> Select_By_Nickname(const std::string &nickname)
         {
             std::shared_ptr<User> ret;
-
             try
             {
                 odb::transaction trans(_db->begin());
@@ -68,7 +67,6 @@ namespace SnowK
         std::shared_ptr<User> Select_By_Phone(const std::string &phone)
         {
             std::shared_ptr<User> ret;
-
             try
             {
                 odb::transaction trans(_db->begin());
@@ -114,7 +112,6 @@ namespace SnowK
             {
                 odb::transaction trans(_db->begin());
 
-                // TODO Could it be more elegant?
                 std::stringstream ss;
                 ss << "user_id in (";
                 for (const auto &id : id_list)
@@ -126,9 +123,9 @@ namespace SnowK
                 condition += ")";
 
                 odb::result<User> r(_db->query<User>(condition));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(*i);
+                    ret.push_back(*iter);
                 }
 
                 trans.commit();

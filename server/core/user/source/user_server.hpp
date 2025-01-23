@@ -130,8 +130,8 @@ namespace SnowK
                         "The user is already logged in elsewhere");
             }
 
-            // Construct session ID, generate session key-value pairs, 
-            // add session information and login token information to Redis
+            // Construct a session ID, generate session key-value pairs, 
+                // and add session information and login tag information to redis
             std::string ssid = Utils::UUID();
             _redis_session->Append(ssid, user->User_Id());
             _redis_status->Append(user->User_Id());
@@ -191,12 +191,12 @@ namespace SnowK
                         "The mobile phone number is in the wrong format");
             }
 
-            // TODO OptionalString?
             if (_redis_codes->Code(code_id) != code)
             {
                 return Err_Response<::SnowK::PhoneRegisterRsp>(response, rid,
                         "The verification code is incorrect");
             }
+            _redis_codes->Remove(code_id);
 
             if (_mysql_user->Select_By_Phone(phone))
             {
@@ -234,6 +234,7 @@ namespace SnowK
             std::string phone = request->phone_number();
             std::string code_id = request->verify_code_id();
             std::string code = request->verify_code();
+
             if (Phone_Check(phone) == false)
             {
                 return Err_Response<::SnowK::PhoneLoginRsp>(response, rid,
@@ -549,6 +550,7 @@ namespace SnowK
                 return Err_Response<::SnowK::SetUserPhoneNumberRsp>(response, rid,
                         "The verification code is incorrect");
             }
+            _redis_codes->Remove(code_id);
 
             auto user = _mysql_user->Select_By_Id(uid);
             if (!user)
@@ -635,17 +637,11 @@ namespace SnowK
     public:
         using ptr = std::shared_ptr<UserServer>;
 
-        UserServer(const Discovery::ptr service_discoverer,
-                   const Registry::ptr &reg_client,
-                   const std::shared_ptr<elasticlient::Client> &es_client,
-                   const std::shared_ptr<odb::core::database> &mysql_client,
-                   const std::shared_ptr<sw::redis::Redis> &redis_client,
+        UserServer(const Registry::ptr &reg_client,
+                   const Discovery::ptr service_discoverer,
                    const std::shared_ptr<brpc::Server> &server)
             : _service_discoverer(service_discoverer)
             , _registry_client(reg_client)
-            , _es_client(es_client)
-            , _mysql_client(mysql_client)
-            , _redis_client(redis_client)
             , _rpc_server(server) 
         {}
         ~UserServer() {}
@@ -656,11 +652,8 @@ namespace SnowK
         }
 
     private:
-        Discovery::ptr _service_discoverer;
         Registry::ptr _registry_client;
-        std::shared_ptr<elasticlient::Client> _es_client;
-        std::shared_ptr<odb::core::database> _mysql_client;
-        std::shared_ptr<sw::redis::Redis> _redis_client;
+        Discovery::ptr _service_discoverer;
         std::shared_ptr<brpc::Server> _rpc_server;
     }; // end of UserServer
 
@@ -698,7 +691,6 @@ namespace SnowK
             _redis_client = RedisClientFactory::Create(host, port, db, keep_alive);
         }
 
-        // TODO
         void Make_Discovery_Object(const std::string &reg_host,
                                    const std::string &base_service_name,
                                    const std::string &file_service_name)
@@ -711,6 +703,7 @@ namespace SnowK
 
             auto put_cb = std::bind(&ServiceManager::ServiceOnline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
             auto del_cb = std::bind(&ServiceManager::ServiceOffline, _svrmgr_channels.get(), std::placeholders::_1, std::placeholders::_2);
+
             _service_discoverer = std::make_shared<Discovery>(reg_host, base_service_name, put_cb, del_cb);
         }
 
@@ -751,10 +744,10 @@ namespace SnowK
             }
 
             _rpc_server = std::make_shared<brpc::Server>();
-
             UserServiceImpl *user_service = new UserServiceImpl(_dms_client, _es_client,
                                                                 _mysql_client, _redis_client, 
                                                                 _svrmgr_channels, _file_service_name);
+
             if (_rpc_server->AddService(user_service, brpc::ServiceOwnership::SERVER_OWNS_SERVICE) == -1)
             {
                 LOG_ERROR("Failed to add RPC service");
@@ -790,24 +783,22 @@ namespace SnowK
             }
 
             UserServer::ptr server = std::make_shared<UserServer>(
-                _service_discoverer, _registry_client,
-                _es_client, _mysql_client, _redis_client, _rpc_server);
-                
+                _registry_client, _service_discoverer, _rpc_server);
+
             return server;
         }
 
     private:
         Registry::ptr _registry_client;
+        Discovery::ptr _service_discoverer;
 
+        std::shared_ptr<DMSClient> _dms_client;
         std::shared_ptr<elasticlient::Client> _es_client;
         std::shared_ptr<odb::core::database> _mysql_client;
         std::shared_ptr<sw::redis::Redis> _redis_client;
 
         std::string _file_service_name;
         ServiceManager::ptr _svrmgr_channels;
-        Discovery::ptr _service_discoverer;
-
-        std::shared_ptr<DMSClient> _dms_client;
 
         std::shared_ptr<brpc::Server> _rpc_server;
     }; // end of UserServerBuilder

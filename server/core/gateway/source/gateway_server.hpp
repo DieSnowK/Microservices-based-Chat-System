@@ -253,7 +253,7 @@ namespace SnowK
             }
 
             _redis_session->Remove(ssid);
-            _redis_status->Remove(uid); // TODO 好像没用到?
+            _redis_status->Remove(uid);
             _connections->Remove(conn);
 
             LOG_DEBUG("{} {} {} the persistent connection is disconnected, \
