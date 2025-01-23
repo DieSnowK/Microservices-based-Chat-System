@@ -1442,7 +1442,6 @@ namespace SnowK
             response.set_content(rsp.SerializeAsString(), "application/x-protbuf");
         }
 
-        // TODO
         void NewMessage(const httplib::Request &request, httplib::Response &response)
         {
             NewMessageReq req;

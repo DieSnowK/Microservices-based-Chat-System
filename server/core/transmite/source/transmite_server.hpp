@@ -41,7 +41,6 @@ namespace SnowK
         {}
         ~TransmiteServiceImpl() {}
 
-        // TODO
         virtual void GetTransmitTarget(google::protobuf::RpcController *controller,
                                         const ::SnowK::NewMessageReq *request,
                                         ::SnowK::GetTransmitTargetRsp *response,
@@ -84,8 +83,8 @@ namespace SnowK
             message.mutable_sender()->CopyFrom(rsp.user_info());
             message.mutable_message()->CopyFrom(content);
 
-            // The encapsulated message is published to the 
-            // message queue and the message storage subservice is persisted
+            // Publish the organized message to the RabbitMq, and wait 
+                // for the message storage sub-service to persist the message.
             if (_mq_client->Publish(_exchange_name, message.SerializeAsString(), _routing_key) == false)
             {
                 return Err_Response<::SnowK::GetTransmitTargetRsp>(response, rid,
@@ -120,13 +119,11 @@ namespace SnowK
     {
     public:
         using ptr = std::shared_ptr<TransmiteServer>;
-        TransmiteServer(const std::shared_ptr<odb::core::database> &mysql_client,
+        TransmiteServer(const Registry::ptr &registry_client,
                         const Discovery::ptr discovery_client,
-                        const Registry::ptr &registry_client,
                         const std::shared_ptr<brpc::Server> &server) 
                 : _service_discoverer(discovery_client)
                 , _registry_client(registry_client)
-                , _mysql_client(mysql_client)
                 , _rpc_server(server) 
         {}
         ~TransmiteServer() {}
@@ -137,9 +134,8 @@ namespace SnowK
         }
 
     private:
-        Discovery::ptr _service_discoverer;
         Registry::ptr _registry_client;
-        std::shared_ptr<odb::core::database> _mysql_client;
+        Discovery::ptr _service_discoverer;
         std::shared_ptr<brpc::Server> _rpc_server;
     };
 
@@ -255,7 +251,7 @@ namespace SnowK
             }
 
             TransmiteServer::ptr server = std::make_shared<TransmiteServer>(
-                _mysql_client, _service_discoverer, _registry_client, _rpc_server);
+                _registry_client, _service_discoverer, _rpc_server);
 
             return server;
         }

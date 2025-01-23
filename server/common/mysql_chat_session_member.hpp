@@ -7,6 +7,9 @@ namespace SnowK
 {
     class ChatSessionMemeberTable
     {
+        using query = odb::query<ChatSessionMember>;
+        using result = odb::result<ChatSessionMember>;
+
     public:
         using ptr = std::shared_ptr<ChatSessionMemeberTable>;
 
@@ -58,7 +61,6 @@ namespace SnowK
         // Delete a specified member in a specified session
         bool Remove(ChatSessionMember &csm)
         {
-            typedef odb::query<ChatSessionMember> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -78,7 +80,6 @@ namespace SnowK
 
         bool Remove(const std::string &ssid)
         {
-            typedef odb::query<ChatSessionMember> query;
             try
             {
                 odb::transaction trans(_db->begin());
@@ -96,16 +97,14 @@ namespace SnowK
 
         std::vector<std::string> Members(const std::string &ssid)
         {
-            typedef odb::query<ChatSessionMember> query;
-            typedef odb::result<ChatSessionMember> result;
             std::vector<std::string> ret;
             try
             {
                 odb::transaction trans(_db->begin());
                 result r(_db->query<ChatSessionMember>(query::session_id == ssid));
-                for (auto i(r.begin()); i != r.end(); ++i)
+                for (auto iter(r.begin()); iter != r.end(); ++iter)
                 {
-                    ret.push_back(i->User_Id());
+                    ret.push_back(iter->User_Id());
                 }
                 trans.commit();
             }
