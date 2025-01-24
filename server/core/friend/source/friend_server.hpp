@@ -128,7 +128,6 @@ namespace SnowK
                         "Already sent a friend request to the other party");
             }
 
-            // TODO MYSQL部分接口统一?
             std::string eid = Utils::UUID();
             FriendApply ev(eid, uid, pid);
             if (_mysql_apply->Insert(ev) == false)

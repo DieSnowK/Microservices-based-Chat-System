@@ -178,7 +178,6 @@ namespace SnowK
                 return;
             }
 
-            // TODO Think about the problem of mutex granularity
             ServiceChannel::ptr service;
             {
                 std::unique_lock<std::mutex> lock(_mutex);

@@ -35,7 +35,6 @@ namespace SnowK
             return true;
         }
 
-        // TODO flag can be cancled ?
         bool Exists(const std::string &uid, const std::string &pid)
         {
             bool flag = false;

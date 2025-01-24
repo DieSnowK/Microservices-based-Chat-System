@@ -81,7 +81,6 @@ void Update_Student(odb::mysql::database &db, Student &stu)
     }
 }
 
-// TODO
 Student Select_Student(odb::mysql::database &db)
 {
     Student ret;

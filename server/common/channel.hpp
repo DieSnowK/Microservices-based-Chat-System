@@ -6,7 +6,6 @@
 #include <brpc/channel.h>
 #include "logger.hpp"
 
-// TODO Think about why mutex?
 namespace SnowK
 {
     // A channel management class for a single service

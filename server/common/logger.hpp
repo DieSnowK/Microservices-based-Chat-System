@@ -29,6 +29,11 @@ namespace SnowK
         g_logger->set_pattern("[%n][%H:%M:%S][%t][%-8l]%v");
     }
 
+    // std::string TruncatePath(std::string path)
+    // {
+
+    // }
+
     // __VA_ARGS__: Extract variadics
     // ##: Make sure that no extra commas are generated when there are no variadas to avoid syntax errors
     #define LOG_TRACE(format, ...) SnowK::g_logger->trace(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)

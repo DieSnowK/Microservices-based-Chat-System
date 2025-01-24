@@ -85,7 +85,6 @@ namespace SnowK
             return true;
         }
 
-        // TODO
         std::shared_ptr<ChatSession> Select(const std::string &ssid)
         {
             std::shared_ptr<ChatSession> ret;
@@ -110,7 +109,6 @@ namespace SnowK
             {
                 odb::transaction trans(_db->begin());
 
-                // TODO Why?
                 sresult r(_db->query<SingleChatSession>(
                     squery::css::chat_session_type == ChatSessionType::SINGLE &&
                     squery::csm1::user_id == uid &&
