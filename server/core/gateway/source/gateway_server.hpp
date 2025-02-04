@@ -233,7 +233,6 @@ namespace SnowK
             _ws_server.set_timer(60000, std::bind(&GatewayServer::KeepAlive, this, conn));
         }
 
-        // TODO 是否这里改为WsOnMessage的功能?  等待客户端接口验证
         void WsOnOpen(websocketpp::connection_hdl hdl)
         {
             LOG_DEBUG("A persistent websocket connection is established {}", 
