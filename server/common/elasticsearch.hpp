@@ -41,7 +41,7 @@ namespace SnowK
 
             return true;
         }
-    }
+    } // end of namespace ESTools
 
     class ESIndex
     {
