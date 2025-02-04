@@ -23,7 +23,6 @@ namespace network
     class NetClient : public QObject
     {
         Q_OBJECT
-
     private:
         const QString HTTP_URL = "http://snowk.x3322.net:9000";
         const QString WEBSOCKET_URL = "ws://snowk.x3322.net:9001/ws";
