@@ -8,36 +8,39 @@
 
 namespace SnowK
 {
-    bool Serialize(const Json::Value &val, std::string &dest)
+    namespace ESTools
     {
-        Json::StreamWriterBuilder swb;
-        std::unique_ptr<Json::StreamWriter> sw(swb.newStreamWriter());
-
-        std::stringstream ss;
-        if (sw->write(val, &ss) != 0)
+        bool Serialize(const Json::Value &val, std::string &dest)
         {
-            LOG_ERROR("JSON serialization failed");
-            return false;
+            Json::StreamWriterBuilder swb;
+            std::unique_ptr<Json::StreamWriter> sw(swb.newStreamWriter());
+
+            std::stringstream ss;
+            if (sw->write(val, &ss) != 0)
+            {
+                LOG_ERROR("JSON serialization failed");
+                return false;
+            }
+
+            dest = ss.str();
+
+            return true;
         }
 
-        dest = ss.str();
-
-        return true;
-    }
-
-    bool DeSerialize(const std::string &src, Json::Value &val)
-    {
-        Json::CharReaderBuilder crb;
-        std::unique_ptr<Json::CharReader> cr(crb.newCharReader());
-
-        std::string err;
-        if (cr->parse(src.c_str(), src.c_str() + src.size(), &val, &err) == false)
+        bool DeSerialize(const std::string &src, Json::Value &val)
         {
-            LOG_ERROR("JSON deserialization failed: {}", err);
-            return false;
-        }
+            Json::CharReaderBuilder crb;
+            std::unique_ptr<Json::CharReader> cr(crb.newCharReader());
 
-        return true;
+            std::string err;
+            if (cr->parse(src.c_str(), src.c_str() + src.size(), &val, &err) == false)
+            {
+                LOG_ERROR("JSON deserialization failed: {}", err);
+                return false;
+            }
+
+            return true;
+        }
     }
 
     class ESIndex
@@ -92,7 +95,7 @@ namespace SnowK
             _index["mappings"] = mappings;
 
             std::string body;
-            if (Serialize(_index, body) == false)
+            if (ESTools::Serialize(_index, body) == false)
             {
                 return false;
             }
@@ -146,7 +149,7 @@ namespace SnowK
         bool Insert(const std::string id = "")
         {
             std::string body;
-            if (Serialize(_item, body) == false)
+            if (ESTools::Serialize(_item, body) == false)
             {
                 return false;
             }
@@ -306,7 +309,7 @@ namespace SnowK
             root["query"] = query;
 
             std::string body;
-            if (Serialize(root, body) == false)
+            if (ESTools::Serialize(root, body) == false)
             {
                 return Json::Value();
             }
@@ -331,7 +334,7 @@ namespace SnowK
             // LOG_DEBUG("Search response body: [{}]", resp.text);
             
             Json::Value json_ret;
-            if (DeSerialize(resp.text, json_ret) == false)
+            if (ESTools::DeSerialize(resp.text, json_ret) == false)
             {
                 return Json::Value();
             }
