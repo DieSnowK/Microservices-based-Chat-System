@@ -306,7 +306,7 @@ namespace SnowK
 
             // Different processing is carried out according to different message types
             std::string file_id, file_name, content;
-            int64_t file_size;
+            int64_t file_size = 0;
             switch (message.message().message_type())
             {
             // If it is a text message, the meta information is needed to store in Elasticsearch data
@@ -324,6 +324,7 @@ namespace SnowK
             case MessageType::IMAGE:
             {
                 const auto &msg = message.message().image_message();
+                file_size = msg.image_content().size();
                 if (_PutFile("", msg.image_content(), msg.image_content().size(), file_id) == false)
                 {
                     LOG_ERROR("Failed to upload image to file subservice");
@@ -346,6 +347,7 @@ namespace SnowK
             case MessageType::SPEECH:
             {
                 const auto &msg = message.message().speech_message();
+                file_size = msg.file_contents().size();
                 if (_PutFile("", msg.file_contents(), msg.file_contents().size(), file_id) == false)
                 {
                     LOG_ERROR("Failed to upload voice to file subservice");
