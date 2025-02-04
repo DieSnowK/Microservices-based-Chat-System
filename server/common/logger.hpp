@@ -29,17 +29,16 @@ namespace SnowK
         g_logger->set_pattern("[%n][%H:%M:%S][%t][%-8l]%v");
     }
 
-    // std::string TruncatePath(std::string path)
-    // {
+    std::string TruncatePath(std::string path)
+    {
+        int pos = path.find_last_of('/');
+        return path.substr(pos + 1);
+    }
 
-    // }
-
-    // __VA_ARGS__: Extract variadics
-    // ##: Make sure that no extra commas are generated when there are no variadas to avoid syntax errors
-    #define LOG_TRACE(format, ...) SnowK::g_logger->trace(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
-    #define LOG_DEBUG(format, ...) SnowK::g_logger->debug(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
-    #define LOG_INFO(format, ...) SnowK::g_logger->info(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
-    #define LOG_WARN(format, ...) SnowK::g_logger->warn(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
-    #define LOG_ERROR(format, ...) SnowK::g_logger->error(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
-    #define LOG_FATAL(format, ...) SnowK::g_logger->critical(std::string("[{}:{}]") + format, __FILE__, __LINE__, ##__VA_ARGS__)
+    #define LOG_TRACE(format, ...) SnowK::g_logger->trace(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
+    #define LOG_DEBUG(format, ...) SnowK::g_logger->debug(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
+    #define LOG_INFO(format, ...) SnowK::g_logger->info(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
+    #define LOG_WARN(format, ...) SnowK::g_logger->warn(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
+    #define LOG_ERROR(format, ...) SnowK::g_logger->error(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
+    #define LOG_FATAL(format, ...) SnowK::g_logger->critical(std::string("[{}:{}]") + format, TruncatePath(__FILE__), __LINE__, ##__VA_ARGS__)
 }
