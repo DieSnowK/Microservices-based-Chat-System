@@ -6,11 +6,43 @@ using namespace model;
 
 namespace network
 {
+    /////////////////////////////////////////////////////////////////////////////////
+    /// NetClient
+    /////////////////////////////////////////////////////////////////////////////////
     NetClient::NetClient(model::DataCenter *dataCenter)
         : dataCenter(dataCenter)
     {
         // Error, It shouldn't be initialized here, it should be in the MainWidget
         // InitWebsocket();
+    }
+
+    void NetClient::Ping()
+    {
+        QNetworkRequest httpReq;
+        httpReq.setUrl(QUrl(HTTP_URL + "/ping"));
+
+        QNetworkReply *httpResp = httpClient.get(httpReq);
+
+        // When the slot function is triggered, the response has returned
+        connect(httpResp, &QNetworkReply::finished, this, [=]()
+        {
+            if (httpResp->error() != QNetworkReply::NoError)
+            {
+                LOG() << "The HTTP request failed: " << httpResp->errorString();
+                httpResp->deleteLater();
+                return;
+            }
+
+            QByteArray body = httpResp->readAll();
+            LOG() << "The content of the response: " << body;
+
+            httpResp->deleteLater(); 
+        });
+    }
+
+    QString NetClient::MakeRequestId()
+    {
+        return "R" + QUuid::createUuid().toString().sliced(25, 12);
     }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +82,19 @@ namespace network
         });
 
         websocketClient.open(WEBSOCKET_URL);
+    }
+
+    void NetClient::SendAuth()
+    {
+        SnowK::ClientAuthenticationReq req;
+        req.setRequestId(MakeRequestId());
+        req.setSessionId(dataCenter->GetLoginSessionId());
+        QByteArray body = req.serialize(&serializer);
+
+        LOG() << "[WS Authentication] requestId = " << req.requestId()
+              << ", loginSessionId = " << req.sessionId();
+
+        websocketClient.sendBinaryMessage(body);
     }
 
     void NetClient::HandleWsResponse(const SnowK::NotifyMessage &notifyMessage)
@@ -154,14 +199,25 @@ namespace network
         emit dataCenter->ReceiveSessionCreateDone();
     }
 
+    // TODO 研究逻辑
+    void NetClient::ReceiveMessage(const QString &chatSessionId)
+    {
+        if (chatSessionId == dataCenter->GetCurrentChatSessionId())
+        {
+            const Message &lastMessage = dataCenter->GetRecentMessageList(chatSessionId)->back();
+            emit dataCenter->ReceiveMessageDone(lastMessage);
+        }
+        else
+        {
+            dataCenter->AddUnread(chatSessionId);
+        }
+
+        emit dataCenter->UpdateLastMessage(chatSessionId);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////
     /// HTTP
     /////////////////////////////////////////////////////////////////////////////////
-
-    QString NetClient::MakeRequestId()
-    {
-        return "R" + QUuid::createUuid().toString().sliced(25, 12);
-    }
 
     QNetworkReply *NetClient::SendHttpRequest(const QString &apiPath, const QByteArray &body)
     {
@@ -171,43 +227,6 @@ namespace network
 
         QNetworkReply* httpResp = httpClient.post(httpReq, body);
         return httpResp;
-    }
-
-    void NetClient::Ping()
-    {
-        QNetworkRequest httpReq;
-        httpReq.setUrl(QUrl(HTTP_URL + "/ping"));
-
-        QNetworkReply* httpResp = httpClient.get(httpReq);
-
-        // When the slot function is triggered, the response has returned
-        connect(httpResp, &QNetworkReply::finished, this, [=]()
-        {
-            if (httpResp->error() != QNetworkReply::NoError)
-            {
-                LOG() << "The HTTP request failed: " << httpResp->errorString();
-                httpResp->deleteLater();
-                return;
-            }
-
-            QByteArray body = httpResp->readAll();
-            LOG() << "The content of the response: " << body;
-
-            httpResp->deleteLater();
-        });
-    }
-
-    void NetClient::SendAuth()
-    {
-        SnowK::ClientAuthenticationReq req;
-        req.setRequestId(MakeRequestId());
-        req.setSessionId(dataCenter->GetLoginSessionId());
-        QByteArray body = req.serialize(&serializer);
-
-        LOG() << "[WS Authentication] requestId = " << req.requestId()
-              << ", loginSessionId = " << req.sessionId();
-
-        websocketClient.sendBinaryMessage(body);
     }
 
     void NetClient::GetMyself(const QString &loginSessionId)
@@ -303,7 +322,6 @@ namespace network
         });
     }
 
-    // TODO
     void NetClient::GetApplyList(const QString &loginSessionId)
     {
         SnowK::GetPendingFriendEventListReq req;
@@ -454,21 +472,6 @@ namespace network
 
             LOG() << "[GetRecentMessageList] Process the response done, requestId=" << pbReq.requestId();
         });
-    }
-
-    void NetClient::ReceiveMessage(const QString &chatSessionId)
-    {
-        if (chatSessionId == dataCenter->GetCurrentChatSessionId())
-        {
-            const Message& lastMessage = dataCenter->GetRecentMessageList(chatSessionId)->back();
-            emit dataCenter->ReceiveMessageDone(lastMessage);
-        }
-        else
-        {
-            dataCenter->AddUnread(chatSessionId);
-        }
-
-        emit dataCenter->UpdateLastMessage(chatSessionId);
     }
 
     void NetClient::ChangeNickname(const QString &loginSessionId, const QString &nickname)

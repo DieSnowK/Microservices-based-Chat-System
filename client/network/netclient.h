@@ -29,35 +29,58 @@ namespace network
 
     public:
         NetClient(model::DataCenter* dataCenter);
-        void Ping();
-
-        /////////////////////////////////////////////////////////////////////////////////
-        /// Websocket
-        /////////////////////////////////////////////////////////////////////////////////
-
         void InitWebsocket();
-
-        void HandleWsResponse(const SnowK::NotifyMessage& notifyMessage);
-        void HandleWsMessage(const model::Message& message);
-        void HandleWsRemoveFriend(const QString& userId);
-        void HandleWsAddFriendApply(const model::UserInfo& userInfo);
-        void HandleWsAddFriendProcess(const model::UserInfo& userInfo, bool agree);
-        void HandleWsSessionCreate(const model::ChatSessionInfo& chatSessionInfo);
-
+        void Ping();
 
         /////////////////////////////////////////////////////////////////////////////////
         /// HTTP
         /////////////////////////////////////////////////////////////////////////////////
 
+        void GetMyself(const QString& loginSessionId);
+        void GetFriendList(const QString& loginSessionId);
+        void GetChatSessionList(const QString& loginSessionId);
+        void GetApplyList(const QString& loginSessionId);
+        void GetRecentMessageList(const QString& loginSessionId,
+                                  const QString& chatSessionId, bool updateUI);
+        void SendMessage(const QString& loginSessionId, const QString& chatSessionId,
+                         MessageType messageType,const QByteArray& content, const QString& extraInfo);
+        void ChangeNickname(const QString& loginSessionId, const QString& nickname);
+        void ChangeDescription(const QString& loginSessionId, const QString& desc);
+        void GetVerifyCode(const QString& phone);
+        void ChangePhone(const QString& loginSessionId, const QString& phone,
+                         const QString& verifyCodeId, const QString& verifyCode);
+        void ChangeAvatar(const QString& loginSessionId, const QByteArray& avatar);
+        void DeleteFriend(const QString& loginSessionId, const QString& userId);
+        void AddFriendApply(const QString& loginSessionId, const QString& userId);
+        void AcceptFriendApply(const QString& loginSessionId, const QString& userId);
+        void RejectFriendApply(const QString& loginSessionId, const QString& userId);
+        void CreateGroupChatSession(const QString& loginSessionId, const QList<QString>& userIdList);
+        void GetMemberList(const QString& loginSessionId, const QString& chatSessionId);
+        void SearchUser(const QString& loginSessionId, const QString& searchKey);
+        void SearchMessage(const QString& loginSessionId, const QString& chatSessionId, const QString& searchKey);
+        void SearchMessageByTime(const QString& loginSessionId, const QString& chatSessionId,
+                                 const QDateTime& begTime, const QDateTime& endTime);
+        void UserLogin(const QString& username, const QString& password);
+        void UserRegister(const QString& username, const QString& password);
+        void PhoneLogin(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
+        void PhoneRegister(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
+        void GetSingleFile(const QString& loginSessionId, const QString& fileId);
+        void SpeechConvertText(const QString& loginSessionId, const QString& fileId, const QByteArray& content);
+
+    private:
+        /////////////////////////////////////////////////////////////////////////////////
+        /// Utils
+        /////////////////////////////////////////////////////////////////////////////////
+
         static QString MakeRequestId();
-        QNetworkReply* SendHttpRequest(const QString& apiPath, const QByteArray& body);
+        QNetworkReply *SendHttpRequest(const QString &apiPath, const QByteArray &body);
 
         // Since different APIs have different structures for the returned PB objects
             // templates are needed in order for a function to handle many different types
         // The output parameter indicates whether the operation
             // succeeded or failed, and the reason for the failure
         template <typename T>
-        std::shared_ptr<T> HandleHttpResponse(QNetworkReply* httpResp, bool* ok, QString* reason)
+        std::shared_ptr<T> HandleHttpResponse(QNetworkReply *httpResp, bool *ok, QString *reason)
         {
             if (httpResp->error() != QNetworkReply::NoError)
             {
@@ -85,38 +108,19 @@ namespace network
             return respObj;
         }
 
+        /////////////////////////////////////////////////////////////////////////////////
+        /// Websocket
+        /////////////////////////////////////////////////////////////////////////////////
         void SendAuth();
-        void GetMyself(const QString& loginSessionId);
-        void GetFriendList(const QString& loginSessionId);
-        void GetChatSessionList(const QString& loginSessionId);
-        void GetApplyList(const QString& loginSessionId);
-        void GetRecentMessageList(const QString& loginSessionId,
-                                  const QString& chatSessionId, bool updateUI);
-        void SendMessage(const QString& loginSessionId, const QString& chatSessionId,
-                         MessageType messageType,const QByteArray& content, const QString& extraInfo);
-        void ReceiveMessage(const QString& chatSessionId);
-        void ChangeNickname(const QString& loginSessionId, const QString& nickname);
-        void ChangeDescription(const QString& loginSessionId, const QString& desc);
-        void GetVerifyCode(const QString& phone);
-        void ChangePhone(const QString& loginSessionId, const QString& phone,
-                         const QString& verifyCodeId, const QString& verifyCode);
-        void ChangeAvatar(const QString& loginSessionId, const QByteArray& avatar);
-        void DeleteFriend(const QString& loginSessionId, const QString& userId);
-        void AddFriendApply(const QString& loginSessionId, const QString& userId);
-        void AcceptFriendApply(const QString& loginSessionId, const QString& userId);
-        void RejectFriendApply(const QString& loginSessionId, const QString& userId);
-        void CreateGroupChatSession(const QString& loginSessionId, const QList<QString>& userIdList);
-        void GetMemberList(const QString& loginSessionId, const QString& chatSessionId);
-        void SearchUser(const QString& loginSessionId, const QString& searchKey);
-        void SearchMessage(const QString& loginSessionId, const QString& chatSessionId, const QString& searchKey);
-        void SearchMessageByTime(const QString& loginSessionId, const QString& chatSessionId,
-                                 const QDateTime& begTime, const QDateTime& endTime);
-        void UserLogin(const QString& username, const QString& password);
-        void UserRegister(const QString& username, const QString& password);
-        void PhoneLogin(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
-        void PhoneRegister(const QString& phone, const QString& verifyCodeId, const QString& verifyCode);
-        void GetSingleFile(const QString& loginSessionId, const QString& fileId);
-        void SpeechConvertText(const QString& loginSessionId, const QString& fileId, const QByteArray& content);
+
+        void HandleWsResponse(const SnowK::NotifyMessage &notifyMessage);
+        void HandleWsMessage(const model::Message &message);
+        void HandleWsRemoveFriend(const QString &userId);
+        void HandleWsAddFriendApply(const model::UserInfo &userInfo);
+        void HandleWsAddFriendProcess(const model::UserInfo &userInfo, bool agree);
+        void HandleWsSessionCreate(const model::ChatSessionInfo &chatSessionInfo);
+
+        void ReceiveMessage(const QString &chatSessionId);
 
     private:
         model::DataCenter* dataCenter;

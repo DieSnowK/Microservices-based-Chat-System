@@ -273,7 +273,6 @@ MessageContentLabel::MessageContentLabel(const QString &text, bool isLeft, Messa
     }
 }
 
-// TODO
 void MessageContentLabel::paintEvent(QPaintEvent *event)
 {
     (void) event;

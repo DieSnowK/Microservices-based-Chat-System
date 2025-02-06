@@ -251,7 +251,6 @@ void MainWidget::InitSignalSlot()
         addFriendDialog->exec();
     });
 
-    // TODO 考虑优化
     connect(searchEdit, &QLineEdit::textEdited, this, [=]()
     {
         const QString& searchKey = searchEdit->text();

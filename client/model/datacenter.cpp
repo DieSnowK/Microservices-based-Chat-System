@@ -24,7 +24,6 @@ namespace model
     DataCenter::DataCenter()
         : netClient(this)
     {
-        // TODO
         recentMessages = new QHash<QString, QList<Message>>();
         memberList = new QHash<QString, QList<UserInfo>>();
         unreadMessageCount = new QHash<QString, int>();
@@ -452,7 +451,6 @@ namespace model
         netClient.AcceptFriendApply(loginSessionId, userId);
     }
 
-    // TODO memory leak?
     UserInfo DataCenter::RemoveFromApplyList(const QString &userId)
     {
         if (applyList == nullptr)
