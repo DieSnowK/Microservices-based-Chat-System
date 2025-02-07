@@ -171,12 +171,11 @@ namespace model
         QString currentChatSessionId = "";
         
         // Record which members are in each session (mainly for group chats)
-            // key is chatSessionId, and value is the list of members
-        QHash<QString, QList<UserInfo>>* memberList = nullptr;
+        QHash<QString, QList<UserInfo>> *memberList = nullptr; // <chatSessionId, QList<UserInfo>>
 
         QList<UserInfo>* applyList = nullptr;
         QHash<QString, QList<Message>>* recentMessages = nullptr; // <chatSessionId, QList<Message>>
-        QHash<QString, int>* unreadMessageCount = nullptr; // <chatSessionId, int>
+        QHash<QString, int>* unreadMessageCount = nullptr; // <chatSessionId, cnt>
         QList<UserInfo>* searchUserResult = nullptr;
         QList<Message>* searchMessageResult = nullptr;
         QString currentVerifyCodeId = "";

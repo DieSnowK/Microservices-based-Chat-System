@@ -175,7 +175,7 @@ void MainWidget::InitRightWindow()
     titleWidget->setLayout(hlayout);
 
     sessionTitleLabel = new QLabel();
-    sessionTitleLabel->setStyleSheet("QLabel { font-size: 22px; border-bottom: 1px solid rgb(230, 230, 230);}");
+    sessionTitleLabel->setStyleSheet("QLabel { font-size: 22px; border-bottom: 1px solid rgb(230, 230, 230); }");
 #if TEST_UI
     sessionTitleLabel->setText("DieSnowK");
 #endif
@@ -213,14 +213,17 @@ void MainWidget::InitSignalSlot()
 
     connect(extraBtn, &QPushButton::clicked, this, [=]()
     {
-// #if TEST_GROUP_SESSION_DETAIL
-//         bool isSingleChat = false;
-// #else
-//         bool isSingleChat = true;
-// #endif
+    #if TEST_UI
+        #if TEST_GROUP_SESSION_DETAIL
+                bool isSingleChat = false;
+        #else
+                bool isSingleChat = true;
+        #endif
+    #endif
 
         ChatSessionInfo* chatSessionInfo = dataCenter->FindChatSessionById(dataCenter->GetCurrentChatSessionId());
-        if (chatSessionInfo == nullptr) {
+        if (chatSessionInfo == nullptr) 
+        {
             LOG() << "The current session does not exist, the Session Details dialog box cannot be displayed";
             return;
         }

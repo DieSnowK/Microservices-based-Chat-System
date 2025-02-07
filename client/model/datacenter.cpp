@@ -704,4 +704,4 @@ namespace model
     {
         return (*unreadMessageCount)[chatSessionId];
     }
-}
+} // end of namespace model

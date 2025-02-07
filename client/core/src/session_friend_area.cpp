@@ -188,12 +188,10 @@ void SessionFriendItem::Select()
         }
 
         SessionFriendItem* item = dynamic_cast<SessionFriendItem*>(child);
+        if(item->selected)
         {
-            if(item->selected)
-            {
-                item->selected = false;
-                item->setStyleSheet("QWidget { background-color: rgb(231, 231, 231); }");
-            }
+            item->selected = false;
+            item->setStyleSheet("QWidget { background-color: rgb(231, 231, 231); }");
         }
     }
 

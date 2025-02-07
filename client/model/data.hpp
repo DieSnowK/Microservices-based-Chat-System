@@ -145,17 +145,20 @@ namespace model
                 {
                     this->content = messageInfo.message().imageMessage().imageContent();
                 }
-                if (messageInfo.message().imageMessage().hasFileId()) {
+                if (messageInfo.message().imageMessage().hasFileId()) 
+                {
                     this->fileId = messageInfo.message().imageMessage().fileId();
                 }
             }
             else if (type == SnowK::MessageTypeGadget::MessageType::FILE)
             {
                 this->msgType = MessageType::FILE_TYPE;
-                if (messageInfo.message().fileMessage().hasFileContents()) {
+                if (messageInfo.message().fileMessage().hasFileContents()) 
+                {
                     this->content = messageInfo.message().fileMessage().fileContents();
                 }
-                if (messageInfo.message().fileMessage().hasFileId()) {
+                if (messageInfo.message().fileMessage().hasFileId()) 
+                {
                     this->fileId = messageInfo.message().fileMessage().fileId();
                 }
                 this->fileName = messageInfo.message().fileMessage().fileName();
@@ -163,10 +166,12 @@ namespace model
             else if (type == SnowK::MessageTypeGadget::MessageType::SPEECH)
             {
                 this->msgType = MessageType::SPEECH_TYPE;
-                if (messageInfo.message().speechMessage().hasFileContents()) {
+                if (messageInfo.message().speechMessage().hasFileContents()) 
+                {
                     this->content = messageInfo.message().speechMessage().fileContents();
                 }
-                if (messageInfo.message().speechMessage().hasFileId()) {
+                if (messageInfo.message().speechMessage().hasFileId()) 
+                {
                     this->fileId = messageInfo.message().speechMessage().fileId();
                 }
             }
@@ -178,7 +183,7 @@ namespace model
 
         // Factory Pattern
         // The extraInfo here is currently only supplemented as a "filename"
-        // when the message type is a file message
+            // when the message type is a file message
         static Message MakeMessage(MessageType msgType, const QString& chatSessionId, const UserInfo& sender,
                                    const QByteArray& content, const QString& extraInfo)
         {

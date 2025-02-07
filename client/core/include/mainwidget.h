@@ -67,7 +67,6 @@ private:
 
     QLineEdit* searchEdit;
     QPushButton* addFriendBtn;
-
     SessionFriendArea *sessionFriendArea;
 
     QLabel *sessionTitleLabel;

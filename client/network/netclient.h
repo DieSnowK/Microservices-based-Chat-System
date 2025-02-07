@@ -124,6 +124,7 @@ namespace network
 
     private:
         model::DataCenter* dataCenter;
+        
         QNetworkAccessManager httpClient;
         QWebSocket websocketClient;
         QProtobufSerializer serializer;

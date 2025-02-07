@@ -37,8 +37,6 @@ private:
     // Adding elements to the layout inside the container
         // will trigger the QScrollArea scrolling effect
     QWidget* container;
-
-signals:
 };
 
 //////////////////////////////////////////////////////////
