@@ -259,7 +259,8 @@ void SelfInfoWidget::InitSignalSlot()
 void SelfInfoWidget::ClickNameSubmitBtn()
 {
     const QString& nickname = nameEdit->text();
-    if (nickname.isEmpty()) {
+    if (nickname.isEmpty()) 
+    {
         return;
     }
 

@@ -57,6 +57,7 @@ private:
 ////////////////////////////////////////////////////////
 /// MessageContentLabel
 /// -> MessageType::TEXT_TYPE && MessageType::FILE_TYPE
+/// -> MessageType::SPEECH_TYPE
 ////////////////////////////////////////////////////////
 
 class MessageContentLabel : public QWidget

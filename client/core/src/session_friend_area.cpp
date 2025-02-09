@@ -21,6 +21,7 @@ SessionFriendArea::SessionFriendArea(QWidget *parent)
 {
     // This property is set to enable the scrolling effect
     this->setWidgetResizable(true);
+
     this->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 2px; background-color: rgb(46, 46, 46); }");
     this->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal { height: 0px; }");
     this->setStyleSheet("QWidget { border: none; }");
@@ -96,7 +97,10 @@ void SessionFriendArea::ClickItem(int index)
     }
 
     SessionFriendItem* item = dynamic_cast<SessionFriendItem*>(layoutItem->widget());
-    item->Select();
+    if(item)
+    {
+        item->Select();
+    }
 }
 
 //////////////////////////////////////////////////////////
@@ -179,7 +183,7 @@ void SessionFriendItem::leaveEvent(QEvent *event)
 
 void SessionFriendItem::Select()
 {
-    const QObjectList children = this->parentWidget()->children();
+    const QObjectList children = this->parentWidget()->children(); // parent: layout
     for(QObject* child : children)
     {
         if(!child->isWidgetType())
@@ -305,9 +309,7 @@ FriendItem::FriendItem(QWidget* owner, const QString& userId, const QIcon& avata
                        const QString& name, const QString& description)
     : SessionFriendItem(owner, avatar, name, description)
     , userId(userId)
-{
-    
-}
+{}
 
 void FriendItem::Active()
 {
@@ -345,7 +347,6 @@ ApplyItem::ApplyItem(QWidget* owner, const QString& userId,
 void ApplyItem::Active()
 {
     LOG() << "Active ApplyItem, chatSessionId = " << userId;
-
 }
 
 void ApplyItem::AcceptFriendApply()

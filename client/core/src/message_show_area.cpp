@@ -105,7 +105,7 @@ void MessageShowArea::ScrollToEnd()
         timer->stop();
         timer->deleteLater();
     });
-    timer->start(500);
+    timer->start(1000);
 }
 
 ////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ MessageContentLabel::MessageContentLabel(const QString &text, bool isLeft, Messa
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QFont font;
-    font.setFamily("寰蒋闆呴粦");
+    font.setFamily("微软雅黑");
     font.setPixelSize(16);
 
     this->label = new QLabel(this);
@@ -395,7 +395,7 @@ void MessageContentLabel::UpdateUI(const QString &fileId, const QByteArray &file
     this->content = fileContent;
     this->loadContentDone = true;
 
-    this->update(); // It鈥檚 okay if you don鈥檛 have it
+    this->update(); // It’s okay if you don’t have it
 }
 
 void MessageContentLabel::SaveAsFile(const QByteArray &content)
@@ -468,7 +468,9 @@ void MessageContentLabel::SpeechConvertTextDone(const QString &fileId, const QSt
         // If you want to get the real data of the image, you need to send a
             // request to the server again to get the file content based on fileId.
 MessageImageLabel::MessageImageLabel(const QString &fileId, const QByteArray &content, bool isLeft)
-    : fileId(fileId), content(content), isLeft(isLeft)
+    : fileId(fileId)
+    , content(content)
+    , isLeft(isLeft)
 {
     this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 

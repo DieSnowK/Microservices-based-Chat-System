@@ -115,6 +115,7 @@ void MessageEditArea::InitSignalSlot()
 
     connect(sendSpeechBtn, &QPushButton::pressed, this, &MessageEditArea::SoundRecordPressed);
     connect(sendSpeechBtn, &QPushButton::released, this, &MessageEditArea::SoundRecordReleased);
+
     SoundRecorder* soundRecorder = SoundRecorder::GetInstance();
     connect(soundRecorder, &SoundRecorder::SoundRecordDone, this, &MessageEditArea::SendSpeech);
 }
@@ -190,7 +191,6 @@ void MessageEditArea::ClickSendImageBtn()
     }
 
     QByteArray imageContent = model::Util::LoadFileToByteArray(imagePath);
-
     dataCenter->SendImageMessageAsync(dataCenter->GetCurrentChatSessionId(), imageContent);
 }
 
@@ -272,5 +272,3 @@ void MessageEditArea::SendSpeech(const QString &path)
     DataCenter* dataCenter = DataCenter::GetInstance();
     dataCenter->SendSpeechMessageAsync(dataCenter->GetCurrentChatSessionId(), content);
 }
-
-
