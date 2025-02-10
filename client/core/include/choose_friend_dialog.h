@@ -35,7 +35,7 @@ private:
     QCheckBox* checkBox;
     QPushButton* avatarBtn;
     QLabel* nameLabel;
-    ChooseFriendDialog* owner;
+    // ChooseFriendDialog *owner; // Can consider deleting it, it is redundant for the time being.
 
     QString userId;
 };

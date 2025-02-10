@@ -80,7 +80,6 @@ GroupSessionDetailWidget::GroupSessionDetailWidget(QWidget* parent)
     exitGroupBtn->setStyleSheet(btnStyle);
     vlayout->addWidget(exitGroupBtn);
 
-// 姝ゅ鏋勯€犲亣鐨勬暟鎹敤鏉ユ祴璇曠晫闈?
 #if TEST_UI
     groupNameLabel->setText("We are family~");
     QIcon avatar(":/resource/image/defaultAvatar.png");

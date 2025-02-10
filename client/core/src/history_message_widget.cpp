@@ -194,7 +194,7 @@ void HistoryMessageWidget::Clear()
     QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(container->layout());
     for (int i = layout->count() - 1; i >= 0; --i)
     {
-        QWidget* w = layout->itemAt(i)->widget();
+        QWidget*  w= layout->itemAt(i)->widget();
         if (w == nullptr)
         {
             continue;

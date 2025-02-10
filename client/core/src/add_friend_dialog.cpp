@@ -204,5 +204,3 @@ void AddFriendDialog::ClickSearchBtnDone()
         this->AddResult(u);
     }
 }
-
-

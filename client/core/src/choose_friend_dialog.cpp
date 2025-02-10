@@ -359,4 +359,3 @@ void ChooseFriendDialog::DeleteSelectedFriend(const QString &userId)
         chooseFriendItem->GetCheckBox()->setChecked(false);
     }
 }
-

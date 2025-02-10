@@ -157,7 +157,6 @@ void PhoneLoginWidget::ClickSubmitBtn()
         return;
     }
 
-    // 2. 鍙戦€佽姹?
     DataCenter* dataCenter = DataCenter::GetInstance();
     if (isLoginMode)
     {
