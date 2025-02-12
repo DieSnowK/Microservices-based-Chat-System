@@ -14,7 +14,7 @@ Toast::Toast(const QString &text)
     int width = screen->size().width();
     int height = screen->size().height();
     int x = (width - this->width()) / 2;
-    int y = height - this->height() - 100;	// 100 ->  bottom edge of the window
+    int y = height - this->height() - 100;	// 100 -> bottom edge of the window
     this->move(x, y);
 
     QVBoxLayout* layout = new QVBoxLayout();
